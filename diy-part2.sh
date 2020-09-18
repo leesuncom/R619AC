@@ -53,6 +53,7 @@ git clone https://github.com/Leo-Jo-My/luci-theme-opentomcat.git package/lean/lu
 #git clone https://github.com/xiaorouji/openwrt-package/lienol/ package/diy-packages/lienol
 git clone https://github.com/kenzok8/openwrt-packages.git package/diy-packages
 git clone https://github.com/kenzok8/small.git package/small
+git clone -b 18.06 https://github.com/jerrykuku/luci-theme-argon.git
 
 # 获取Lienol-package
 # git clone https://github.com/Lienol/openwrt-package package/diy-packages/lienol

@@ -1,25 +1,22 @@
-
-#
-# Copyright (c) 2019-2020 P3TERX <https://p3terx.com>
-#
-# This is free software, licensed under the MIT License.
-# See /LICENSE for more information.
-#
+#=================================================
 # https://github.com/P3TERX/Actions-OpenWrt
 # Description: Build OpenWrt using GitHub Actions
-#
-
-name: Build OpenWrt
+# Lisence: MIT
+# env：false @ ture
+# Author: P3TERX
+# Blog: https://p3terx.com
+#=================================================
+name: Build OpenWrt R619AC
 
 on:
-  workflow_dispatch:
+  repository_dispatch:
   release:
     types: published
   push:
     branches:
-      - main
+      - master
     paths:
-      - '.config'
+      - 'r619ac.config'
 #  schedule:
 #    - cron: 0 8 * * 5
 #  watch:

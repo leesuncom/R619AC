@@ -1,18 +1,19 @@
 #!/bin/bash
-#=============================================================
+#
+# Copyright (c) 2019-2020 P3TERX <https://p3terx.com>
+#
+# This is free software, licensed under the MIT License.
+# See /LICENSE for more information.
+#
 # https://github.com/P3TERX/Actions-OpenWrt
 # File name: diy-part1.sh
 # Description: OpenWrt DIY script part 1 (Before Update feeds)
-# Lisence: MIT
-# Author: P3TERX
-# Blog: https://p3terx.com
-# ACRH17 KERNEL 5.4
-#=============================================================
+#
 
-# 启用 fw876/helloworld
-sed -i 's/^#\(.*helloworld\)/\1/' feeds.conf.default
+# Add a feed source
+sed -i '$a src-git helloworld https://github.com/fw876/helloworld.git' feeds.conf.default
+#sed -i '$a src-git nas https://github.com/linkease/nas-packages.git;master' feeds.conf.default
 
-# 增加源
-# sed -i '$a src-git lienol https://github.com/xiaorouji/openwrt-package' feeds.conf.default
-
-# git clone https://github.com/kenzok8/small.git
+rm -rf package/lean/luci-theme-argon && git clone -b 18.06 https://github.com/jerrykuku/luci-theme-argon.git package/lean/luci-theme-argon
+git clone https://github.com/jerrykuku/luci-app-argon-config.git package/lean/luci-app-argon-config
+git clone https://github.com/iwrt/luci-app-ikoolproxy.git package/lean/uci-app-ikoolproxy

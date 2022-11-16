@@ -16,4 +16,5 @@ sed -i '$a src-git helloworld https://github.com/fw876/helloworld.git' feeds.con
 
 rm -rf package/lean/luci-theme-argon && git clone -b 18.06 https://github.com/jerrykuku/luci-theme-argon.git package/lean/luci-theme-argon
 git clone https://github.com/jerrykuku/luci-app-argon-config.git package/lean/luci-app-argon-config
-git clone https://github.com/iwrt/luci-app-ikoolproxy.git package/lean/uci-app-ikoolproxy
+git clone https://github.com/kenzok8/openwrt-packages.git package/openwrt-packages
+# git clone https://github.com/kenzok8/small.git package/small

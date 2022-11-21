@@ -1,0 +1,344 @@
+#
+# Copyright (c) 2019-2020 P3TERX <https://p3terx.com>
+#
+# This is free software, licensed under the MIT License.
+# See /LICENSE for more information.
+#
+# https://github.com/P3TERX/Actions-OpenWrt
+# Description: Build OpenWrt using GitHub Actions
+#
+
+name: Build OpenWrt
+
+on:
+  repository_dispatch:
+  workflow_dispatch:
+    inputs:
+      ssh:
+        description: 'SSH connection to Actions'
+        required: false
+        default: 'false'
+  watch:
+    types: [started]
+    
+env:
+  REPO_URL: https://github.com/coolsnowwolf/lede
+  REPO_BRANCH: master
+  UPLOAD_BIN_DIR: true
+  UPLOAD_FIRMWARE: true
+  UPLOAD_COWTRANSFER: false
+  UPLOAD_WETRANSFER: true
+  UPLOAD_RELEASE: true
+  TZ: Asia/Shanghai
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+#     if: github.event.repository.owner.id == github.event.sender.id
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@main
+
+    - name: Initialization environment
+      env:
+        DEBIAN_FRONTEND: noninteractive
+      run: |
+        sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
+        sudo -E apt-get -qq update
+        sudo -E apt-get -qq install $(curl -fsSL git.io/JURWx)
+        sudo -E apt-get -qq autoremove --purge
+        sudo -E apt-get -qq clean
+        sudo timedatectl set-timezone "$TZ"
+        sudo mkdir -p /workdir
+        sudo chown $USER:$GROUPS /workdir
+
+    - name: Clone source code
+      working-directory: /workdir
+      run: |
+        df -hT $PWD
+        git clone $REPO_URL -b $REPO_BRANCH openwrt
+        ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
+
+    - name: Cache
+      uses: klever1988/cachewrtbuild@main
+      with:
+        ccache: 'true'
+        prefix: ${{ github.workspace }}/openwrt
+
+    - name: Update packages
+      env:
+        SCKEY: ${{ secrets.ACTIONS_TRIGGER_PAT }}
+      run: |
+        ls
+        cd openwrt/package
+        mkdir openwrt-packages
+        cd openwrt-packages
+        git clone https://$SCKEY:x-oauth-basic@github.com/OldCoding/luci-app-speedlimit.git
+        git clone https://github.com/tty228/luci-app-serverchan
+        git clone https://github.com/OldCoding/luci-app-adguardhome
+        git clone -b lede https://github.com/pymumu/luci-app-smartdns
+        svn export https://github.com/immortalwrt/packages/trunk/net/smartdns
+        #svn export https://github.com/messense/aliyundrive-webdav/trunk/openwrt/aliyundrive-webdav
+        #svn export https://github.com/messense/aliyundrive-webdav/trunk/openwrt/luci-app-aliyundrive-webdav
+        #svn export https://github.com/vernesong/OpenClash/trunk/luci-app-openclash
+        git clone https://github.com/xiaorouji/openwrt-passwall
+        git clone -b luci https://github.com/xiaorouji/openwrt-passwall passwall1 && mv -n passwall1/luci-app-passwall  ./; rm -rf passwall1
+        svn export https://github.com/kiddin9/openwrt-packages/trunk/luci-app-diskman
+        #svn export https://github.com/xiaorouji/openwrt-passwall2/trunk/luci-app-passwall2
+
+    - name: FilePatch
+      run: |
+        cp -f patch/subscribe.lua openwrt/package/openwrt-packages/luci-app-passwall/root/usr/share/passwall/subscribe.lua
+        cd openwrt
+        sed -i "s/OpenWrt /Wing build $(TZ=UTC-8 date "+%Y.%m.%d") @ OpenWrt /g" package/lean/default-settings/files/zzz-default-settings
+        sed '6 iuci\ set\ system.@system[0].hostname=G-Dock' -i package/lean/default-settings/files/zzz-default-settings
+        sed -i "/firewall\.user/d" package/lean/default-settings/files/zzz-default-settings
+        sed -i 's/192.168.1.1/192.168.10.1/g' package/base-files/files/bin/config_generate
+        sed -i '$a src-git helloworld https://github.com/fw876/helloworld' feeds.conf.default
+
+    - name: Update feeds
+      run: cd openwrt && ./scripts/feeds update -a && ./scripts/feeds install -a
+
+
+    - name: FilePatch2
+      run: |
+        cd openwrt/feeds/luci/applications/luci-app-wrtbwmon
+        sed -i 's/ selected=\"selected\"//g' ./luasrc/view/wrtbwmon/wrtbwmon.htm && sed -i 's/\"1\"/\"1\" selected=\"selected\"/g' ./luasrc/view/wrtbwmon/wrtbwmon.htm
+        sed -i 's/interval: 5/interval: 1/g' ./htdocs/luci-static/wrtbwmon/wrtbwmon.js
+
+
+    - name: Generate configuration file
+      run: |
+        cd openwrt
+        rm -f ./.config*
+        touch ./.config
+
+        #
+        # ========================固件定制部分========================
+        # 
+
+        # 
+        # 如果不对本区块做出任何编辑, 则生成默认配置固件. 
+        # 
+
+        # 以下为定制化固件选项和说明:
+        #
+
+        #
+        # 有些插件/选项是默认开启的, 如果想要关闭, 请参照以下示例进行编写:
+        # 
+        #          =========================================
+        #         |  # 取消编译VMware镜像:                   |
+        #         |  cat >> .config <<EOF                   |
+        #         |  # CONFIG_VMDK_IMAGES is not set        |
+        #         |  EOF                                    |
+        #          =========================================
+        #
+
+        # 
+        # 以下是一些提前准备好的一些插件选项.
+        # 直接取消注释相应代码块即可应用. 不要取消注释代码块上的汉字说明.
+        # 如果不需要代码块里的某一项配置, 只需要删除相应行.
+        #
+        # 如果需要其他插件, 请按照示例自行添加.
+        # 注意, 只需添加依赖链顶端的包. 如果你需要插件 A, 同时 A 依赖 B, 即只需要添加 A.
+        # 
+        # 无论你想要对固件进行怎样的定制, 都需要且只需要修改 EOF 回环内的内容.
+        # 
+
+        # 编译竞斗云固件:
+        cat >> .config <<EOF
+        CONFIG_TARGET_ipq40xx=y
+        CONFIG_TARGET_ipq40xx_DEVICE_p2w_r619ac-128m=y
+        EOF
+
+        # USB2.0支持:
+        # cat >> .config <<EOF
+        # CONFIG_PACKAGE_kmod-usb-core=y
+        # CONFIG_PACKAGE_kmod-usb-dwc3=y
+        # CONFIG_PACKAGE_kmod-usb-dwc3-qcom=y
+        # CONFIG_PACKAGE_kmod-usb-storage=y
+        # CONFIG_PACKAGE_kmod-usb-storage-extras=y
+        # CONFIG_PACKAGE_kmod-usb-storage-uas=y
+        # CONFIG_PACKAGE_kmod-usb-xhci-hcd=y
+        # CONFIG_PACKAGE_kmod-usb3=y
+        # EOF
+
+        # IPv6支持:
+        cat >> .config <<EOF
+        CONFIG_PACKAGE_dnsmasq_full_dhcpv6=y
+        CONFIG_PACKAGE_ip6tables=y
+        CONFIG_PACKAGE_ip6tables-extra=y
+        CONFIG_PACKAGE_ip6tables-mod-nat=y
+        CONFIG_PACKAGE_ipv6helper=y
+        EOF
+
+        # LuCI插件选择:
+        cat >> .config <<EOF
+        CONFIG_PACKAGE_luci-app-aliyundrive-webdav=y
+        CONFIG_PACKAGE_luci-app-passwall=y
+        CONFIG_PACKAGE_luci-app-diskman=y
+        CONFIG_PACKAGE_luci-app-autoreboot=y
+        CONFIG_PACKAGE_luci-app-ddns=y
+        CONFIG_PACKAGE_luci-app-filetransfer=y
+        CONFIG_PACKAGE_luci-app-speedlimit=y
+        CONFIG_PACKAGE_luci-app-nlbwmon=y
+        CONFIG_PACKAGE_luci-app-firewall=y
+        CONFIG_PACKAGE_luci-app-ssr-plus=y
+        CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_Xray=y
+        CONFIG_PACKAGE_luci-app-serverchan=y
+        CONFIG_PACKAGE_luci-app-pptp-server=y
+        CONFIG_PACKAGE_luci-app-smartdns=y
+        CONFIG_PACKAGE_luci-app-samba4=y
+        CONFIG_PACKAGE_luci-app-ttyd=y
+        CONFIG_PACKAGE_luci-app-webadmin=y
+        CONFIG_PACKAGE_luci-app-wol=y
+        CONFIG_PACKAGE_luci-app-wrtbwmon=y
+        CONFIG_PACKAGE_luci-app-ramfree=y
+        CONFIG_PACKAGE_luci-app-usb-printer=y
+        CONFIG_PACKAGE_luci-app-upnp=y
+        CONFIG_PACKAGE_luci-app-vsftpd=y
+        CONFIG_PACKAGE_luci-app-vlmcsd=y
+        CONFIG_PACKAGE_luci-app-zerotier=y
+        CONFIG_PACKAGE_luci-app-adguardhome=y
+        CONFIG_PACKAGE_luci-app-cpufreq=y
+        CONFIG_PACKAGE_luci-app-sqm=y
+        EOF
+
+        # LuCI主题:
+        cat >> .config <<EOF
+        CONFIG_PACKAGE_luci-theme-argon=y
+        CONFIG_PACKAGE_luci-theme-bootstrap=y
+        CONFIG_PACKAGE_luci-theme-material=y
+        EOF
+
+        # 常用软件包:
+        cat >> .config <<EOF
+        CONFIG_DEFAULT_coremark=y
+        CONFIG_PACKAGE_e2fsprogs=y
+        CONFIG_PACKAGE_samba4-libs=y
+        CONFIG_PACKAGE_samba4-server=y
+        # CONFIG_PACKAGE_odhcpd is not set
+        # CONFIG_luci-app-samba is net set
+        # CONFIG_PACKAGE_luci-app-unblockmusic is net set
+        EOF
+
+        # 取消编译VMware镜像以及镜像填充 (不要删除被缩进的注释符号):
+        # cat >> .config <<EOF
+        # # CONFIG_TARGET_IMAGES_PAD is not set
+        # # CONFIG_VMDK_IMAGES is not set
+        # EOF
+
+        # 
+        # ========================固件定制部分结束========================
+        # 
+        
+        sed -i 's/^[ \t]*//g' ./.config
+        make defconfig
+
+    - name: SSH connection to Actions
+      uses: P3TERX/ssh2actions@v1.0.0
+      if: (github.event.inputs.ssh == 'true' && github.event.inputs.ssh  != 'false') || contains(github.event.action, 'ssh')
+      env:
+        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+
+    - name: Download package
+      id: package
+      run: |
+        cd openwrt
+        make download -j8
+        find dl -size -1024c -exec ls -l {} \;
+        find dl -size -1024c -exec rm -f {} \;
+
+    - name: Compile the firmware
+      id: compile
+      run: |
+        cd openwrt
+        echo -e "$(nproc) thread compile"
+        make -j$(nproc) || make -j1 || make -j1 V=s
+        echo "::set-output name=status::success"
+        grep '^CONFIG_TARGET.*DEVICE.*=y' .config | sed -r 's/.*DEVICE_(.*)=y/\1/' > DEVICE_NAME
+        [ -s DEVICE_NAME ] && echo "DEVICE_NAME=_$(cat DEVICE_NAME)" >> $GITHUB_ENV
+        echo "FILE_DATE=_$(date +"%Y%m%d%H%M")" >> $GITHUB_ENV
+
+    - name: Check space usage
+      if: (!cancelled())
+      run: df -hT
+
+    - name: Upload bin directory
+      uses: actions/upload-artifact@main
+      if: steps.compile.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true'
+      with:
+        name: OpenWrt_bin${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
+        path: openwrt/bin
+
+    - name: Organize files
+      id: organize
+      if: env.UPLOAD_FIRMWARE == 'true' && !cancelled()
+      run: |
+        cd openwrt/bin/targets/*/*
+        rm -rf packages
+        echo "FIRMWARE=$PWD" >> $GITHUB_ENV
+        echo "::set-output name=status::success"
+
+    - name: Upload firmware directory
+      uses: actions/upload-artifact@main
+      if: steps.organize.outputs.status == 'success' && !cancelled()
+      with:
+        name: OpenWrt_firmware${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
+        path: ${{ env.FIRMWARE }}
+
+    - name: Upload firmware to cowtransfer
+      id: cowtransfer
+      if: steps.organize.outputs.status == 'success' && env.UPLOAD_COWTRANSFER == 'true' && !cancelled()
+      run: |
+        curl -fsSL git.io/file-transfer | sh
+        ./transfer cow --block 2621440 -s -p 64 --no-progress ${FIRMWARE} 2>&1 | tee cowtransfer.log
+        echo "::warning file=cowtransfer.com::$(cat cowtransfer.log | grep https)"
+        echo "::set-output name=url::$(cat cowtransfer.log | grep https | cut -f3 -d" ")"
+
+    - name: Upload firmware to WeTransfer
+      id: wetransfer
+      if: steps.organize.outputs.status == 'success' && env.UPLOAD_WETRANSFER == 'true' && !cancelled()
+      run: |
+        curl -fsSL git.io/file-transfer | sh
+        ./transfer wet -s -p 16 --no-progress ${FIRMWARE} 2>&1 | tee wetransfer.log
+        echo "::warning file=wetransfer.com::$(cat wetransfer.log | grep https)"
+        echo "::set-output name=url::$(cat wetransfer.log | grep https | cut -f3 -d" ")"
+
+    - name: Generate release tag
+      id: tag
+      if: env.UPLOAD_RELEASE == 'true' && !cancelled()
+      run: |
+        echo "::set-output name=release_tag::$(date +"%Y.%m.%d-%H%M")"
+        touch release.txt
+        [ $UPLOAD_COWTRANSFER = true ] && echo "🔗 [Cowtransfer](${{ steps.cowtransfer.outputs.url }})" >> release.txt
+        [ $UPLOAD_WETRANSFER = true ] && echo "🔗 [WeTransfer](${{ steps.wetransfer.outputs.url }})" >> release.txt
+        echo "::set-output name=status::success"
+
+    - name: Upload firmware to release
+      uses: softprops/action-gh-release@v1
+      if: steps.tag.outputs.status == 'success' && !cancelled()
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ steps.tag.outputs.release_tag }}
+        body_path: release.txt
+        files: ${{ env.FIRMWARE }}/*
+
+    - name: Delete workflow runs
+      uses: GitRML/delete-workflow-runs@main
+      with:
+        retain_days: 1
+        keep_minimum_runs: 3
+
+    - name: Remove old Releases
+      uses: dev-drprasad/delete-older-releases@v0.1.0
+      if: env.UPLOAD_RELEASE == 'true' && !cancelled()
+      with:
+        keep_latest: 3
+        delete_tags: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

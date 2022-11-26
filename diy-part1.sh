@@ -11,7 +11,7 @@
 #
 
 # Add a feed source
-#sed -i '$a src-git helloworld https://github.com/fw876/helloworld.git' feeds.conf.default
+sed -i '$a src-git helloworld https://github.com/fw876/helloworld.git' feeds.conf.default
 #sed -i '$a src-git nas https://github.com/linkease/nas-packages.git;master' feeds.conf.default
 
 rm -rf package/lean/luci-theme-argon && git clone -b 18.06 https://github.com/jerrykuku/luci-theme-argon.git package/lean/luci-theme-argon

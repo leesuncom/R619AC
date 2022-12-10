@@ -12,7 +12,6 @@
 
 # Add a feed source
 sed -i '$a src-git helloworld https://github.com/fw876/helloworld.git' feeds.conf.default
-# sed -i '$a src-git nas https://github.com/linkease/nas-packages.git;master' feeds.conf.default
 # sed -i '$a src-git kenzo https://github.com/kenzok8/openwrt-packages' feeds.conf.default
 # sed -i '$a src-git small https://github.com/kenzok8/small' feeds.conf.default
 rm -rf package/openwrt-packages/luci-theme-argon && git clone -b 18.06 https://github.com/jerrykuku/luci-theme-argon.git package/openwrt-packages/luci-theme-argon

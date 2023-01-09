@@ -12,14 +12,14 @@
 
 # Add a feed source
 sed -i '$a src-git helloworld https://github.com/fw876/helloworld.git' feeds.conf.default
-# sed -i '$a src-git kenzo https://github.com/kenzok8/openwrt-packages' feeds.conf.default
+sed -i '$a src-git netspeedtest https://github.com/sirpdboy/netspeedtest' feeds.conf.default
 # sed -i '$a src-git small https://github.com/kenzok8/small' feeds.conf.default
 git clone https://github.com/jerrykuku/luci-app-argon-config.git package/lean/luci-app-argon-config
 git clone https://github.com/kenzok8/openwrt-packages.git package/openwrt-packages
 git clone https://github.com/kenzok8/small.git package/small
 git clone https://github.com/open-mesh-mirror/batman-adv.git package/batman-adv
+rm -rf package/lean/luci-app-netdata && git clone https://github.com/sirpdboy/luci-app-netdata package/lean/luci-app-netdata package/lean/luci-app-netdata
 cd package/openwrt-packages  
 rm -rf luci-theme-argon  
 git clone -b 18.06 https://github.com/jerrykuku/luci-theme-argon.git
-git clone https://github.com/sirpdboy/luci-app-netdata package/lean/luci-app-netdata
 # git clone https://github.com/sirpdboy/netspeedtest.git package/lean/netspeedtest

@@ -22,3 +22,4 @@ cd package/openwrt-packages
 rm -rf luci-theme-argon  
 git clone -b 18.06 https://github.com/jerrykuku/luci-theme-argon.git
 git clone https://github.com/sirpdboy/luci-app-netdata package/lean/luci-app-netdata
+git clone https://github.com/sirpdboy/netspeedtest.git package/lean/netspeedtest

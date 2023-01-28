@@ -13,7 +13,6 @@
 # Add a feed source
 git clone https://github.com/kenzok8/openwrt-packages.git package/openwrt-packages
 git clone https://github.com/kenzok8/small.git package/small
-git clone https://github.com/sirpdboy/luci-app-autotimeset package/openwrt-packages/luci-app-autotimeset
 rm -rf package/openwrt-packages/luci-theme-argon && git clone -b 18.06 https://github.com/jerrykuku/luci-theme-argon.git package/openwrt-packages/luci-theme-argon
 # git clone https://github.com/open-mesh-mirror/batman-adv.git package/batman-adv
 # rm -rf package/openwrt-packages/luci-app-adguardhome && git clone https://github.com/OldCoding/luci-app-adguardhome.git package/openwrt-packages/luci-app-adguardhome

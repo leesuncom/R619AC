@@ -11,6 +11,7 @@
 #
 
 # Add a feed source
+sed -i '$a src-git helloworld https://github.com/fw876/helloworld.git' feeds.conf.default
 git clone https://github.com/kenzok8/openwrt-packages.git package/openwrt-packages
 git clone https://github.com/kenzok8/small.git package/small
 rm -rf package/openwrt-packages/luci-theme-argon && git clone -b 18.06 https://github.com/jerrykuku/luci-theme-argon.git package/openwrt-packages/luci-theme-argon

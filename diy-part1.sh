@@ -13,7 +13,7 @@
 # Add a feed source
 # sed -i '$a src-git helloworld https://github.com/fw876/helloworld.git' feeds.conf.default
 # git clone https://github.com/kenzok8/openwrt-packages.git package/openwrt-packages
-https://github.com/kenzok8/small-package package/small-package
+git clone https://github.com/kenzok8/small-package package/small-package
 # git clone https://github.com/kenzok8/small.git package/small
 rm -rf package/small-package/luci-theme-argon && git clone -b 18.06 https://github.com/jerrykuku/luci-theme-argon.git package/small-package/luci-theme-argon
 # git clone https://github.com/open-mesh-mirror/batman-adv.git package/batman-adv

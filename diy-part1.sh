@@ -22,4 +22,4 @@ rm -rf package/lean/luci-theme-argon && git clone -b 18.06 https://github.com/je
 # rm -rf package/lean/luci-app-netdata && git clone https://github.com/sirpdboy/luci-app-netdata.git package/openwrt-packages/luci-app-netdata
 git clone -b lede https://github.com/pymumu/luci-app-smartdns package/lean/luci-app-smartdns
 svn export https://github.com/immortalwrt/packages/trunk/net/smartdns
-git clone https://github.com/kongfl888/luci-app-adguardhome package/lean/luci-app-adguardhome
+# git clone https://github.com/kongfl888/luci-app-adguardhome package/lean/luci-app-adguardhome

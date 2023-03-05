@@ -17,11 +17,11 @@ sed -i '$a src-git helloworld https://github.com/fw876/helloworld.git' feeds.con
 # git clone https://github.com/kenzok8/small.git package/small
 
 # Add theme
-# rm -rf package/openwrt-packages/luci-theme-argon && git clone -b 18.06 https://github.com/jerrykuku/luci-theme-argon.git package/openwrt-packages/luci-theme-argon
 rm -rf package/lean/luci-theme-argon && git clone -b 18.06 https://github.com/jerrykuku/luci-theme-argon.git package/lean/luci-theme-argon
-rm -rf package/lean/luci-theme-neobird && git clone https://github.com/thinktip/luci-theme-neobird.git package/lean/luci-theme-neobird
-git clone https://github.com/gngpp/luci-theme-design.git package/lean/luci-theme-design
+# git clone https://github.com/jerrykuku/luci-app-argon-config.git package/lean/luci-app-argon-config
+rm -rf package/lean/luci-theme-design && git clone https://github.com/gngpp/luci-theme-design.git package/lean/luci-theme-design
 git clone https://github.com/gngpp/luci-app-design-config.git package/lean/luci-app-design-config
+rm -rf package/lean/luci-theme-neobird && git clone https://github.com/thinktip/luci-theme-neobird.git package/lean/luci-theme-neobird
 
 # git clone https://github.com/open-mesh-mirror/batman-adv.git package/batman-adv
 # rm -rf package/openwrt-packages/luci-app-adguardhome && git clone https://github.com/OldCoding/luci-app-adguardhome.git package/openwrt-packages/luci-app-adguardhome

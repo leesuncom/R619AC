@@ -28,4 +28,4 @@ rm -rf package/lean/luci-theme-neobird && git clone https://github.com/thinktip/
 git clone -b lede https://github.com/pymumu/luci-app-smartdns package/lean/luci-app-smartdns
 svn export https://github.com/immortalwrt/packages/trunk/net/smartdns
 # git clone https://github.com/kongfl888/luci-app-adguardhome package/lean/luci-app-adguardhome
-svn co https://github.com/kenzok8/small-package/tree/main/luci-app-adguardhome package/lean/luci-app-adguardhome
+svn export https://github.com/kenzok8/openwrt-packages/luci-app-adguardhome package/lean/luci-app-adguardhome

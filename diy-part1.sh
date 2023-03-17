@@ -19,8 +19,8 @@ sed -i '$a src-git helloworld https://github.com/fw876/helloworld.git' feeds.con
 # Add theme
 rm -rf package/lean/luci-theme-argon && git clone -b 18.06 https://github.com/jerrykuku/luci-theme-argon.git package/lean/luci-theme-argon
 # git clone https://github.com/jerrykuku/luci-app-argon-config.git package/lean/luci-app-argon-config
-rm -rf package/lean/luci-theme-design && git clone https://github.com/gngpp/luci-theme-design.git package/lean/luci-theme-design
-git clone https://github.com/gngpp/luci-app-design-config.git package/lean/luci-app-design-config
+# rm -rf package/lean/luci-theme-design && git clone https://github.com/gngpp/luci-theme-design.git package/lean/luci-theme-design
+# git clone https://github.com/gngpp/luci-app-design-config.git package/lean/luci-app-design-config
 rm -rf package/lean/luci-theme-neobird && git clone https://github.com/thinktip/luci-theme-neobird.git package/lean/luci-theme-neobird
 
 # Add app

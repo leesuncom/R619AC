@@ -18,14 +18,14 @@ sed -i '$a src-git helloworld https://github.com/fw876/helloworld.git' feeds.con
 
 # Add theme
 rm -rf package/lean/luci-theme-argon && git clone -b 18.06 https://github.com/jerrykuku/luci-theme-argon.git package/lean/luci-theme-argon
+rm -rf package/lean/luci-theme-neobird && git clone https://github.com/thinktip/luci-theme-neobird.git package/lean/luci-theme-neobird
 # git clone https://github.com/jerrykuku/luci-app-argon-config.git package/lean/luci-app-argon-config
 # rm -rf package/lean/luci-theme-design && git clone https://github.com/gngpp/luci-theme-design.git package/lean/luci-theme-design
 # git clone https://github.com/gngpp/luci-app-design-config.git package/lean/luci-app-design-config
-rm -rf package/lean/luci-theme-neobird && git clone https://github.com/thinktip/luci-theme-neobird.git package/lean/luci-theme-neobird
 
 # Add app
 git clone https://github.com/open-mesh-mirror/batman-adv.git package/batman-adv
 git clone -b lede https://github.com/pymumu/luci-app-smartdns package/lean/luci-app-smartdns
-# svn export https://github.com/kenzok8/openwrt-packages/trunk/luci-app-smartdns package/lean/luci-app-smartdns
 svn export https://github.com/kenzok8/openwrt-packages/trunk/luci-app-adguardhome package/lean/luci-app-adguardhome
+# svn export https://github.com/kenzok8/openwrt-packages/trunk/luci-app-smartdns package/lean/luci-app-smartdns
 # svn export https://github.com/kiddin9/openwrt-packages/trunk/luci-app-diskman package/lean/luci-app-diskman

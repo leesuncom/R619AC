@@ -28,4 +28,4 @@ git clone https://github.com/open-mesh-mirror/batman-adv.git package/batman-adv
 git clone -b lede https://github.com/pymumu/luci-app-smartdns package/lean/luci-app-smartdns
 # svn export https://github.com/kenzok8/openwrt-packages/trunk/luci-app-smartdns package/lean/luci-app-smartdns
 svn export https://github.com/kenzok8/openwrt-packages/trunk/luci-app-adguardhome package/lean/luci-app-adguardhome
-svn export https://github.com/kiddin9/openwrt-packages/trunk/luci-app-diskman package/lean/luci-app-diskman
+# svn export https://github.com/kiddin9/openwrt-packages/trunk/luci-app-diskman package/lean/luci-app-diskman

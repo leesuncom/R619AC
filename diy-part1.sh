@@ -21,6 +21,6 @@ rm -rf package/lean/luci-theme-neobird && git clone https://github.com/thinktip/
 
 # Add app
 git clone -b lede https://github.com/pymumu/luci-app-smartdns package/lean/luci-app-smartdns
-git clone https://github.com/peter-tank/luci-app-dnscrypt-proxy2.git package/lean/luci-app-dnscrypt-proxy2
+# git clone https://github.com/peter-tank/luci-app-dnscrypt-proxy2.git package/lean/luci-app-dnscrypt-proxy2
 svn export https://github.com/kenzok8/openwrt-packages/trunk/luci-app-passwall package/lean/luci-app-passwall
 # svn export https://github.com/kenzok8/openwrt-packages/trunk/luci-app-adguardhome package/lean/luci-app-adguardhome

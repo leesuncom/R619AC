@@ -18,7 +18,7 @@ sed -i '$a src-git small https://github.com/kenzok8/small.git' feeds.conf.defaul
 rm -rf package/lean/luci-theme-argon && git clone -b 18.06 https://github.com/jerrykuku/luci-theme-argon.git package/lean/luci-theme-argon
 git clone https://github.com/jerrykuku/luci-app-argon-config.git package/lean/luci-app-argon-config
 rm -rf package/lean/luci-theme-neobird && git clone https://github.com/thinktip/luci-theme-neobird.git package/lean/luci-theme-neobird
-rm -rf feeds/packages/net/smartdns && svn export https://github.com/immortalwrt/packages/trunk/net/smartdns package/lean/smartdns
+rm -rf feeds/packages/net/smartdns && svn export https://github.com/kenzok8/openwrt-packages/trunk/smartdns package/lean/smartdns
 # Add app
 git clone -b lede https://github.com/pymumu/luci-app-smartdns package/lean/luci-app-smartdns
 svn export https://github.com/kenzok8/openwrt-packages/trunk/luci-app-passwall package/lean/luci-app-passwall

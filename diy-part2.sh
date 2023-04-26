@@ -38,8 +38,11 @@ sed -i "78i uci set network.wan.proto=none" package/lean/default-settings/files/
 sed -i "79i uci set wireless.@wifi-device[0].disabled=1" package/lean/default-settings/files/zzz-default-settings # 关闭无线0
 sed -i "80i uci set wireless.@wifi-device[1].disabled=1" package/lean/default-settings/files/zzz-default-settings # 关闭无线1
 sed -i "81i uci commit network" package/lean/default-settings/files/zzz-default-settings
-sed -i "82i uci set dhcp.lan.ignore=1" package/lean/default-settings/files/zzz-default-settings # 关掉lan的dhcp
-sed -i "83i uci commit dhcp" package/lean/default-settings/files/zzz-default-settings 
+
+sed -i "82i'/option ra_management '1'/d' /etc/config/dhcp" package/lean/default-settings/files/zzz-default-settings # IPv6 分配长度，已禁用
+sed -i "83i uci set dhcp.lan.ignore=1" package/lean/default-settings/files/zzz-default-settings # 关掉lan的dhcp
+sed -i "84i uci commit dhcp" package/lean/default-settings/files/zzz-default-settings
+
 # sed '6 iuci\ set\ system.@system[0].hostname=NeoBird' -i package/lean/default-settings/files/zzz-default-settings
 # sed -i 's/192.168.1.1/192.168.1.2/g' package/base-files/files/bin/config_generate
 sed -i "s/OpenWrt /Wing build $(TZ=UTC-8 date "+%Y.%m.%d") @ OpenWrt /g" package/lean/default-settings/files/zzz-default-settings

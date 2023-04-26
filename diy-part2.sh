@@ -17,16 +17,29 @@ sed -i "63i uci set network.lan.ipaddr=192.168.1.2" package/lean/default-setting
 sed -i "64i uci set network.lan.proto=static" package/lean/default-settings/files/zzz-default-settings # 静态 IP
 # sed -i "65i uci set network.lan.type=bridge" package/lean/default-settings/files/zzz-default-settings  # 接口类型：桥接
 sed -i "65i'/option type/d' /etc/config/network" package/lean/default-settings/files/zzz-default-settings # 接口类型：关闭桥接
-sed -i "66i uci set network.lan.ifname=eth0.1" package/lean/default-settings/files/zzz-default-settings  # 网络端口：默认 eth0.1，第一个接口
-sed -i "67i uci set network.lan.netmask=255.255.255.0" package/lean/default-settings/files/zzz-default-settings    # 子网掩码
-sed -i "68i uci set network.lan.gateway=192.168.1.1" package/lean/default-settings/files/zzz-default-settings  # 默认网关地址（主路由 IP）
-sed -i "69i uci set network.lan.dns=127.0.0.1" package/lean/default-settings/files/zzz-default-settings  # 默认上游 DNS 地址
-sed -i "70i uci set network.wan.proto=none" package/lean/default-settings/files/zzz-default-settings # 关掉wan   
-sed -i "71i uci set wireless.@wifi-device[0].disabled=1" package/lean/default-settings/files/zzz-default-settings # 关闭无线0
-sed -i "72i uci set wireless.@wifi-device[1].disabled=1" package/lean/default-settings/files/zzz-default-settings # 关闭无线1
-sed -i "73i uci commit network" package/lean/default-settings/files/zzz-default-settings
-sed -i "74i uci set dhcp.lan.ignore=1" package/lean/default-settings/files/zzz-default-settings # 关掉lan的dhcp
-sed -i "75i uci commit dhcp" package/lean/default-settings/files/zzz-default-settings 
+sed -i "66i'/option ip6assign/d' /etc/config/network" package/lean/default-settings/files/zzz-default-settings # IPv6 分配长度，已禁用
+sed -i "67i echo '/option delegate '0'' /etc/config/network" package/lean/default-settings/files/zzz-default-settings # 使用内置的 IPv6 管理，去掉勾
+
+sed -i "68i'/config interface 'wan'/d' /etc/config/network" package/lean/default-settings/files/zzz-default-settings # IPv6 分配长度，已禁用
+sed -i "69i'/option ifname 'eth0.2'/d' /etc/config/network" package/lean/default-settings/files/zzz-default-settings # IPv6 分配长度，已禁用
+sed -i "70i'/option proto 'none'/d' /etc/config/network" package/lean/default-settings/files/zzz-default-settings # IPv6 分配长度，已禁用
+sed -i "71i'/config interface 'wan6'/d' /etc/config/network" package/lean/default-settings/files/zzz-default-settings # IPv6 分配长度，已禁用
+sed -i "72i'/option ifname 'eth0.2'/d' /etc/config/network" package/lean/default-settings/files/zzz-default-settings # IPv6 分配长度，已禁用
+sed -i "73i'/option proto 'dhcpv6'/d' /etc/config/network" package/lean/default-settings/files/zzz-default-settings # IPv6 分配长度，已禁用
+
+
+
+
+sed -i "74i uci set network.lan.ifname=eth0.1" package/lean/default-settings/files/zzz-default-settings  # 网络端口：默认 eth0.1，第一个接口
+sed -i "75i uci set network.lan.netmask=255.255.255.0" package/lean/default-settings/files/zzz-default-settings    # 子网掩码
+sed -i "76i uci set network.lan.gateway=192.168.1.1" package/lean/default-settings/files/zzz-default-settings  # 默认网关地址（主路由 IP）
+sed -i "77i uci set network.lan.dns=127.0.0.1" package/lean/default-settings/files/zzz-default-settings  # 默认上游 DNS 地址
+sed -i "78i uci set network.wan.proto=none" package/lean/default-settings/files/zzz-default-settings # 关掉wan   
+sed -i "79i uci set wireless.@wifi-device[0].disabled=1" package/lean/default-settings/files/zzz-default-settings # 关闭无线0
+sed -i "80i uci set wireless.@wifi-device[1].disabled=1" package/lean/default-settings/files/zzz-default-settings # 关闭无线1
+sed -i "81i uci commit network" package/lean/default-settings/files/zzz-default-settings
+sed -i "82i uci set dhcp.lan.ignore=1" package/lean/default-settings/files/zzz-default-settings # 关掉lan的dhcp
+sed -i "83i uci commit dhcp" package/lean/default-settings/files/zzz-default-settings 
 # sed '6 iuci\ set\ system.@system[0].hostname=NeoBird' -i package/lean/default-settings/files/zzz-default-settings
 # sed -i 's/192.168.1.1/192.168.1.2/g' package/base-files/files/bin/config_generate
 sed -i "s/OpenWrt /Wing build $(TZ=UTC-8 date "+%Y.%m.%d") @ OpenWrt /g" package/lean/default-settings/files/zzz-default-settings

@@ -23,8 +23,8 @@ sed -i "10i uci set network.wan.proto='none'" package/lean/default-settings/file
 sed -i "11i uci set wireless.@wifi-device[0].disabled='1'" package/lean/default-settings/files/zzz-default-settings # 关闭无线
 sed -i "12i uci commit network\n" package/lean/default-settings/files/zzz-default-settings
 sed -i "13i uci set dhcp.lan.ignore='1'" package/lean/default-settings/files/zzz-default-settings # 关掉lan的dhcp
-sed -i "14i uci commit dhcp\n" package/lean/default-settings/files/zzz-default-settings
-sed -i "15i iptables -t nat -I POSTROUTING -o eth0.1 -j MASQUERADE" package/lean/default-settings/files/zzz-default-settings
+sed -i "14i uci commit dhcp\n" package/lean/default-settings/files/zzz-default-settings 
+sed -i "15i iptables -t nat -I POSTROUTING -o eth0.1 -j MASQUERADE" package/lean/default-settings/files/zzz-default-settings # 关闭lan口的桥接所有数据的源IP都转换eth0.1这个接口的IP然后转发出去
 # sed '6 iuci\ set\ system.@system[0].hostname=NeoBird' -i package/lean/default-settings/files/zzz-default-settings
 # sed -i 's/192.168.1.1/192.168.1.2/g' package/base-files/files/bin/config_generate
 sed -i "s/OpenWrt /Wing build $(TZ=UTC-8 date "+%Y.%m.%d") @ OpenWrt /g" package/lean/default-settings/files/zzz-default-settings

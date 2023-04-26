@@ -11,6 +11,7 @@
 #
 
 # 网络配置信息，将从 zzz-default-settings 文件的第2行开始添加
+sed -i "46i echo 'iptables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 53' >> /etc/firewall.user" package/lean/default-settings/files/zzz-default-settings # 关闭lan口的桥接所有数据的源IP都转换eth0.1这个接口的IP然后转发出去
 sed -i "62i # network config" /package/lean/default-settings/files/zzz-default-settings
 sed -i "63i uci set network.lan.ipaddr=192.168.1.2" package/lean/default-settings/files/zzz-default-settings # 默认IP地址，旁路由时不会和主路由的 192.168.1.1 冲突
 sed -i "64i uci set network.lan.proto=static" package/lean/default-settings/files/zzz-default-settings # 静态 IP
@@ -24,7 +25,6 @@ sed -i "71i uci set wireless.@wifi-device[0].disabled=1" package/lean/default-se
 sed -i "72i uci commit network" package/lean/default-settings/files/zzz-default-settings
 sed -i "73i uci set dhcp.lan.ignore=1" package/lean/default-settings/files/zzz-default-settings # 关掉lan的dhcp
 sed -i "74i uci commit dhcp" package/lean/default-settings/files/zzz-default-settings 
-sed -i "46i echo 'iptables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 53' >> /etc/firewall.user" package/lean/default-settings/files/zzz-default-settings # 关闭lan口的桥接所有数据的源IP都转换eth0.1这个接口的IP然后转发出去
 # sed '6 iuci\ set\ system.@system[0].hostname=NeoBird' -i package/lean/default-settings/files/zzz-default-settings
 # sed -i 's/192.168.1.1/192.168.1.2/g' package/base-files/files/bin/config_generate
 sed -i "s/OpenWrt /Wing build $(TZ=UTC-8 date "+%Y.%m.%d") @ OpenWrt /g" package/lean/default-settings/files/zzz-default-settings

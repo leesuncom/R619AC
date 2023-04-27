@@ -22,5 +22,5 @@ rm -rf feeds/packages/net/smartdns && svn export https://github.com/kenzok8/open
 # rm -rf feeds/packages/net/smartdns && svn export https://github.com/leesuncom/smartdns.git package/lean/smartdns
 # Add app
 git clone -b lede https://github.com/pymumu/luci-app-smartdns package/lean/luci-app-smartdns
-svn export https://github.com/kenzok8/openwrt-packages/trunk/luci-app-passwall package/lean/luci-app-passwall
+# svn export https://github.com/kenzok8/openwrt-packages/trunk/luci-app-passwall package/lean/luci-app-passwall
 # svn export https://github.com/kenzok8/openwrt-packages/trunk/luci-app-adguardhome package/lean/luci-app-adguardhome

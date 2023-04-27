@@ -20,11 +20,11 @@ sed -i "64i uci set network.lan.proto=static" package/lean/default-settings/file
 sed -i "65i sed -i '/option type/d' /etc/config/network" package/lean/default-settings/files/zzz-default-settings # 接口类型：关闭桥接
 sed -i "66i sed -i '/option ip6assign/d' /etc/config/network" package/lean/default-settings/files/zzz-default-settings # IPv6 分配长度60，已禁用  OK
 sed -i "67i sed -i '/config interface lan/a\option delegate 0' /etc/config/network" package/lean/default-settings/files/zzz-default-settings # 使用内置的 IPv6 管理，去掉勾，下一行插入
-sed -i "68i sed -i '/config interface wan/d' /etc/config/network" package/lean/default-settings/files/zzz-default-settings # IPv6 分配长度，已禁用
-sed -i "69i sed -i '/option ifname eth0.2/d' /etc/config/network" package/lean/default-settings/files/zzz-default-settings # IPv6 分配长度，已禁用
+sed -i "68i sed -i '/config interface wan/d' /etc/config/network" package/lean/default-settings/files/zzz-default-settings # 删除wan端口 
+sed -i "69i sed -i '/option ifname eth0.2/d' /etc/config/network" package/lean/default-settings/files/zzz-default-settings # 删除wan端口 
 sed -i "70i sed -i '/option proto none/d' /etc/config/network" package/lean/default-settings/files/zzz-default-settings # IPv6 分配长度，已禁用
-sed -i "71i sed -i '/config interface wan6/d' /etc/config/network" package/lean/default-settings/files/zzz-default-settings # IPv6 分配长度，已禁用
-sed -i "72i sed -i '/option ifname eth0.2/d' /etc/config/network" package/lean/default-settings/files/zzz-default-settings # IPv6 分配长度，已禁用
+sed -i "71i sed -i '/config interface wan6/d' /etc/config/network" package/lean/default-settings/files/zzz-default-settings # 删除wan6端口 
+# sed -i "72i sed -i '/option ifname eth0.2/d' /etc/config/network" package/lean/default-settings/files/zzz-default-settings # 删除wan6端口
 sed -i "73i sed -i '/option proto dhcpv6/d' /etc/config/network" package/lean/default-settings/files/zzz-default-settings # IPv6 分配长度，已禁用
 sed -i "74i uci set network.lan.ifname=eth0.1" package/lean/default-settings/files/zzz-default-settings  # 网络端口：默认 eth0.1，第一个接口  OK
 sed -i "75i uci set network.lan.netmask=255.255.255.0" package/lean/default-settings/files/zzz-default-settings    # 子网掩码  OK

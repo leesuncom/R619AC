@@ -40,6 +40,8 @@ sed -i "80i uci set wireless.@wifi-device[1].disabled=1" package/lean/default-se
 sed -i "81i uci commit network" package/lean/default-settings/files/zzz-default-settings
 
 sed -i "82i sed '/option ra_management '1'/d' /etc/config/dhcp" package/lean/default-settings/files/zzz-default-settings # IPv6 分配长度，已禁用
+sed -i "82i sed '/option dhcpv6 'server'/d' /etc/config/dhcp" package/lean/default-settings/files/zzz-default-settings
+sed -i "82i sed '/option ra 'server'/d' /etc/config/dhcp" package/lean/default-settings/files/zzz-default-settings
 sed -i "83i uci set dhcp.lan.ignore=1" package/lean/default-settings/files/zzz-default-settings # 关掉lan的dhcp
 sed -i "84i uci commit dhcp" package/lean/default-settings/files/zzz-default-settings
 

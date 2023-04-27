@@ -44,7 +44,7 @@ sed -i "85i sed -i '165,170d' /etc/config/firewall" package/lean/default-setting
 sed -i "86i sed -i '18,134d' /etc/config/firewall" package/lean/default-settings/files/zzz-default-settings
 sed -i "87i sed -i '/option syn_flood '1'/d' /etc/config/firewall" package/lean/default-settings/files/zzz-default-settings
 sed -i "88i sed -i '/option forward 'ACCEPT'/a\option masq '1'' /etc/config/firewall" package/lean/default-settings/files/zzz-default-settings
-# sed '6 iuci\ set\ system.@system[0].hostname=NeoBird' -i package/lean/default-settings/files/zzz-default-settings
+sed '6 iuci\ set\ system.@system[0].hostname=NeoBird' -i package/lean/default-settings/files/zzz-default-settings
 # sed -i 's/192.168.1.1/192.168.1.2/g' package/base-files/files/bin/config_generate
 sed -i "s/OpenWrt /Wing build $(TZ=UTC-8 date "+%Y.%m.%d") @ OpenWrt /g" package/lean/default-settings/files/zzz-default-settings
 # sed -i "/firewall\.user/d" package/lean/default-settings/files/zzz-default-settings

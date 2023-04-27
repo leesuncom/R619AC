@@ -15,21 +15,16 @@ sed -i "46i echo 'iptables -t nat -I POSTROUTING -o eth0.1 -j MASQUERADE' >> /et
 sed -i "62i # network config" package/lean/default-settings/files/zzz-default-settings
 sed -i "63i uci set network.lan.ipaddr=192.168.1.2" package/lean/default-settings/files/zzz-default-settings # 默认IP地址，旁路由时不会和主路由的 192.168.1.1 冲突
 sed -i "64i uci set network.lan.proto=static" package/lean/default-settings/files/zzz-default-settings # 静态 IP
-# sed -i "65i uci set network.lan.type=bridge" package/lean/default-settings/files/zzz-default-settings  # 接口类型：桥接
+
 sed -i "65i sed '/option type/d' /etc/config/network" package/lean/default-settings/files/zzz-default-settings # 接口类型：关闭桥接
 sed -i "66i sed '/option ip6assign/d' /etc/config/network" package/lean/default-settings/files/zzz-default-settings # IPv6 分配长度，已禁用
 sed -i "67i sed '/config interface 'lan'/a\option delegate '0'' /etc/config/network" package/lean/default-settings/files/zzz-default-settings # 使用内置的 IPv6 管理，去掉勾
-
 sed -i "68i sed '/config interface 'wan'/d' /etc/config/network" package/lean/default-settings/files/zzz-default-settings # IPv6 分配长度，已禁用
 sed -i "69i sed '/option ifname 'eth0.2'/d' /etc/config/network" package/lean/default-settings/files/zzz-default-settings # IPv6 分配长度，已禁用
 sed -i "70i sed '/option proto 'none'/d' /etc/config/network" package/lean/default-settings/files/zzz-default-settings # IPv6 分配长度，已禁用
 sed -i "71i sed '/config interface 'wan6'/d' /etc/config/network" package/lean/default-settings/files/zzz-default-settings # IPv6 分配长度，已禁用
 sed -i "72i sed '/option ifname 'eth0.2'/d' /etc/config/network" package/lean/default-settings/files/zzz-default-settings # IPv6 分配长度，已禁用
 sed -i "73i sed '/option proto 'dhcpv6'/d' /etc/config/network" package/lean/default-settings/files/zzz-default-settings # IPv6 分配长度，已禁用
-
-
-
-
 sed -i "74i uci set network.lan.ifname=eth0.1" package/lean/default-settings/files/zzz-default-settings  # 网络端口：默认 eth0.1，第一个接口
 sed -i "75i uci set network.lan.netmask=255.255.255.0" package/lean/default-settings/files/zzz-default-settings    # 子网掩码
 sed -i "76i uci set network.lan.gateway=192.168.1.1" package/lean/default-settings/files/zzz-default-settings  # 默认网关地址（主路由 IP）

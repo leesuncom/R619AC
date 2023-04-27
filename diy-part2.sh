@@ -18,7 +18,7 @@ sed -i "64i uci set network.lan.proto=static" package/lean/default-settings/file
 
 sed -i "65i sed -i '/option type 'bridge'/d'" package/lean/default-settings/files/zzz-default-settings # 接口类型：关闭桥接
 sed -i "66i sed -i '/option ip6assign/d' /etc/config/network" package/lean/default-settings/files/zzz-default-settings # IPv6 分配长度，已禁用
-sed -i "67i sed -i '/config interface 'lan'/a\option delegate '0'' /etc/config/network" package/lean/default-settings/files/zzz-default-settings # 使用内置的 IPv6 管理，去掉勾
+sed -i "67i sed -i '/config interface 'lan'/a\option delegate '0'' /etc/config/network" package/lean/default-settings/files/zzz-default-settings # 使用内置的 IPv6 管理，去掉勾，下一行插入
 sed -i "68i sed -i '/config interface 'wan'/d' /etc/config/network" package/lean/default-settings/files/zzz-default-settings # IPv6 分配长度，已禁用
 sed -i "69i sed -i '/option ifname 'eth0.2'/d' /etc/config/network" package/lean/default-settings/files/zzz-default-settings # IPv6 分配长度，已禁用
 sed -i "70i sed -i '/option proto 'none'/d' /etc/config/network" package/lean/default-settings/files/zzz-default-settings # IPv6 分配长度，已禁用
@@ -40,6 +40,10 @@ sed -i "82i sed -i '/option ra 'server'/d' /etc/config/dhcp" package/lean/defaul
 sed -i "83i uci set dhcp.lan.ignore=1" package/lean/default-settings/files/zzz-default-settings # 关掉lan的dhcp
 sed -i "84i uci commit dhcp" package/lean/default-settings/files/zzz-default-settings
 
+sed -i "85i sed -i '165,170d' /etc/config/firewall" package/lean/default-settings/files/zzz-default-settings
+sed -i "86i sed -i '18,134d' /etc/config/firewall" package/lean/default-settings/files/zzz-default-settings
+sed -i "87i sed -i '/option syn_flood '1'/d' /etc/config/firewall" package/lean/default-settings/files/zzz-default-settings
+sed -i "88i sed -i '/option forward 'ACCEPT'/a\option masq '1'' /etc/config/firewall" package/lean/default-settings/files/zzz-default-settings
 # sed '6 iuci\ set\ system.@system[0].hostname=NeoBird' -i package/lean/default-settings/files/zzz-default-settings
 # sed -i 's/192.168.1.1/192.168.1.2/g' package/base-files/files/bin/config_generate
 sed -i "s/OpenWrt /Wing build $(TZ=UTC-8 date "+%Y.%m.%d") @ OpenWrt /g" package/lean/default-settings/files/zzz-default-settings

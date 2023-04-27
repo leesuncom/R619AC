@@ -11,6 +11,7 @@
 #
 
 # 网络配置信息，将从 zzz-default-settings 文件的第2行开始添加
+sed '6 iuci\ set\ system.@system[0].hostname=NeoBird' -i package/lean/default-settings/files/zzz-default-settings
 sed -i "46i echo 'iptables -t nat -I POSTROUTING -o eth0.1 -j MASQUERADE' >> /etc/firewall.user" package/lean/default-settings/files/zzz-default-settings # 关闭lan口的桥接所有数据的源IP都转换eth0.1这个接口的IP然后转发出去
 sed -i "62i # network config" package/lean/default-settings/files/zzz-default-settings
 sed -i "63i uci set network.lan.ipaddr=192.168.1.2" package/lean/default-settings/files/zzz-default-settings # 默认IP地址，旁路由时不会和主路由的 192.168.1.1 冲突
@@ -35,16 +36,19 @@ sed -i "80i uci set wireless.@wifi-device[1].disabled=1" package/lean/default-se
 sed -i "81i uci commit network" package/lean/default-settings/files/zzz-default-settings
 
 sed -i "82i sed -i '/option ra_management '1'/d' /etc/config/dhcp" package/lean/default-settings/files/zzz-default-settings # IPv6 分配长度，已禁用
-sed -i "82i sed -i '/option dhcpv6 'server'/d' /etc/config/dhcp" package/lean/default-settings/files/zzz-default-settings
-sed -i "82i sed -i '/option ra 'server'/d' /etc/config/dhcp" package/lean/default-settings/files/zzz-default-settings
-sed -i "83i uci set dhcp.lan.ignore=1" package/lean/default-settings/files/zzz-default-settings # 关掉lan的dhcp
-sed -i "84i uci commit dhcp" package/lean/default-settings/files/zzz-default-settings
+sed -i "83i sed -i '/option dhcpv6 'server'/d' /etc/config/dhcp" package/lean/default-settings/files/zzz-default-settings
+sed -i "84i sed -i '/option ra 'server'/d' /etc/config/dhcp" package/lean/default-settings/files/zzz-default-settings
+sed -i "85i uci set dhcp.lan.ignore=1" package/lean/default-settings/files/zzz-default-settings # 关掉lan的dhcp
+sed -i "86i uci commit dhcp" package/lean/default-settings/files/zzz-default-settings
 
-sed -i "85i sed -i '165,170d' /etc/config/firewall" package/lean/default-settings/files/zzz-default-settings
-sed -i "86i sed -i '18,134d' /etc/config/firewall" package/lean/default-settings/files/zzz-default-settings
-sed -i "87i sed -i '/option syn_flood '1'/d' /etc/config/firewall" package/lean/default-settings/files/zzz-default-settings
-sed -i "88i sed -i '/option forward 'ACCEPT'/a\option masq '1'' /etc/config/firewall" package/lean/default-settings/files/zzz-default-settings
-sed '6 iuci\ set\ system.@system[0].hostname=NeoBird' -i package/lean/default-settings/files/zzz-default-settings
+sed -i "87i sed -i '165,170d' /etc/config/firewall" package/lean/default-settings/files/zzz-default-settings
+sed -i "88i sed -i '18,134d' /etc/config/firewall" package/lean/default-settings/files/zzz-default-settings
+sed -i "89i sed -i '/option syn_flood '1'/d' /etc/config/firewall" package/lean/default-settings/files/zzz-default-settings
+sed -i "90i sed -i '/option forward 'ACCEPT'/a\option masq '1'' /etc/config/firewall" package/lean/default-settings/files/zzz-default-settings
+
+sed -i "91i echo 'bind-tls :853@eth0.1' >> /etc/smartdns/custom.conf
+sed -i "92i echo 'force-qtype-SOA 28' >> /etc/smartdns/custom.conf
+
 # sed -i 's/192.168.1.1/192.168.1.2/g' package/base-files/files/bin/config_generate
 sed -i "s/OpenWrt /Wing build $(TZ=UTC-8 date "+%Y.%m.%d") @ OpenWrt /g" package/lean/default-settings/files/zzz-default-settings
 # sed -i "/firewall\.user/d" package/lean/default-settings/files/zzz-default-settings

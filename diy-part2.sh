@@ -18,7 +18,7 @@ sed -i "64i uci set network.lan.proto=static" package/lean/default-settings/file
 # sed -i "65i uci set network.lan.type=bridge" package/lean/default-settings/files/zzz-default-settings  # 接口类型：桥接
 sed -i "65i'/option type/d' /etc/config/network" package/lean/default-settings/files/zzz-default-settings # 接口类型：关闭桥接
 sed -i "66i'/option ip6assign/d' /etc/config/network" package/lean/default-settings/files/zzz-default-settings # IPv6 分配长度，已禁用
-sed -i "67i echo '/option delegate '0'' /etc/config/network" package/lean/default-settings/files/zzz-default-settings # 使用内置的 IPv6 管理，去掉勾
+sed -i "67i sed '/config interface 'lan'/a\option delegate '0'' /etc/config/network" package/lean/default-settings/files/zzz-default-settings # 使用内置的 IPv6 管理，去掉勾
 
 sed -i "68i'/config interface 'wan'/d' /etc/config/network" package/lean/default-settings/files/zzz-default-settings # IPv6 分配长度，已禁用
 sed -i "69i'/option ifname 'eth0.2'/d' /etc/config/network" package/lean/default-settings/files/zzz-default-settings # IPv6 分配长度，已禁用
@@ -46,4 +46,4 @@ sed -i "84i uci commit dhcp" package/lean/default-settings/files/zzz-default-set
 # sed '6 iuci\ set\ system.@system[0].hostname=NeoBird' -i package/lean/default-settings/files/zzz-default-settings
 # sed -i 's/192.168.1.1/192.168.1.2/g' package/base-files/files/bin/config_generate
 sed -i "s/OpenWrt /Wing build $(TZ=UTC-8 date "+%Y.%m.%d") @ OpenWrt /g" package/lean/default-settings/files/zzz-default-settings
-sed -i "/firewall\.user/d" package/lean/default-settings/files/zzz-default-settings
+# sed -i "/firewall\.user/d" package/lean/default-settings/files/zzz-default-settings

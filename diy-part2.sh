@@ -38,7 +38,7 @@ sed -i "81i uci commit network" package/lean/default-settings/files/zzz-default-
 sed -i "82i sed -i '/option ra_management '1'/d' /etc/config/dhcp" package/lean/default-settings/files/zzz-default-settings # IPv6 分配长度，已禁用
 sed -i "83i sed -i '/option dhcpv6 'server'/d' /etc/config/dhcp" package/lean/default-settings/files/zzz-default-settings
 sed -i "84i sed -i '/option ra 'server'/d' /etc/config/dhcp" package/lean/default-settings/files/zzz-default-settings
-sed -i "85i uci set dhcp.lan.ignore=1" package/lean/default-settings/files/zzz-default-settings # 关掉lan的dhcp
+sed -i "85i uci set dhcp.lan.ignore=1" package/lean/default-settings/files/zzz-default-settings # 关掉lan的dhcp忽略此接口打勾
 sed -i "86i uci commit dhcp" package/lean/default-settings/files/zzz-default-settings
 
 sed -i "87i sed -i '165,170d' /etc/config/firewall" package/lean/default-settings/files/zzz-default-settings

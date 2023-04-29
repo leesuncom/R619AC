@@ -15,7 +15,7 @@ sed -i '$a src-git helloworld https://github.com/fw876/helloworld.git' feeds.con
 
 # Add app
 ls
-cd openwrt/package
+cd package
 mkdir openwrt-packages
 cd openwrt-packages
 git clone -b lede https://github.com/pymumu/luci-app-smartdns

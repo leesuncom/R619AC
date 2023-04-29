@@ -30,7 +30,7 @@ sed -i "30i uci commit dhcp" package/lean/default-settings/files/zzz-default-set
 #sed -i "31i sed -i '165,170d' /etc/config/firewall" package/lean/default-settings/files/zzz-default-settings
 #sed -i "32i sed -i '18,134d' /etc/config/firewall" package/lean/default-settings/files/zzz-default-settings
 sed -i "33i sed -i '/option syn_flood/d' /etc/config/firewall" package/lean/default-settings/files/zzz-default-settings
-sed -i "34i sed -i '/config zone/a\        option masq 1' /etc/config/firewall" package/lean/default-settings/files/zzz-default-settings
+sed -i "34i sed -i '13i option masq 1' /etc/config/firewall" package/lean/default-settings/files/zzz-default-settings
 sed -i "35i uci commit firewall" package/lean/default-settings/files/zzz-default-settings
 
 sed -i "36i uci set wireless.@wifi-device[0].disabled=1" package/lean/default-settings/files/zzz-default-settings

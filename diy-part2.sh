@@ -16,7 +16,7 @@ sed -i "18i uci set network.lan.ifname=eth0.1" package/lean/default-settings/fil
 sed -i "19i uci set network.lan.netmask=255.255.255.0" package/lean/default-settings/files/zzz-default-settings
 sed -i "20i uci set network.lan.gateway=192.168.1.1" package/lean/default-settings/files/zzz-default-settings
 sed -i "21i uci set network.lan.dns=127.0.0.1" package/lean/default-settings/files/zzz-default-settings
-sed -i "22i sed -i "/'dns'/a\option delegate '0'" /etc/config/network" package/lean/default-settings/files/zzz-default-settings
+sed -i "22i sed -i '/dns/a\option delegate 0' /etc/config/network" package/lean/default-settings/files/zzz-default-settings
 sed -i "23i sed -i '/option ip6assign/d' /etc/config/network" package/lean/default-settings/files/zzz-default-settings
 sed -i "24i sed -i '/option proto dhcpv6/d' /etc/config/network" package/lean/default-settings/files/zzz-default-settings
 sed -i "25i uci commit network" package/lean/default-settings/files/zzz-default-settings

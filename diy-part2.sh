@@ -26,7 +26,7 @@ sed -i "27i uci commit dhcp" package/lean/default-settings/files/zzz-default-set
 sed -i "28i uci set wireless.@wifi-device[0].disabled=1" package/lean/default-settings/files/zzz-default-settings
 sed -i "29i uci set wireless.@wifi-device[1].disabled=1" package/lean/default-settings/files/zzz-default-settings
 
-sed -i "30i chmod 777 /etc/smartdns/up.sh" package/lean/default-settings/files/zzz-default-settings
+sed -i "30i chmod 755 /etc/smartdns/up.sh" package/lean/default-settings/files/zzz-default-settings
 
 sed '10 iuci\ set\ system.@system[0].hostname=NeoBird' -i package/lean/default-settings/files/zzz-default-settings
 sed -i 's/192.168.1.1/192.168.1.2/g' package/base-files/files/bin/config_generate

@@ -18,20 +18,18 @@ sed -i '6i uci set system.@system[0].hostname=NeoBird' package/lean/default-sett
 sed -i "42i echo 'iptables -t nat -I POSTROUTING -o eth0.1 -j MASQUERADE' >> /etc/firewall.user" package/lean/default-settings/files/zzz-default-settings
 sed -i 's/192.168.1.1/192.168.1.2/g' package/base-files/files/bin/config_generate
 sed -i "64i chmod 755 /etc/smartdns/up.sh" package/lean/default-settings/files/zzz-default-settings
-sed -i "65i" package/lean/default-settings/files/zzz-default-settings
-sed -i "66i sed -i '/option type/d' /etc/config/network" package/lean/default-settings/files/zzz-default-settings
-sed -i "67i uci set network.lan.ifname=eth0.1" package/lean/default-settings/files/zzz-default-settings
-sed -i "68i sed -i '/option ip6assign/d' /etc/config/network" package/lean/default-settings/files/zzz-default-settings
-sed -i "69i uci set network.lan.gateway=192.168.1.1" package/lean/default-settings/files/zzz-default-settings
-sed -i "70i uci set network.lan.dns=127.0.0.1" package/lean/default-settings/files/zzz-default-settings
-sed -i "71i uci set network.lan.delegate=0" package/lean/default-settings/files/zzz-default-settings
-sed -i "72i uci commit network" package/lean/default-settings/files/zzz-default-settings
-sed -i "73i" package/lean/default-settings/files/zzz-default-settings
-sed -i "74i sed -i '/option ra_management/d' /etc/config/dhcp" package/lean/default-settings/files/zzz-default-settings
-sed -i "75i sed -i '/option dhcpv6/d' /etc/config/dhcp" package/lean/default-settings/files/zzz-default-settings
-sed -i "76i sed -i '/option ra/d' /etc/config/dhcp" package/lean/default-settings/files/zzz-default-settings
-sed -i "77i uci set dhcp.lan.ignore=1" package/lean/default-settings/files/zzz-default-settings
-sed -i "78i uci commit dhcp" package/lean/default-settings/files/zzz-default-settings
-sed -i "79i" package/lean/default-settings/files/zzz-default-settings
-sed -i "80i uci set wireless.@wifi-device[0].disabled=1" package/lean/default-settings/files/zzz-default-settings
-sed -i "81i uci set wireless.@wifi-device[1].disabled=1" package/lean/default-settings/files/zzz-default-settings
+sed -i "65i sed -i '/option type/d' /etc/config/network" package/lean/default-settings/files/zzz-default-settings
+sed -i "66i uci set network.lan.ifname=eth0.1" package/lean/default-settings/files/zzz-default-settings
+sed -i "67i sed -i '/option ip6assign/d' /etc/config/network" package/lean/default-settings/files/zzz-default-settings
+sed -i "68i uci set network.lan.gateway=192.168.1.1" package/lean/default-settings/files/zzz-default-settings
+sed -i "69i uci set network.lan.dns=127.0.0.1" package/lean/default-settings/files/zzz-default-settings
+sed -i "70i uci set network.lan.delegate=0" package/lean/default-settings/files/zzz-default-settings
+sed -i "71i uci commit network" package/lean/default-settings/files/zzz-default-settings
+sed -i "72i sed -i '/option ra_management/d' /etc/config/dhcp" package/lean/default-settings/files/zzz-default-settings
+sed -i "73i sed -i '/option dhcpv6/d' /etc/config/dhcp" package/lean/default-settings/files/zzz-default-settings
+sed -i "74i sed -i '/option ra/d' /etc/config/dhcp" package/lean/default-settings/files/zzz-default-settings
+sed -i "75i uci set dhcp.lan.ignore=1" package/lean/default-settings/files/zzz-default-settings
+sed -i "76i sed -i 's/8192/0/g' /etc/config/dhcp" package/lean/default-settings/files/zzz-default-settings
+sed -i "77i uci commit dhcp" package/lean/default-settings/files/zzz-default-settings
+sed -i "78i uci set wireless.@wifi-device[0].disabled=1" package/lean/default-settings/files/zzz-default-settings
+sed -i "79i uci set wireless.@wifi-device[1].disabled=1" package/lean/default-settings/files/zzz-default-settings

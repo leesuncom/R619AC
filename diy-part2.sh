@@ -17,7 +17,7 @@ sed -i '6i uci set system.@system[0].hostname=NeoBird' package/lean/default-sett
 # sed -i "/firewall\.user/d" package/lean/default-settings/files/zzz-default-settings
 sed -i "42i echo 'iptables -t nat -I POSTROUTING -o eth0.1 -j MASQUERADE' >> /etc/firewall.user" package/lean/default-settings/files/zzz-default-settings
 sed -i 's/192.168.1.1/192.168.1.2/g' package/base-files/files/bin/config_generate
-sed -i "64i chmod 0755 /etc/smartdns/up.sh" package/lean/default-settings/files/zzz-default-settings
+# sed -i "64i chmod 0755 /etc/smartdns/up.sh" package/lean/default-settings/files/zzz-default-settings
 sed -i "65i sed -i '/option type/d' /etc/config/network" package/lean/default-settings/files/zzz-default-settings
 sed -i "66i uci set network.lan.ifname=eth0.1" package/lean/default-settings/files/zzz-default-settings
 sed -i "67i sed -i '/option ip6assign/d' /etc/config/network" package/lean/default-settings/files/zzz-default-settings

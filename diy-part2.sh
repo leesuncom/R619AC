@@ -30,7 +30,7 @@ sed -i 's@.*CYXluq4wUazHjmCDBCqXF*@#&@g' ./package/lean/default-settings/files/z
         # sed -i "67i sed -i '/option ip6assign/d' /etc/config/network" package/lean/default-settings/files/zzz-default-settings
         # sed -i "68i uci set network.lan.gateway=192.168.1.1" package/lean/default-settings/files/zzz-default-settings
         # sed -i "69i uci set network.lan.dns=127.0.0.1" package/lean/default-settings/files/zzz-default-settings
-        # sed -i "70i uci set network.lan.delegate=0" package/lean/default-settings/files/zzz-default-settings
+        # sed -i "70i sed -i '/255.255.255.0/a\option delegate 0' /etc/config/network" package/lean/default-settings/files/zzz-default-settings
         # sed -i "71i uci commit network" package/lean/default-settings/files/zzz-default-settings
         # sed -i "72i sed -i '/option ra_management/d' /etc/config/dhcp" package/lean/default-settings/files/zzz-default-settings
         # sed -i "73i sed -i '/option dhcpv6/d' /etc/config/dhcp" package/lean/default-settings/files/zzz-default-settings

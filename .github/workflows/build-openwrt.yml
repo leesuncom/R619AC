@@ -12,9 +12,13 @@ name: Build R619AC-5.10
 on:
   repository_dispatch:
   workflow_dispatch:
-  #schedule:
-  schedule:
-   - cron: 10 */12 * * *
+    inputs:
+      ssh:
+        description: 'Debugging with tmate'
+        required: false
+        default: 'false'
+  watch:
+    types: [started]
 
 env:
   REPO_URL: https://github.com/coolsnowwolf/lede

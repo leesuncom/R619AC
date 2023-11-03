@@ -17,5 +17,5 @@
 # sed -i "s/OpenWrt/$wifi_name/g" package/kernel/mac80211/files/lib/wifi/mac80211.sh
 
 # 设置密码为空（安装固件时无需密码登陆，然后自己修改想要的密码）
-sed -i 's@.*CYXluq4wUazHjmCDBCqXF*@#&@g' ./package/lean/default-settings/files/zzz-default-settings
+# sed -i 's@.*CYXluq4wUazHjmCDBCqXF*@#&@g' ./package/lean/default-settings/files/zzz-default-settings
 sed -i 's/192.168.1.1/192.168.1.2/g' package/base-files/files/bin/config_generate

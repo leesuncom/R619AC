@@ -18,7 +18,6 @@ on:
 
 env:
   REPO_URL: https://github.com/coolsnowwolf/lede
-  #REPO_URL: https://github.com/Lienol/openwrt.git
   REPO_BRANCH: master
   FEEDS_CONF: feeds.conf.default
   CONFIG_FILE: .config
@@ -32,11 +31,27 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
-
+    runs-on: ubuntu-latest
+           
     steps:
-    - name: Checkout
-      uses: actions/checkout@main
+
+    - name: 可用磁盘空间 (Ubuntu)
+      uses: jlumbroso/free-disk-space@main
+      with:
+        # this might remove tools that are actually needed,
+        # if set to "true" but frees about 6 GB
+        tool-cache: true
+        
+        # all of these default to true, but feel free to set to
+        # "false" if necessary for your workflow
+        android: true
+        dotnet: true
+        haskell: true
+        large-packages: true
+        swap-storage: true
+        
+    - name: 检测
+      uses: actions/checkout@v3.1.0
 
     - name: 检查服务器配置
       run: |

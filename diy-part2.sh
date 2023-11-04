@@ -12,6 +12,7 @@
 
 # 修改主机名字，把OpenWrt-123修改你喜欢的就行（不能纯数字或者使用中文）
 sed -i 's/OpenWrt/NeoBird/g' ./package/base-files/files/bin/config_generate
+sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' ./feeds/luci/collections/luci/Makefile
 
 # echo "修改wifi名称"
 # sed -i "s/OpenWrt/$wifi_name/g" package/kernel/mac80211/files/lib/wifi/mac80211.sh

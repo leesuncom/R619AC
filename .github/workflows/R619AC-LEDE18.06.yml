@@ -8,7 +8,7 @@
 # Description: Build OpenWrt using GitHub Actions
 #
 
-name: Build R619AC-LEDE
+name: Build R619AC-LEDE18.06
 on:
   repository_dispatch:
   workflow_dispatch:

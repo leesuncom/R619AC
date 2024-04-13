@@ -11,16 +11,8 @@
 #
 
 # Add a feed source
-sed -i '$a src-git kiddin9 https://github.com/kiddin9/openwrt-packages.git;master' feeds.conf.default
-sed -i "/telephony/d" feeds.conf.default
-
-sed -i "s?targets/%S/packages?targets/%S/\$(LINUX_VERSION)?" include/feeds.mk
-
-sed -i '/	refresh_config();/d' scripts/feeds
-
-./scripts/feeds update -a
-./scripts/feeds install -a -p kiddin9 -f
-./scripts/feeds install -a
+  sed -i '$a src-git smpackage https://github.com/kenzok8/small-package' feeds.conf.default
+  # rm -rf feeds/smpackage/{base-files,dnsmasq,firewall*,fullconenat,libnftnl,nftables,ppp,opkg,ucl,upx,vsftpd*,miniupnpd-iptables,wireless-regdb}
 
 # Add app
 # git clone -b lede https://github.com/pymumu/luci-app-smartdns package/lean/luci-app-smartdns

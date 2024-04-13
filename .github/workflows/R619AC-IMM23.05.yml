@@ -4,7 +4,7 @@
 # Author: kenzo
 #=================================================
 
-name: openwrt_23.05
+name: Build R619AC-IMM23.05
 
 on:
   repository_dispatch:

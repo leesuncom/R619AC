@@ -11,7 +11,7 @@
 #
 
 # Add a feed source
-  git clone --depth 1 $REPO_URL -b $REPO_BRANCH openwrt
+  git clone --depth 1 https://github.com/coolsnowwolf/lede -b master openwrt
   cd openwrt
   sed -i '$a src-git smpackage https://github.com/kenzok8/small-package' feeds.conf.default
   rm -rf feeds/smpackage/{base-files,dnsmasq,firewall*,fullconenat,libnftnl,nftables,ppp,opkg,ucl,upx,vsftpd*,miniupnpd-iptables,wireless-regdb}

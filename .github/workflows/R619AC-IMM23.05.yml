@@ -37,7 +37,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [ctc_23.05]
+        target: [R619AC-IMM23.05]
     
     steps:
     - name: Checkout

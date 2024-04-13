@@ -109,8 +109,8 @@ jobs:
            cd openwrt
            ./scripts/feeds update -a
            
-    - name: 安装源
-      run: cd openwrt && ./scripts/feeds install -a
+    #- name: 安装源
+    #  run: cd openwrt && ./scripts/feeds install -a
     
     - name: 加载自定义配置
       run: |

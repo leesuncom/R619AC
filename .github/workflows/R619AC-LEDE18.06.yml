@@ -107,9 +107,6 @@ jobs:
       run: |
            cd openwrt
            ./scripts/feeds update -a
-           rm -rf package/independent/lte-modem-p2w-r619ac
-           #rm -rf feeds/kiddin9/dns2tcp
-           #git clone https://github.com/Mike-qian/dns2tcp.git feeds/kiddin9/dns2tcp
            
     - name: 安装源
       run: cd openwrt && ./scripts/feeds install -a

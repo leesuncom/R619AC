@@ -13,8 +13,8 @@
 # Add a feed source
 # sed -i '$a src-git smpackage https://github.com/kenzok8/small-package' feeds.conf.default
 rm -rf feeds/smpackage/{base-files,dnsmasq,firewall*,fullconenat,libnftnl,nftables,ppp,opkg,ucl,upx,vsftpd*,miniupnpd-iptables,wireless-regdb}
-rm -rf feeds/luci/applications/luci-app-smartdns
-rm -rf feeds/packages/net/smartdns
+# rm -rf feeds/luci/applications/luci-app-smartdns
+# rm -rf feeds/packages/net/smartdns
   
 # Add app
 # git clone -b lede https://github.com/pymumu/luci-app-smartdns package/lean/luci-app-smartdns
@@ -25,5 +25,5 @@ rm -rf feeds/packages/net/smartdns
 # git clone https://github.com/sbwml/luci-app-mosdns -b v5 package/lean/luci-app-mosdns
 # rm -rf feeds/packages/net/v2ray-geodata && git clone https://github.com/sbwml/v2ray-geodata package/v2ray-geodata package/lean/v2ray-geodata
 # Add theme
-rm -rf feeds/luci/applications/luci-app-argon && git clone -b 18.06 https://github.com/jerrykuku/luci-theme-argon.git package/lean/luci-theme-argon
+rm -rf feeds/luci/themes/luci-theme-argon && git clone -b 18.06 https://github.com/jerrykuku/luci-theme-argon.git package/lean/luci-theme-argon
 rm -rf feeds/luci/applications/luci-app-argon-config && git clone https://github.com/jerrykuku/luci-app-argon-config.git package/lean/luci-app-argon-config

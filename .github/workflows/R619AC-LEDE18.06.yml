@@ -94,12 +94,15 @@ jobs:
       working-directory: /workdir
       run: |
         df -hT $PWD
+        git clone $REPO_URL openwrt
+        ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
         
+    - name: 加载自定义源
+      run: |
+        [ -e $FEEDS_CONF ] && mv $FEEDS_CONF openwrt/feeds.conf.default
+        chmod +x $DIY_P1_SH
         cd openwrt
-        
-        git clone --depth 1 $REPO_URL -b $REPO_BRANCH openwrt
-        sed -i '$a src-git smpackage https://github.com/kenzok8/small-package' feeds.conf.default
-        ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt      
+        $GITHUB_WORKSPACE/$DIY_P1_SH
         
     - name: 更新源
       run: |
@@ -110,19 +113,12 @@ jobs:
       run: cd openwrt && ./scripts/feeds install -a
     
     - name: 加载自定义配置
-      run: |     
+      run: |
+        [ -e files ] && mv files openwrt/files
+        [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
+        chmod +x $DIY_P2_SH
         cd openwrt
-        sed -i 's/^IMG_PREFIX\:\=.*/IMG_PREFIX:=$(VERSION_DIST_SANITIZED)-$(shell TZ=UTC-8 date +"%Y.%m.%d-%H%M")-$(IMG_PREFIX_VERNUM)$(IMG_PREFIX_VERCODE)$(IMG_PREFIX_EXTRA)$(BOARD)$(if $(SUBTARGET),-$(SUBTARGET))/g' include/image.mk
-        sed -i "s/R[0-9]\+\.[0-9]\+\.[0-9]\+/&("$(date +%Y-%m-%d)")/g" package/lean/default-settings/files/zzz-default-settings
-        sed -i 's/OpenWrt/NeoBird/g' ./package/base-files/files/bin/config_generate
-        sed -i 's/[b|B]ootstrap/argon/g' ./feeds/luci/collections/luci/Makefile
-        sed -i 's/192.168.1.1/192.168.1.2/g' package/base-files/files/bin/config_generate
-        rm -rf feeds/smpackage/{base-files,dnsmasq,firewall*,fullconenat,libnftnl,nftables,ppp,opkg,ucl,upx,vsftpd*,miniupnpd-iptables,wireless-regdb}
-        rm -rf feeds/luci/applications/luci-app-smartdns
-        rm -rf feeds/packages/net/smartdns
-        # Add theme
-        rm -rf feeds/luci/themes/luci-theme-argon && git clone -b 18.06 https://github.com/jerrykuku/luci-theme-argon.git package/lean/luci-theme-argon
-        rm -rf feeds/luci/applications/luci-app-argon-config && git clone https://github.com/jerrykuku/luci-app-argon-config.git package/lean/luci-app-argon-config
+        $GITHUB_WORKSPACE/$DIY_P2_SH
         
     - name: 下载软件包
       id: package

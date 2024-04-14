@@ -44,4 +44,3 @@ git clone https://github.com/rufengsuixing/luci-app-adguardhome.git ./package/le
 # mosdns
 rm -rf ./feeds/luci/applications/luci-app-mosdns/
 rm -rf ./feeds/packages/net/mosdns/
-rm -rf ./package/custom_packages/mosdns

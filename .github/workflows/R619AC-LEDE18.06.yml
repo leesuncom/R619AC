@@ -109,8 +109,8 @@ jobs:
            cd openwrt
            ./scripts/feeds update -a
            
-    #- name: 安装源
-    #  run: cd openwrt && ./scripts/feeds install -a
+    - name: 安装源
+      run: cd openwrt && ./scripts/feeds install -a
     
     - name: 加载自定义配置
       run: |
@@ -118,13 +118,6 @@ jobs:
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
         chmod +x $DIY_P2_SH
         cd openwrt
-        rm -rf feeds/packages/lang/golang
-        git clone https://github.com/kenzok8/golang feeds/packages/lang/golang
-        sed -i "s/%D %V, %C/openwrt $(date +'%m.%d') by leesun/g" package/base-files/files/etc/banner
-        sed -i 's/luci-theme-bootstrap/luci-theme-argone/g' feeds/luci/collections/luci/Makefile
-        ./scripts/feeds update -a 
-        sed -i 's#GO_PKG_TARGET_VARS.*# #g' feeds/packages/utils/v2dat/Makefile 
-        ./scripts/feeds install -a
         $GITHUB_WORKSPACE/$DIY_P2_SH
         
     - name: 下载软件包

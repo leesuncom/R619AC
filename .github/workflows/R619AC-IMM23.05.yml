@@ -1,34 +1,24 @@
-#=================================================
+#
+# Copyright (c) 2019-2020 P3TERX <https://p3terx.com>
+#
+# This is free software, licensed under the MIT License.
+# See /LICENSE for more information.
+#
+# https://github.com/P3TERX/Actions-OpenWrt
 # Description: Build OpenWrt using GitHub Actions
-# Lisence: MIT
-# Author: kenzo
-#=================================================
-#
-# Copyright (c) 2023
 #
 
-name: Build R619AC-IMM23.05
-
+name: Build R619AC-LEDE18.06
 on:
-  schedule:
-    - cron: '00 17 * * 0'
-  release:
-    types: [published]
-  push:
-    branches:
-      - master
   repository_dispatch:
   workflow_dispatch:
     inputs:
       ssh:
-        description: "SSH connection to Actions"
+        description: 'Debugging with tmate'
         required: false
-        default: "false"
-
+        default: 'false'
   watch:
-   types: started
-permissions:
-  contents: write
+    types: [started]
 env:
   REPO_URL: https://github.com/immortalwrt/immortalwrt
   REPO_BRANCH: master

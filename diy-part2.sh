@@ -40,7 +40,3 @@ git clone -b 18.06 https://github.com/jerrykuku/luci-app-argon-config.git ./pack
 
 rm -rf ./package/lean/luci-app-adguardhome
 git clone https://github.com/rufengsuixing/luci-app-adguardhome.git ./package/lean/luci-app-adguardhome
-
-# mosdns
-rm -rf ./feeds/luci/applications/luci-app-mosdns/
-rm -rf ./feeds/packages/net/mosdns/

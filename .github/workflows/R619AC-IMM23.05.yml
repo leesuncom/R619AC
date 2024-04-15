@@ -152,7 +152,7 @@ jobs:
         uses: actions/upload-artifact@main
         if: steps.organize.outputs.status == 'success' && !cancelled()
         with:
-          name: IMM-${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
+          name: IMM23.05-${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
           path: ${{ env.FIRMWARE }}
 
       - name: Generate release tag

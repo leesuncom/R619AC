@@ -31,3 +31,4 @@ sed -i 's/[b|B]ootstrap/argon/g' ./feeds/luci/collections/luci/Makefile
 # sed -i 's@.*CYXluq4wUazHjmCDBCqXF*@#&@g' ./package/lean/default-settings/files/zzz-default-settings
 sed -i 's/192.168.1.1/192.168.1.2/g' package/base-files/files/bin/config_generate
 # rm -rf feeds/kiddin9/{base-files,dnsmasq,firewall*,fullconenat,libnftnl,nftables,ppp,opkg,ucl,upx,vsftpd*,miniupnpd-iptables,wireless-regdb}
+git clone https://github.com/sbwml/luci-app-mosdns -b v5 feeds/luci/applications/luci-app-mosdns

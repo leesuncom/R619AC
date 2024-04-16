@@ -195,7 +195,7 @@ jobs:
 
         # 常用软件包:
         cat >> .config <<EOF
-        CONFIG_PACKAGE_autocore=y
+        # CONFIG_PACKAGE_autocore=y
         CONFIG_PACKAGE_default-settings-chn=y
         EOF
 

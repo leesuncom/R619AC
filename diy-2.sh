@@ -16,7 +16,7 @@ sed -i 's/^IMG_PREFIX\:\=.*/IMG_PREFIX:=$(VERSION_DIST_SANITIZED)-$(shell TZ=UTC
 
 # 页面版本号添加日期
 # sed -i "s/R[0-9]\+\.[0-9]\+\.[0-9]\+/&("$(date +%Y-%m-%d)")/g" package/lean/default-settings/files/zzz-default-settings
-# curl -sfL https://github.com/leesuncom/package/raw/main/99-default-settings -o feeds/kiddin9/my-default-settings/files/etc/uci-defaults/99-default-settings
+curl -sfL https://github.com/leesuncom/package/raw/main/99-default-settings -o package/emortal/default-settings/files/99-default-settings
 
 # 修改主机名字，把OpenWrt-123修改你喜欢的就行（不能纯数字或者使用中文）
 # sed -i 's/OpenWrt/NeoBird/g' ./package/base-files/files/bin/config_generate

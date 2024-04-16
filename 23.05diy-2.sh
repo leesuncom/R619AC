@@ -19,7 +19,7 @@ sed -i 's/^IMG_PREFIX\:\=.*/IMG_PREFIX:=$(VERSION_DIST_SANITIZED)-$(shell TZ=UTC
 curl -sfL https://github.com/leesuncom/package/raw/main/99-default-settings-chinese -o package/emortal/default-settings/files/99-default-settings-chinese
 
 # 修改主机名字，把OpenWrt-123修改你喜欢的就行（不能纯数字或者使用中文）
-# sed -i 's/OpenWrt/NeoBird/g' ./package/base-files/files/bin/config_generate
+sed -i 's/ImmortalWrt/NeoBird/g' ./package/base-files/files/bin/config_generate
 
 # 去除默认bootstrap主题
 sed -i 's/[b|B]ootstrap/argon/g' ./feeds/luci/collections/luci/Makefile

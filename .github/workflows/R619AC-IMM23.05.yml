@@ -8,7 +8,7 @@
 # Description: Build OpenWrt using GitHub Actions
 #
 
-name: Build R619AC-IMM23.05
+name: Build R619AC-IMM23.05-1
 on:
   repository_dispatch:
   workflow_dispatch:
@@ -160,6 +160,7 @@ jobs:
         if: env.UPLOAD_RELEASE == 'true' && !cancelled()
         run: |
           touch release.txt
+          echo "R619AC-IMM23.05-1" >> release.txt
           echo "::set-output name=release_tag::$(date +"%Y.%m.%d")"
           echo "::set-output name=status::success"
 

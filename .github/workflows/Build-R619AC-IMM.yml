@@ -76,8 +76,10 @@ jobs:
       run: |
         ls
         cd openwrt/package
-        #git clone --depth 1 https://github.com/zzsj0928/luci-app-pushbot
-        # svn export https://github.com/sirpdboy/sirpdboy-package/trunk/luci-app-adguardhome
+        find ./ | grep Makefile | grep v2ray-geodata | xargs rm -f
+        find ./ | grep Makefile | grep mosdns | xargs rm -f
+        git clone https://github.com/sbwml/luci-app-mosdns -b v5 package/mosdns
+        git clone https://github.com/sbwml/v2ray-geodata package/v2ray-geodata
 
     - name: File Patch Before
       run: |

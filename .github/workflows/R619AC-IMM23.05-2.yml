@@ -61,6 +61,7 @@ jobs:
         git clone $REPO_URL -b $REPO_BRANCH openwrt
         ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
         cd openwrt
+        sed -i '$a src-git kiddin9 https://github.com/kiddin9/openwrt-packages.git' feeds.conf.default
         useVersionInfo=$(git show -s --date=short --format="Author: %an<br/>date: %cd<br/>commit: %s<br/>commit hash: %H<br/>")
         echo "useVersionInfo=$useVersionInfo" >> $GITHUB_ENV
 
@@ -85,10 +86,11 @@ jobs:
       run: |
         cp -f patch/rc.local openwrt/package/base-files/files/etc/rc.local
         cd openwrt
-        sed -i 's/^IMG_PREFIX\:\=.*/IMG_PREFIX:=$(VERSION_DIST_SANITIZED)-$(shell TZ=UTC-8 date +"%Y.%m.%d-%H%M")-$(IMG_PREFIX_VERNUM)$(IMG_PREFIX_VERCODE)$(IMG_PREFIX_EXTRA)$(BOARD)$(if $(SUBTARGET),-$(SUBTARGET))/g' include/image.mk
-        sed '14 iuci\ commit\ network' -i package/emortal/default-settings/files/99-default-settings-chinese
-        sed '14 iset\ network.globals.packet_steering=1' -i package/emortal/default-settings/files/99-default-settings-chinese
-        sed '4 iset\ system.@system[0].hostname=G-Dock' -i package/emortal/default-settings/files/99-default-settings-chinese
+        curl -sfL https://github.com/leesuncom/package/raw/main/99-default-settings-chinese -o package/emortal/default-settings/files/99-default-settings-chinese
+        #sed -i 's/^IMG_PREFIX\:\=.*/IMG_PREFIX:=$(VERSION_DIST_SANITIZED)-$(shell TZ=UTC-8 date +"%Y.%m.%d-%H%M")-$(IMG_PREFIX_VERNUM)$(IMG_PREFIX_VERCODE)$(IMG_PREFIX_EXTRA)$(BOARD)$(if $(SUBTARGET),-$(SUBTARGET))/g' include/image.mk
+        #sed '14 iuci\ commit\ network' -i package/emortal/default-settings/files/99-default-settings-chinese
+        #sed '14 iset\ network.globals.packet_steering=1' -i package/emortal/default-settings/files/99-default-settings-chinese
+        #sed '4 iset\ system.@system[0].hostname=NeoBird' -i package/emortal/default-settings/files/99-default-settings-chinese
         sed -i 's/192.168.1.1/192.168.1.2/g' package/base-files/files/bin/config_generate
 
     - name: Update feeds
@@ -173,7 +175,7 @@ jobs:
         CONFIG_PACKAGE_luci-app-ddns=y
         CONFIG_PACKAGE_luci-app-firewall=y
         CONFIG_PACKAGE_luci-app-filetransfer=y
-        # CONFIG_PACKAGE_luci-app-passwall=y
+        CONFIG_PACKAGE_luci-app-passwall=y
         # CONFIG_PACKAGE_luci-app-pushbot=y
         # CONFIG_PACKAGE_luci-app-ramfree=y
         # CONFIG_PACKAGE_luci-app-samba4=y
@@ -187,6 +189,10 @@ jobs:
         CONFIG_PACKAGE_luci-app-vlmcsd=y
         CONFIG_PACKAGE_luci-app-wol=y
         # CONFIG_PACKAGE_luci-app-zerotier=y
+        CONFIG_PACKAGE_luci-app-iptvhelper=y
+        CONFIG_PACKAGE_luci-app-onliner=y
+        CONFIG_PACKAGE_luci-app-opkg=y
+        
         EOF
 
         # LuCI主题:

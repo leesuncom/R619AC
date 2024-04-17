@@ -77,10 +77,10 @@ jobs:
       run: |
         ls
         cd openwrt
-        find ./ | grep Makefile | grep v2ray-geodata | xargs rm -f
-        find ./ | grep Makefile | grep mosdns | xargs rm -f
-        git clone https://github.com/sbwml/luci-app-mosdns -b v5 package/mosdns
-        git clone https://github.com/sbwml/v2ray-geodata package/v2ray-geodata
+        #find ./ | grep Makefile | grep v2ray-geodata | xargs rm -f
+        #find ./ | grep Makefile | grep mosdns | xargs rm -f
+        #git clone https://github.com/sbwml/luci-app-mosdns -b v5 package/mosdns
+        #git clone https://github.com/sbwml/v2ray-geodata package/v2ray-geodata
 
     - name: File Patch Before
       run: |
@@ -175,6 +175,7 @@ jobs:
         CONFIG_PACKAGE_luci-app-ddns=y
         CONFIG_PACKAGE_luci-app-firewall=y
         CONFIG_PACKAGE_luci-app-filetransfer=y
+        CONFIG_PACKAGE_luci-app-mosdns=y
         CONFIG_PACKAGE_luci-app-passwall=y
         # CONFIG_PACKAGE_luci-app-pushbot=y
         # CONFIG_PACKAGE_luci-app-ramfree=y

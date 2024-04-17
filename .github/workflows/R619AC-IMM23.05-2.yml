@@ -289,7 +289,7 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
         artifacts: ${{ env.FIRMWARE }}/*
         body: |
-          - 默认IP：192.168.10.1
+          - 默认IP：192.168.1.2
           - 默认密码：password
           - 当前使用版本:【编译前的最后一次[➦主源码](${{ env.REPO_URL }})更新记录】
           - 下载后请仔细校验MD5，如不正确请重新下载

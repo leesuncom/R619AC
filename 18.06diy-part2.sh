@@ -29,7 +29,7 @@ sed -i 's/192.168.1.1/192.168.1.2/g' package/base-files/files/bin/config_generat
 # small大佬常用OpenWrt软件包源码合集处理
 # ./scripts/feeds update -a && rm -rf feeds/luci/applications/luci-app-mosdns
 # rm -rf feeds/packages/net/{alist,adguardhome,xray*,v2ray*,v2ray*,sing*,smartdns}
-rm -rf feeds/smpackage/{base-files,dnsmasq,firewall*,fullconenat,libnftnl,nftables,ppp,opkg,ucl,upx,vsftpd-alt,miniupnpd-iptables,wireless-regdb,sms-tool,luci-app-sms-tool}
+rm -rf feeds/smpackage/{base-files,dnsmasq,firewall*,fullconenat,libnftnl,nftables,ppp,opkg,ucl,upx,vsftpd-alt,miniupnpd-iptables,wireless-regdb,sms-tool,luci-app-sms-tool,luci-app-bypass,luci-app-passwall2,luci-app-bmtedge}
 
 # Add Theme
 rm -rf ./feeds/luci/themes/luci-theme-argon

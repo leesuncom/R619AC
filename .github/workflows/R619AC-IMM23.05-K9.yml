@@ -68,8 +68,6 @@ jobs:
         sed -i '/	refresh_config();/d' scripts/feeds
         ./scripts/feeds update -a
         ./scripts/feeds install -a
-        rm -rf feeds/kiddin9/{luci-app-strongswan-swanctl,luci-app-tencentcloud-cos,luci-app-dnscrypt-proxy2,base-files,dnsmasq,firewall*,fullconenat,libnftnl,nftables,ppp,opkg,ucl,upx,vsftpd-alt,miniupnpd-iptables,wireless-regdb,luci-app-sms-tool,luci-app-bypass,luci-app-passwall2,luci-app-bmtedge}        
-
         useVersionInfo=$(git show -s --date=short --format="Author: %an<br/>date: %cd<br/>commit: %s<br/>commit hash: %H<br/>")
         echo "useVersionInfo=$useVersionInfo" >> $GITHUB_ENV
 
@@ -85,6 +83,7 @@ jobs:
       run: |
         ls
         cd openwrt
+        rm -rf feeds/kiddin9/{luci-app-strongswan-swanctl,luci-app-tencentcloud-cos,luci-app-dnscrypt-proxy2,base-files,dnsmasq,firewall*,fullconenat,libnftnl,nftables,ppp,opkg,ucl,upx,vsftpd-alt,miniupnpd-iptables,wireless-regdb,luci-app-sms-tool,luci-app-bypass,luci-app-passwall2,luci-app-bmtedge}        
         #find ./ | grep Makefile | grep v2ray-geodata | xargs rm -f
         #find ./ | grep Makefile | grep mosdns | xargs rm -f
         #git clone https://github.com/sbwml/luci-app-mosdns -b v5 package/mosdns
@@ -94,7 +93,7 @@ jobs:
       run: |
         cp -f patch/rc.local openwrt/package/base-files/files/etc/rc.local
         cd openwrt
-        # rm -rf feeds/kiddin9/{luci-app-dnscrypt-proxy2,base-files,dnsmasq,firewall*,fullconenat,libnftnl,nftables,ppp,opkg,ucl,upx,vsftpd-alt,miniupnpd-iptables,wireless-regdb,sms-tool,luci-app-sms-tool,luci-app-bypass,luci-app-passwall2,luci-app-bmtedge}
+        # rm -rf feeds/kiddin9/{luci-app-strongswan-swanctl,luci-app-tencentcloud-cos,luci-app-dnscrypt-proxy2,base-files,dnsmasq,firewall*,fullconenat,libnftnl,nftables,ppp,opkg,ucl,upx,vsftpd-alt,miniupnpd-iptables,wireless-regdb,luci-app-sms-tool,luci-app-bypass,luci-app-passwall2,luci-app-bmtedge}        
         curl -sfL https://github.com/leesuncom/package/raw/main/99-default-settings-chinese -o package/emortal/default-settings/files/99-default-settings-chinese
         #sed -i 's/^IMG_PREFIX\:\=.*/IMG_PREFIX:=$(VERSION_DIST_SANITIZED)-$(shell TZ=UTC-8 date +"%Y.%m.%d-%H%M")-$(IMG_PREFIX_VERNUM)$(IMG_PREFIX_VERCODE)$(IMG_PREFIX_EXTRA)$(BOARD)$(if $(SUBTARGET),-$(SUBTARGET))/g' include/image.mk
         #sed '14 iuci\ commit\ network' -i package/emortal/default-settings/files/99-default-settings-chinese
@@ -107,6 +106,8 @@ jobs:
 
     - name: File Patch After
       run: |
+        # cd openwrt
+        # rm -rf feeds/kiddin9/{luci-app-strongswan-swanctl,luci-app-tencentcloud-cos,luci-app-dnscrypt-proxy2,base-files,dnsmasq,firewall*,fullconenat,libnftnl,nftables,ppp,opkg,ucl,upx,vsftpd-alt,miniupnpd-iptables,wireless-regdb,luci-app-sms-tool,luci-app-bypass,luci-app-passwall2,luci-app-bmtedge}        
 
     - name: Generate configuration file
       run: |

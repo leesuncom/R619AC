@@ -68,7 +68,8 @@ jobs:
         sed -i '/	refresh_config();/d' scripts/feeds
         ./scripts/feeds update -a
         ./scripts/feeds install -a
-        ./scripts/feeds install -a
+        rm -rf feeds/kiddin9/{luci-app-dnscrypt-proxy2,base-files,dnsmasq,firewall*,fullconenat,libnftnl,nftables,ppp,opkg,ucl,upx,vsftpd-alt,miniupnpd-iptables,wireless-regdb,luci-app-sms-tool,luci-app-bypass,luci-app-passwall2,luci-app-bmtedge}        
+
         useVersionInfo=$(git show -s --date=short --format="Author: %an<br/>date: %cd<br/>commit: %s<br/>commit hash: %H<br/>")
         echo "useVersionInfo=$useVersionInfo" >> $GITHUB_ENV
 
@@ -106,8 +107,6 @@ jobs:
 
     - name: File Patch After
       run: |
-        cd openwrt
-        rm -rf feeds/kiddin9/{luci-app-dnscrypt-proxy2,base-files,dnsmasq,firewall*,fullconenat,libnftnl,nftables,ppp,opkg,ucl,upx,vsftpd-alt,miniupnpd-iptables,wireless-regdb,sms-tool,luci-app-sms-tool,luci-app-bypass,luci-app-passwall2,luci-app-bmtedge}        
 
     - name: Generate configuration file
       run: |

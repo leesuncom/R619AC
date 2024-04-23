@@ -44,4 +44,4 @@ git clone -b 18.06 https://github.com/jerrykuku/luci-app-argon-config.git ./pack
 
 # 去掉不要插件
 # rm -rf ./feeds/luci/applications/luci-app-accesscontrol
-@ rm -rf ./feeds/luci/applications/luci-app-ddns
+# rm -rf ./feeds/luci/applications/luci-app-vsftpd

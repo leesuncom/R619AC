@@ -81,4 +81,20 @@ sed -i '/option syn_flood/d' /etc/config/firewall
 sed -i '15aoption masq 1' /etc/config/firewall
 uci commit firewall
 
+sed -i 's#"IP/MAC Binding"#"地址绑定"#g' /usr/lib/lua/luci/controller/arpbind.lua
+sed -i 's/"MosDNS"/"域名转发"/g' /usr/lib/lua/luci/controller/mosdns.lua
+sed -i 's/"OpenClash"/"世界之窗"/g' /usr/lib/lua/luci/controller/openclash.lua
+sed -i 's/"KMS Server"/"免费激活"/g' /usr/lib/lua/luci/controller/vlmcsd.lua
+sed -i 's/"IPTV Helper"/"电视组播"/g' /usr/lib/lua/luci/controller/iptvhelper.lua
+sed -i 's/"Argon Config"/"主题设置"/g' /usr/lib/lua/luci/controller/argon-config.lua
+sed -i 's/"SmartDNS"/"域名加速"/g' /usr/lib/lua/luci/controller/smartdns.lua
+sed -i 's/"UPnP"/"即插即用"/g' /usr/lib/lua/luci/controller/upnp.lua
+sed -i 's/"udpxy"/"电视组播"/g' /usr/lib/lua/luci/controller/udpxy.lua
+sed -i 's/"CPU Freq"/"性能优化"/g' /usr/lib/lua/luci/controller/cpufreq.lua
+sed -i 's/"Turbo ACC Center"/"网络加速"/g' /usr/lib/lua/luci/controller/turboacc.lua
+sed -i 's/"TTYD Terminal"/"终端命令"/g' /usr/lib/lua/luci/controller/terminal.lua
+sed -i 's/"DHCP and DNS"/"动态主机"/g' /usr/lib/lua/luci/controller/admin/network.lua
+sed -i 's/"LED"/"指示灯"/g' /usr/lib/lua/luci/controller/admin/system.lua
+sed -i 's#"Backup / Flash Firmware"#"备份恢复"#g' /usr/lib/lua/luci/controller/admin/system.lua
+
 exit 0

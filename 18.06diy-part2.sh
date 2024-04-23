@@ -16,8 +16,8 @@ sed -i 's/^IMG_PREFIX\:\=.*/IMG_PREFIX:=$(shell TZ=UTC-8 date +"%Y.%m.%d-%H%M")-
 
 # 页面版本号添加日期
 sed -i "s/R[0-9]\+\.[0-9]\+\.[0-9]\+/&("$(date +%Y-%m-%d)")/g" package/lean/default-settings/files/zzz-default-settings
-curl -sfL https://github.com/leesuncom/package/raw/main/zzz-default-settings -o package/lean/default-settings/files/zzz-default-settings
-
+curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/lede/zzz-default-settings -o package/lean/default-settings/files/zzz-default-settings
+curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/mosdns -o feeds/luci/applications/luci-app-mosdns/root/etc/config/mosdns
 
 # 修改主机名字，把OpenWrt-123修改你喜欢的就行（不能纯数字或者使用中文）
 sed -i 's/OpenWrt/NeoBird/g' ./package/base-files/files/bin/config_generate

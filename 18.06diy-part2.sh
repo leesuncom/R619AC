@@ -33,8 +33,8 @@ sed -i 's/[b|B]ootstrap/argon/g' ./feeds/luci/collections/luci/Makefile
 # 设置密码为空（安装固件时无需密码登陆，然后自己修改想要的密码）
 
 # small大佬常用OpenWrt软件包源码合集处理
-# rm -rf feeds/packages/net/{alist,adguardhome,xray*,v2ray*,v2ray*,sing*,smartdns}
-rm -rf feeds/smpackage/{PACKAGE_tor,luci-app-torbp,base-files,dnsmasq,firewall*,fullconenat,libnftnl,nftables,ppp,opkg,ucl,upx,vsftpd-alt,miniupnpd-iptables,wireless-regdb,sms-tool,luci-app-sms-tool,luci-app-bypass,luci-app-passwall2,luci-app-bmtedge}
+# rm -rf ./feeds/packages/net/{alist,adguardhome,xray*,v2ray*,v2ray*,sing*,smartdns}
+rm -rf ./feeds/smpackage/{PACKAGE_tor,luci-app-torbp,base-files,dnsmasq,firewall*,fullconenat,libnftnl,nftables,ppp,opkg,ucl,upx,vsftpd-alt,miniupnpd-iptables,wireless-regdb,sms-tool,luci-app-sms-tool,luci-app-bypass,luci-app-passwall2,luci-app-bmtedge}
 
 # Add Theme
 rm -rf ./feeds/luci/themes/luci-theme-argon
@@ -43,4 +43,5 @@ rm -rf ./feeds/luci/applications/luci-app-argon-config
 git clone -b 18.06 https://github.com/jerrykuku/luci-app-argon-config.git ./package/lean/luci-app-argon-config
 
 # 去掉不要插件
-
+rm -rf ./feeds/packages/net/{nlbwmon,udpxy}
+rm -rf ./feeds/luci/applications/{luci-app-nlbwmon,luci-app-wrtbwmon,luci-app-udpxy}

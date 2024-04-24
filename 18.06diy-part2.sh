@@ -43,5 +43,4 @@ rm -rf ./feeds/luci/applications/luci-app-argon-config
 git clone -b 18.06 https://github.com/jerrykuku/luci-app-argon-config.git ./package/lean/luci-app-argon-config
 
 # 去掉不要插件
-rm -rf ./feeds/luci/applications/luci-app-nlbwmon
-rm -rf ./feeds/luci/applications/luci-app-wrtbwmon
+

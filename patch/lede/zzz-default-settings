@@ -94,9 +94,10 @@ sed -i 's/"CPU Freq"/"性能优化"/g' /usr/lib/lua/luci/controller/cpufreq.lua
 sed -i 's/"Turbo ACC Center"/"网络加速"/g' /usr/lib/lua/luci/controller/turboacc.lua
 sed -i 's/"TTYD Terminal"/"终端命令"/g' /usr/lib/lua/luci/controller/terminal.lua
 sed -i 's/"DHCP and DNS"/"动态主机"/g' /usr/lib/lua/luci/controller/admin/network.lua
-#sed -i 's/"LED"/"灯光"/g' /usr/lib/lua/luci/controller/admin/system.lua
-#sed -i 's/" Configuration"/"配置"/g' /usr/lib/lua/luci/controller/admin/system.lua
-sed -i 's32#"<abbr title=\"Light Emitting Diode\">LED</abbr> Configuration"#"灯光配置"#g' /usr/lib/lua/luci/controller/admin/system.lua
+# sed -i 's/"LED"/"灯光"/g' /usr/lib/lua/luci/controller/admin/system.lua
+# sed -i 's/" Configuration"/"配置"/g' /usr/lib/lua/luci/controller/admin/system.lua
+# sed -i '32s#"<abbr title=\"Light Emitting Diode\">LED</abbr> Configuration"#"灯光配置"#g' /usr/lib/lua/luci/controller/admin/system.lua
 sed -i 's#"Backup / Flash Firmware"#"备份恢复"#g' /usr/lib/lua/luci/controller/admin/system.lua
+sed -i '120s/"LED"/"灯光"/g' /feeds/luci/modules/luci-base/po/zh-cn/base.po
 
 exit 0

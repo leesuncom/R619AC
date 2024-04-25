@@ -94,8 +94,7 @@ jobs:
         cp -f patch/rc.local openwrt/package/base-files/files/etc/rc.local
         cd openwrt
         # rm -rf feeds/kiddin9/{luci-app-strongswan-swanctl,luci-app-tencentcloud-cos,luci-app-dnscrypt-proxy2,base-files,dnsmasq,firewall*,fullconenat,libnftnl,nftables,ppp,opkg,ucl,upx,vsftpd-alt,miniupnpd-iptables,wireless-regdb,luci-app-sms-tool,luci-app-bypass,luci-app-passwall2,luci-app-bmtedge}        
-        # curl -sfL https://github.com/leesuncom/package/raw/main/99-default-settings-chinese -o package/emortal/default-settings/files/99-default-settings-chinese
-        #sed -i 's/^IMG_PREFIX\:\=.*/IMG_PREFIX:=$(VERSION_DIST_SANITIZED)-$(shell TZ=UTC-8 date +"%Y.%m.%d-%H%M")-$(IMG_PREFIX_VERNUM)$(IMG_PREFIX_VERCODE)$(IMG_PREFIX_EXTRA)$(BOARD)$(if $(SUBTARGET),-$(SUBTARGET))/g' include/image.mk
+        curl -sfL https://github.com/leesuncom/package/raw/main/99-default-settings -o feeds/kiddin9/my-default-settings/files/etc/uci-defaults/99-default-settings        #sed -i 's/^IMG_PREFIX\:\=.*/IMG_PREFIX:=$(VERSION_DIST_SANITIZED)-$(shell TZ=UTC-8 date +"%Y.%m.%d-%H%M")-$(IMG_PREFIX_VERNUM)$(IMG_PREFIX_VERCODE)$(IMG_PREFIX_EXTRA)$(BOARD)$(if $(SUBTARGET),-$(SUBTARGET))/g' include/image.mk
         #sed '14 iuci\ commit\ network' -i package/emortal/default-settings/files/99-default-settings-chinese
         #sed '14 iset\ network.globals.packet_steering=1' -i package/emortal/default-settings/files/99-default-settings-chinese
         #sed '4 iset\ system.@system[0].hostname=NeoBird' -i package/emortal/default-settings/files/99-default-settings-chinese
@@ -178,15 +177,15 @@ jobs:
 
         # LuCI插件选择:
         cat >> .config <<EOF
-        CONFIG_PACKAGE_luci-app-adguardhome=y
+        # CONFIG_PACKAGE_luci-app-adguardhome=y
         CONFIG_PACKAGE_luci-app-argon-config=y
         # CONFIG_PACKAGE_luci-app-autoreboot=y
-        CONFIG_PACKAGE_luci-app-ddns=y
+        # CONFIG_PACKAGE_luci-app-ddns=y
         CONFIG_PACKAGE_luci-app-firewall=y
-        CONFIG_PACKAGE_luci-app-filetransfer=y
+        # CONFIG_PACKAGE_luci-app-filetransfer=y
         CONFIG_PACKAGE_luci-app-mosdns=y
         CONFIG_PACKAGE_luci-app-openclash=y
-        CONFIG_PACKAGE_luci-app-passwall=y
+        # CONFIG_PACKAGE_luci-app-passwall=y
         # CONFIG_PACKAGE_luci-app-pushbot=y
         # CONFIG_PACKAGE_luci-app-ramfree=y
         # CONFIG_PACKAGE_luci-app-samba4=y
@@ -214,7 +213,7 @@ jobs:
         # 常用软件包:
         cat >> .config <<EOF
         # CONFIG_PACKAGE_autocore=y
-        CONFIG_PACKAGE_default-settings-chn=y
+        CONFIG_PACKAGE_my-default-settings=y
         EOF
 
         # 取消编译VMware镜像以及镜像填充 (不要删除被缩进的注释符号):

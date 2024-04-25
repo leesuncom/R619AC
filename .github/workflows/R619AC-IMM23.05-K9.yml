@@ -22,7 +22,7 @@ on:
     types: [started]
     
 env:
-  REPO_URL: https://github.com/immortalwrt/immortalwrt
+  REPO_URL: https://github.com/openwrt/openwrt
   REPO_BRANCH: openwrt-23.05
   UPLOAD_BIN_DIR: true
   UPLOAD_FIRMWARE: true

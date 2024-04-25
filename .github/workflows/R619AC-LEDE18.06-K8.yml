@@ -58,7 +58,7 @@ jobs:
     - name: 检测服务器
       uses: actions/checkout@main
 
-    - name: 检查服务器配置
+    - name: 服务器配置
       run: |
         echo "警告⚠"
         echo "分配的服务器性能有限，若选择的插件过多，务必注意CPU性能！"
@@ -76,7 +76,7 @@ jobs:
         echo "硬盘详情："
         df -Th
         
-    - name: 初始化编译环境
+    - name: 编译环境
       env:
         DEBIAN_FRONTEND: noninteractive
       run: |
@@ -97,7 +97,7 @@ jobs:
         git clone $REPO_URL openwrt
         ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
         
-    - name: 加载自定义源
+    - name: 自定义源
       run: |
         [ -e $FEEDS_CONF ] && mv $FEEDS_CONF openwrt/feeds.conf.default
         chmod +x $DIY_P1_SH
@@ -112,7 +112,7 @@ jobs:
     - name: 安装源
       run: cd openwrt && ./scripts/feeds install -a
     
-    - name: 加载自定义配置
+    - name: 自定义配置
       run: |
         [ -e files ] && mv files openwrt/files
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
@@ -144,14 +144,14 @@ jobs:
       if: (!cancelled())
       run: df -hT
 
-    - name: 上传固件文件夹
+    - name: 上传文件夹
       uses: actions/upload-artifact@main
       if: steps.compile.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true'
       with:
         name: OpenWrt_bin${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
         path: openwrt/bin
 
-    - name: 整理文件
+    - name: 整理固件
       id: organize
       if: env.UPLOAD_FIRMWARE == 'true' && !cancelled()
       run: |
@@ -194,7 +194,7 @@ jobs:
         body_path: release.txt
         files: ${{ env.FIRMWARE }}/*
 
-    - name: 清理工作流
+    - name: 清理工作
       uses: GitRML/delete-workflow-runs@main
       with:
         retain_days: 3

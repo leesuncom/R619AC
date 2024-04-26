@@ -115,7 +115,7 @@ EOF
 		Copy ${CustomFiles}/curl ${FEEDS_PKG}
                 curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/lede/zzz-default-settings -o package/lean/default-settings/files/zzz-default-settings
                 curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/mosdns -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/config/mosdns
-		sed -i '120s/"LED"/"灯光"/g' feeds/luci/modules/luci-base/po/zh-cn/base.po
+                curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/base.po -o feeds/luci/modules/luci-base/po/zh-cn/base.po
 
 		case "${TARGET_BOARD}" in
 		ramips)

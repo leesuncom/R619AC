@@ -62,6 +62,8 @@ echo "log-facility=/dev/null" >> /etc/dnsmasq.conf
 rm -rf /tmp/luci-modulecache/
 rm -f /tmp/luci-indexcache
 
+sed -i '/255.255.255.0/a\option delegate 0' 
+uci set network.lan.ifname=eth0
 uci set network.lan.gateway=192.168.1.1
 uci set network.lan.dns=127.0.0.1
 sed -i '/option ip6assign/d' /etc/config/network

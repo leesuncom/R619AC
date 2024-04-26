@@ -115,8 +115,8 @@ jobs:
         REPO_BRANCH=$(cut -d \: -f 2 <<< ${{ env.DEFAULT_SOURCE }})
         echo "REPO_URL=$REPO_URL" >> $GITHUB_ENV
         echo "REPO_BRANCH=$REPO_BRANCH" >> $GITHUB_ENV
-        echo "Compile_Date=$(date +%Y%m%d%H%M)" >> $GITHUB_ENV
-        echo "Display_Date=$(date +%Y/%m/%d)" >> $GITHUB_ENV
+        echo "Compile_Date=$(TZ=UTC-8 date +%Y%m%d%H%M)" >> $GITHUB_ENV
+        echo "Display_Date=$(TZ=UTC-8 date +%Y/%m/%d)" >> $GITHUB_ENV
 
     - name: Initialize Environment
       env:

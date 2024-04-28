@@ -115,7 +115,11 @@ EOF
 		Copy ${CustomFiles}/curl ${FEEDS_PKG}
                 curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/lede/zzz-default-settings -o package/lean/default-settings/files/zzz-default-settings
                 curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/mosdns -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/config/mosdns
-	        
+	        curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/config_custom.yaml -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/config_custom.yaml
+	        curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/forward.yaml -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/forward.yaml
+	        curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/load_rules_openwrt.yaml -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/load_rules_openwrt.yaml
+	        curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/update.sh -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/update.sh
+	        curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/flush_cache.sh -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/flush_cache.sh
                 curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/base.po -o feeds/luci/modules/luci-base/po/zh-cn/base.po
 
 		case "${TARGET_BOARD}" in

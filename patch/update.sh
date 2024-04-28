@@ -1,6 +1,8 @@
 #!/bin/sh
 # Powered by Apad.pro
 # https://apad.pro/easymosdns
+# https://github.com/Journalist-HK/mosdns-config
+# 0 3 * * * /etc/mosdns/update.sh 0 4 * * * /etc/mosdns/flush_cache.sh
 #
 mosdns_working_dir="/etc/mosdns"
 mkdir -p /tmp/easymosdns \

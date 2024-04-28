@@ -245,18 +245,18 @@ plugins:
         exec: jump ali_sequence_ipv4 # 我这里用阿里 DNS 请求 AKAMAI 域名返回东京电信的概率较高，可以替换成其他。
 
       # 策略 1：默认查询国内上游，入返回境外 IP，再次将域名交给可信 DNS 查询。
-      - exec: $forward_alidns # 默认使用阿里 DNS，如果担心 DNS 泄露，可以调换顺序，把 fallback 放在前面，代价是延迟会变高。这种情况下可以使用前面的 cdnlist 域名先做判断。
-      - matches:
-          - resp_ip $banned_ip # 记录被污染域名，日后加入 gerylist。可以去掉。
-        exec: debug_print "DNS poisoning detected"
-      - matches:
-          - "resp_ip $geoip_cn"
-        exec: accept # 返回国内 IP 直接接受
-      - exec: jump change_cdn_ip_akamai
-      - matches: # 有些 AKAMAI 的域名不能直接替换 IP（没有绑定全证书），此处多加一次判断，接受所有 AKAMAI CDN 的 IP。
-          - cname $akamailist
-        exec: accept
-      - exec: jump change_cdn_ip_cf
+      #- exec: $forward_alidns # 默认使用阿里 DNS，如果担心 DNS 泄露，可以调换顺序，把 fallback 放在前面，代价是延迟会变高。这种情况下可以使用前面的 cdnlist 域名先做判断。
+      #- matches:
+          #- resp_ip $banned_ip # 记录被污染域名，日后加入 gerylist。可以去掉。
+        #exec: debug_print "DNS poisoning detected"
+      #- matches:
+          #- "resp_ip $geoip_cn"
+        #exec: accept # 返回国内 IP 直接接受
+      #- exec: jump change_cdn_ip_akamai
+      #- matches: # 有些 AKAMAI 的域名不能直接替换 IP（没有绑定全证书），此处多加一次判断，接受所有 AKAMAI CDN 的 IP。
+          #- cname $akamailist
+        #exec: accept
+      #- exec: jump change_cdn_ip_cf
       # - exec: jump reforward_fastly_fallback
 
       # 策略 2：注释上方策略 1 的配置，默认查询可信 DNS，可以避免“DNS 泄露”，对上游稳定性要求更高

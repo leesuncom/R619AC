@@ -120,7 +120,6 @@ EOF
 	        curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/load_rules_openwrt.yaml -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/
 	        curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/update.sh -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/
 	        curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/flush_cache.sh -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/
-	        chmod +x package/other/luci-app-mosdns/luci-app-mosdns/root/etc/*.sh
                 curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/base.po -o feeds/luci/modules/luci-base/po/zh-cn/base.po
 
 		case "${TARGET_BOARD}" in

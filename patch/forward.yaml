@@ -82,8 +82,8 @@ plugins:
         # - addr: "https://public.dns.iij.jp/dns-query"
         #   dial_addr: 103.2.57.5
         #   enable_http3: false
-        - addr: "tcp://208.67.220.220:5353" # CISCO OpenDNS
-          enable_pipeline: true
+        # - addr: "tcp://208.67.220.220:5353" # CISCO OpenDNS
+        #   enable_pipeline: true
         - addr: "tls://8.8.4.4"
           enable_pipeline: true
 

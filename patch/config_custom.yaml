@@ -274,8 +274,8 @@ plugins:
     args:
       entry: main
       listen: ":5353"
-      # cert: "/etc/nginx/conf.d/_lan.crt" # 配置 cert 和 key 后会启用 TLS (DoT)。
-      # key: "/etc/nginx/conf.d/_lan.key" 
+      cert: "/etc/nginx/conf.d/_lan.crt" # 配置 cert 和 key 后会启用 TLS (DoT)。
+      key: "/etc/nginx/conf.d/_lan.key" 
       idle_timeout: 10 # 空连接超时。单位秒。默认 10。
 
   - tag: "http_server"
@@ -286,6 +286,6 @@ plugins:
           exec: main # 可执行插件的 tag。
       src_ip_header: "X-Forwarded-For"  # 从 HTTP 头获取用户 IP。
       listen: :5443  # 监听地址。
-      # cert: "/etc/nginx/conf.d/_lan.crt" # 留空 cert 和 key 后会禁用 TLS。
-      # key: "/etc/nginx/conf.d/_lan.key" 
+      cert: "/etc/nginx/conf.d/_lan.crt" # 留空 cert 和 key 后会禁用 TLS。
+      key: "/etc/nginx/conf.d/_lan.key" 
       idle_timeout: 30 # 默认 30。

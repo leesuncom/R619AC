@@ -123,11 +123,6 @@ sed -i 's/"TTYD Terminal"/"终端命令"/g' /usr/lib/lua/luci/controller/termina
 sed -i 's/"DHCP and DNS"/"动态主机"/g' /usr/lib/lua/luci/controller/admin/network.lua
 sed -i 's#"Backup / Flash Firmware"#"备份恢复"#g' /usr/lib/lua/luci/controller/admin/system.lua
 
-curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/config_custom.yaml -o /etc/mosdns/config_custom.yaml
-curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/forward.yaml -o /etc/mosdns/forward.yaml
-curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/load_rules_openwrt.yaml -o /etc/mosdns/load_rules_openwrt.yaml
-curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/update.sh -o /etc/mosdns/update.sh
-curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/flush_cache.sh -o /etc/mosdns/flush_cache.sh
 chmod +x /etc/mosdns/*.sh
 
 exit 0

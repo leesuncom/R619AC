@@ -62,7 +62,7 @@ plugins:
       concurrent: 1
       upstreams:
         - addr: "https://doh.apad.pro/dns-query"
-          bootstrap: "1.1.1.1"
+          bootstrap: "119.29.29.29"
           enable_http3: false
 
   - tag: "forward_remote" # 切换远程上游DNS

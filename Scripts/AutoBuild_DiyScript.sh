@@ -107,6 +107,9 @@ EOF
 		AddPackage msd_lite ximiTech luci-app-msd_lite main
 		AddPackage msd_lite ximiTech msd_lite main
 		AddPackage iptvhelper riverscn openwrt-iptvhelper master
+                AddPackage passwall xiaorouji openwrt-passwall-packages main
+		AddPackage passwall xiaorouji openwrt-passwall main
+                rm -r ${WORK}/package/passwall/openwrt-passwall-packages/xray-core
 		rm -r ${WORK}/package/other/helloworld/mosdns
 		rm -r ${FEEDS_PKG}/mosdns
 		rm -r ${FEEDS_LUCI}/luci-app-mosdns

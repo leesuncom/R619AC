@@ -206,7 +206,8 @@ plugins:
 
       - matches:
           - qname $whitelist # DDNS 和 其他白名单
-        exec: $forward_local
+        # exec: $forward_local
+        exec: $forward_alidns
       - exec: ttl 5-180
       - exec: jump has_resp_sequence
 

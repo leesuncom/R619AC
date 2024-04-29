@@ -113,16 +113,41 @@ EOF
 		rm -r ${FEEDS_PKG}/curl
 		rm -r ${FEEDS_PKG}/msd_lite
 		Copy ${CustomFiles}/curl ${FEEDS_PKG}
+                curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/base.po -o feeds/luci/modules/luci-base/po/zh-cn/base.po
                 curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/lede/zzz-default-settings -o package/lean/default-settings/files/zzz-default-settings
+		# mosdns
                 curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/etc/config/mosdns -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/config/mosdns
 	        curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/etc/mosdns/config_custom.yaml -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/config_custom.yaml
 	        curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/etc/mosdns/forward.yaml -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/forward.yaml
 	        curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/etc/mosdns/load_rules_openwrt.yaml -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/load_rules_openwrt.yaml
 	        curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/etc/mosdns/update.sh -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/update.sh
-	        curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/etc/mosdns/flush_cache.sh -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/flush_cache.sh
-                curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/base.po -o feeds/luci/modules/luci-base/po/zh-cn/base.po
-                # cp -f patch/etc/mosdns/rule/*.txt openwrt/package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule
-		# curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/Journalist-HK/Rules/main/akamai_domain_list.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/akamai_domain_list.txt
+	        curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/etc/mosdns/flush_cache.sh -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/flush_cache.sh                
+		curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/Journalist-HK/Rules/main/akamai_domain_list.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/akamai_domain_list.txt
+                curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/Journalist-HK/Rules/main/block_list.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/block_list.txt
+                curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/Journalist-HK/Rules/main/china_domain_list_mini.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/china_domain_list_mini.txt
+                curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/Journalist-HK/Rules/main/cloudfront.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/cloudfront.txt
+                curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/Journalist-HK/Rules/main/cloudfront_ipv6.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/cloudfront_ipv6.txt
+                curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/Journalist-HK/Rules/main/custom_list.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/custom_list.txt
+                curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/Journalist-HK/Rules/main/gfw_ip_list.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/gfw_ip_list.txt
+                curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/Journalist-HK/Rules/main/grey_list.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/grey_list.txt
+                curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/Journalist-HK/Rules/main/hosts_akamai.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/hosts_akamai.txt
+                curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/Journalist-HK/Rules/main/hosts_fastly.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/hosts_fastly.txt
+                curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/Journalist-HK/Rules/main/original_domain_list.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/original_domain_list.txt
+                curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/Journalist-HK/Rules/main/ipv6_domain_list.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/ipv6_domain_list.txt
+                curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/Journalist-HK/Rules/main/private.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/private.txt
+                curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/Journalist-HK/Rules/main/white_list.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/white_list.txt
+                curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/Loyalsoldier/geoip/release/text/facebook.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/facebook.txt
+                curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/Loyalsoldier/geoip/release/text/fastly.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/fastly.txt
+                curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/Loyalsoldier/geoip/release/text/telegram.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/telegram.txt
+                curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/Loyalsoldier/geoip/release/text/twitter.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/twitter.txt
+                curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/gfw.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/gfw.txt
+                curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/greatfire.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/greatfire.txt
+                curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/pmkol/easymosdns/rules/ad_domain_list.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/ad_domain_list.txt
+                curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/pmkol/easymosdns/rules/cdn_domain_list.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/cdn_domain_list.txt
+                curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/pmkol/easymosdns/rules/china_domain_list.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/china_domain_list.txt
+                curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/pmkol/easymosdns/rules/china_ip_list.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/china_ip_list.txt
+                curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/XIU2/CloudflareSpeedTest/master/ip.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/ip.txt
+                curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/XIU2/CloudflareSpeedTest/master/ipv6.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/ipv6.txt
 
 		case "${TARGET_BOARD}" in
 		ramips)

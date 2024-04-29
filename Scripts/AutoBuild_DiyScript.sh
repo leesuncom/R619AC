@@ -121,7 +121,7 @@ EOF
 	        curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/etc/mosdns/update.sh -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/update.sh
 	        curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/etc/mosdns/flush_cache.sh -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/flush_cache.sh
                 curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/base.po -o feeds/luci/modules/luci-base/po/zh-cn/base.po
-                cp -f patch/etc/mosdns/rule/*.txt openwrt/package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule
+                # cp -f patch/etc/mosdns/rule/*.txt openwrt/package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule
 		
 		case "${TARGET_BOARD}" in
 		ramips)

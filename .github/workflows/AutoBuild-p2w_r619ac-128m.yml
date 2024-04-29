@@ -161,7 +161,7 @@ jobs:
 
     - name: Run Diy Scripts
       run: |
-        cp -f patch/etc/mosdns/rule/*.txt openwrt/package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/
+        cp -f patch/etc/mosdns/rule/*.txt package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/
         echo "Free space:"
         df -h
         chmod +x Scripts/AutoBuild_*.sh

@@ -122,6 +122,7 @@ sed -i 's/"Turbo ACC Center"/"网络加速"/g' /usr/lib/lua/luci/controller/turb
 sed -i 's/"TTYD Terminal"/"终端命令"/g' /usr/lib/lua/luci/controller/terminal.lua
 sed -i 's/"DHCP and DNS"/"动态主机"/g' /usr/lib/lua/luci/controller/admin/network.lua
 sed -i 's#"Backup / Flash Firmware"#"备份恢复"#g' /usr/lib/lua/luci/controller/admin/system.lua
+sed -i 's/"ShadowSocksR Plus+"/"世界之门"/g' /usr/lib/lua/luci/controller/shadowsocksr.lua
 
 chmod +x /etc/mosdns/*.sh
 source /etc/mosdns/update.sh

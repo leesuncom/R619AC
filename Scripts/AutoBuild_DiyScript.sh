@@ -122,7 +122,8 @@ EOF
 	        curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/etc/mosdns/flush_cache.sh -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/flush_cache.sh
                 curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/base.po -o feeds/luci/modules/luci-base/po/zh-cn/base.po
                 # cp -f patch/etc/mosdns/rule/*.txt openwrt/package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule
-		
+		curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/Journalist-HK/Rules/main/akamai_domain_list.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/akamai_domain_list.txt
+
 		case "${TARGET_BOARD}" in
 		ramips)
 			sed -i "/DEVICE_COMPAT_VERSION := 1.1/d" target/linux/ramips/image/mt7621.mk

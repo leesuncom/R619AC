@@ -35,3 +35,5 @@ mkdir -p /tmp/easymosdns \
 && cp -rf /tmp/easymosdns/*.txt $mosdns_working_dir/rule \
 && rm -rf /tmp/easymosdns/* \
 && echo 'update successful'
+curl -s 127.0.0.1:9091/plugins/cache_0/flush || exit 1
+/etc/init.d/mosdns restart

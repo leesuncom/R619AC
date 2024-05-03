@@ -128,6 +128,5 @@ sed -i 's/"Pass Wall"/"世界之墙"/g' /usr/lib/lua/luci/controller/passwall.lu
 chmod +x /etc/mosdns/*.sh
 source /etc/mosdns/update.sh
 source /etc/mosdns/flush_cache.sh
-echo '0 3 * * * /etc/mosdns/update.sh' >> /etc/crontabs/root
-
+# echo "0 3 * * * /etc/mosdns/update.sh" >> /etc/crontabs/root
 exit 0

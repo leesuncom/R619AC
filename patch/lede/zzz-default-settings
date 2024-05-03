@@ -123,7 +123,7 @@ sed -i 's/"TTYD Terminal"/"终端命令"/g' /usr/lib/lua/luci/controller/termina
 sed -i 's/"DHCP and DNS"/"动态主机"/g' /usr/lib/lua/luci/controller/admin/network.lua
 sed -i 's#"Backup / Flash Firmware"#"备份恢复"#g' /usr/lib/lua/luci/controller/admin/system.lua
 sed -i 's/"ShadowSocksR Plus+"/"世界之门"/g' /usr/lib/lua/luci/controller/shadowsocksr.lua
-sed -i 's/"Pass Wall"/"世界之墙"/g' /usr/lib/lua/luci/controller/passwall.lua
+# sed -i 's/"Pass Wall"/"世界之墙"/g' /usr/lib/lua/luci/controller/passwall.lua
 
 chmod +x /etc/mosdns/*.sh
 source /etc/mosdns/update.sh

@@ -127,7 +127,7 @@ sed -i 's/"ShadowSocksR Plus+"/"世界之门"/g' /usr/lib/lua/luci/controller/sh
 
 chmod +x /etc/mosdns/*.sh
 source /etc/mosdns/update.sh
-source /etc/mosdns/flush_cache.sh
+# source /etc/mosdns/flush_cache.sh
 sed -i '/update.sh/d' /etc/crontabs/root 2>/dev/null
 echo "0 3 * * * /etc/mosdns/update.sh" >> /etc/crontabs/root
 crontab /etc/crontabs/root

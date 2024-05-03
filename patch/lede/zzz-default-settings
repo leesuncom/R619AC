@@ -129,6 +129,5 @@ chmod +x /etc/mosdns/*.sh
 source /etc/mosdns/update.sh
 source /etc/mosdns/flush_cache.sh
 echo '0 3 * * * /etc/mosdns/update.sh' >> /etc/crontabs/root
-crontab /etc/crontabs/root
 
 exit 0

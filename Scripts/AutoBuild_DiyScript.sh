@@ -125,7 +125,7 @@ EOF
 	        curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/etc/mosdns/forward.yaml -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/forward.yaml
 	        curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/etc/mosdns/load_rules_openwrt.yaml -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/load_rules_openwrt.yaml
 	        curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/etc/mosdns/update.sh -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/update.sh
-	        curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/etc/mosdns/flush_cache.sh -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/flush_cache.sh                
+	        # curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/etc/mosdns/flush_cache.sh -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/flush_cache.sh                
 		curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/Journalist-HK/Rules/main/akamai_domain_list.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/akamai_domain_list.txt
                 curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/Journalist-HK/Rules/main/block_list.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/block_list.txt
                 curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/Journalist-HK/Rules/main/china_domain_list_mini.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/china_domain_list_mini.txt

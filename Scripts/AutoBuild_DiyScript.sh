@@ -152,7 +152,6 @@ EOF
                 curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/pmkol/easymosdns/rules/china_ip_list.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/china_ip_list.txt
                 curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/XIU2/CloudflareSpeedTest/master/ip.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/ip.txt
                 curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/XIU2/CloudflareSpeedTest/master/ipv6.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/ipv6.txt
-                echo "0 3 * * * /etc/mosdns/update.sh" >> /etc/crontabs/root
 
 		case "${TARGET_BOARD}" in
 		ramips)

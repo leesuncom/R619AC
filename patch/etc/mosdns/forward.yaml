@@ -62,7 +62,7 @@ plugins:
       concurrent: 1
       upstreams:
         - addr: "https://doh.apad.pro/dns-query"
-        # - addr: "https://doh.360.cn/dns-query"
+        # - addr: "https://1.1.1.1/dns-query"
           bootstrap: "119.29.29.29"
           enable_http3: false
 
@@ -81,12 +81,12 @@ plugins:
         # - addr: "https://public.dns.iij.jp/dns-query"
         #   dial_addr: 103.2.57.5
         #   enable_http3: false
-        # - addr: "tcp://208.67.220.220:5353" # CISCO OpenDNS
-        #   enable_pipeline: true
-        #   socks5: "127.0.0.1:1080"
-        - addr: "tls://8.8.4.4"
+        - addr: "tcp://208.67.220.220:5353" # CISCO OpenDNS
           enable_pipeline: true
           socks5: "127.0.0.1:1080"
+        # - addr: "tls://8.8.4.4"
+        #   enable_pipeline: true
+        #   socks5: "127.0.0.1:1080"
 
   - tag: remote_sequence
     type: sequence

@@ -34,6 +34,5 @@ mkdir -p /tmp/easymosdns \
 && curl https://ghproxy.cc/https://raw.githubusercontent.com/XIU2/CloudflareSpeedTest/master/ipv6.txt > /tmp/easymosdns/ipv6.txt \
 && cp -rf /tmp/easymosdns/*.txt $mosdns_working_dir/rule \
 && rm -rf /tmp/easymosdns/* \
-&& echo 'update successful'
-curl -s 127.0.0.1:9091/plugins/cache_0/flush || exit 1
-/etc/init.d/mosdns restart
+&& echo 'update successful, restarting mosdns' \
+&& /etc/init.d/mosdns reload

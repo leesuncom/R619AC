@@ -1,0 +1,2 @@
+localhost 127.0.0.1
+domain:hub.stuarthua.com 127.0.0.1

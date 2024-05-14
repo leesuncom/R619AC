@@ -43,7 +43,7 @@ plugins:
         # - addr: "218.2.2.2" # 运营商 DNS，自行修改
         # - addr: "218.4.4.4" # 运营商 DNS，自行修改
         - addr: "202.103.24.68"
-        - addr: "tls://120.53.53.53:853"
+        - addr: "tls://1.12.12.12:853"
           enable_pipeline: true
 
   - tag: "forward_alidns"
@@ -61,8 +61,8 @@ plugins:
     args:
       concurrent: 1
       upstreams:
-        # - addr: "https://doh.apad.pro/dns-query"
-        - addr: "https://1.1.1.1/dns-query"
+        - addr: "https://doh.apad.pro/dns-query"
+        # - addr: "https://1.1.1.1/dns-query"
           bootstrap: "119.29.29.29"
           enable_http3: false
 
@@ -73,15 +73,17 @@ plugins:
                     # 取最快返回的应答。超过 3 最多选 3 个。默认 1。
       upstreams:
         - addr: "https://162.159.36.1/dns-query"
+        # - addr: "https://1.1.1.1/dns-query"
           enable_http3: false
           socks5: "127.0.0.1:1080" # 目前暂不支持用户名密码认证，只支持基于 TCP 的协议
         - addr: "https://162.159.46.1/dns-query"
+        # - addr: "https://1.0.0.1/dns-query"
           enable_http3: false
           socks5: "127.0.0.1:1080"
         # - addr: "https://public.dns.iij.jp/dns-query"
         #   dial_addr: 103.2.57.5
         #   enable_http3: false
-        # - addr: "tcp://208.67.220.220:5353" # CISCO OpenDNS
+        # - addr: "tcp://208.67.222.222:5353" # CISCO OpenDNS
         #   enable_pipeline: true
         #   socks5: "127.0.0.1:1080"
         # - addr: "tls://8.8.4.4"

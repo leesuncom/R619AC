@@ -61,7 +61,8 @@ plugins:
     args:
       concurrent: 1
       upstreams:
-        - addr: "https://doh.apad.pro/dns-query"
+        # - addr: "https://doh.apad.pro/dns-query"
+        - addr: "https://1.1.1.1/dns-query"
           bootstrap: "119.29.29.29"
           enable_http3: false
 

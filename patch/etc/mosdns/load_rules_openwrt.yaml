@@ -147,7 +147,7 @@ plugins:
       # lazy_cache_ttl > 0 会启用 lazy cache。
       # 所有应答都会在缓存中存留 lazy_cache_ttl 秒，但自身的 TTL 仍然有效。如果命中过期的应答，
       # 则缓存会立即返回 TTL 为 5 的应答，然后自动在后台发送请求更新数据。
-      lazy_cache_ttl: 259200  # 默认: 0（禁用 lazy cache）。
+      lazy_cache_ttl: 86400  # 默认: 0（禁用 lazy cache）。
                               # 建议值 86400（1天）~ 259200（3天）
       dump_file: /usr/share/mosdns/cache.dump
       # (实验性) 自动保存间隔。单位秒。默认 600。

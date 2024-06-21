@@ -185,12 +185,12 @@ jobs:
         # CONFIG_PACKAGE_luci-app-filetransfer=y
         CONFIG_PACKAGE_luci-app-mosdns=y
         CONFIG_PACKAGE_luci-app-openclash=y
-        # CONFIG_PACKAGE_luci-app-passwall=y
+        CONFIG_PACKAGE_luci-app-passwall=y
         # CONFIG_PACKAGE_luci-app-pushbot=y
         # CONFIG_PACKAGE_luci-app-ramfree=y
         # CONFIG_PACKAGE_luci-app-samba4=y
-        # CONFIG_PACKAGE_luci-app-ssr-plus=y
-        # CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_Xray=y
+        CONFIG_PACKAGE_luci-app-ssr-plus=y
+        CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_Xray=y
         CONFIG_PACKAGE_luci-app-smartdns=y
         # CONFIG_PACKAGE_luci-app-sqm=y
         CONFIG_PACKAGE_luci-app-ttyd=y

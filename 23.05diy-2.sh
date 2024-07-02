@@ -17,7 +17,7 @@ sed -i 's/^IMG_PREFIX\:\=.*/IMG_PREFIX:=$(VERSION_DIST_SANITIZED)-$(shell TZ=UTC
 # 页面版本号添加日期
 # sed -i "s/R[0-9]\+\.[0-9]\+\.[0-9]\+/&("$(date +%Y-%m-%d)")/g" package/lean/default-settings/files/zzz-default-settings
 curl -sfL https://github.com/leesuncom/package/raw/main/99-default-settings-chinese -o package/emortal/default-settings/files/99-default-settings-chinese
-curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/mosdns -o package/mosdns/luci-app-mosdns/root/etc/config/mosdns
+curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/mosdns -o package/mosdns/luci-app-mosdns/luci-app-mosdns/root/etc/config/mosdns
 
 # 修改主机名字，把OpenWrt-123修改你喜欢的就行（不能纯数字或者使用中文）
 # sed -i 's/ImmortalWrt/NeoBird/g' ./package/base-files/files/bin/config_generate

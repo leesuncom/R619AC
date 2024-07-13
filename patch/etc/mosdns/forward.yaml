@@ -51,7 +51,7 @@ plugins:
     args:
       concurrent: 1
       upstreams:
-        - addr: "quic://223.6.6.6:853"
+        # - addr: "quic://223.6.6.6:853"
         - addr: "https://dns.alidns.com/dns-query"
           dial_addr: "223.5.5.5"
           enable_http3: false
@@ -69,7 +69,7 @@ plugins:
   - tag: "forward_remote"
     type: "forward"
     args:
-      concurrent: 1 # 并发数。每次请求随机选取 concurrent 个 upstreams 发送请求。
+      concurrent: 2 # 并发数。每次请求随机选取 concurrent 个 upstreams 发送请求。
                     # 取最快返回的应答。超过 3 最多选 3 个。默认 1。
       upstreams:
         - addr: "https://162.159.36.1/dns-query"
@@ -85,6 +85,9 @@ plugins:
         #   dial_addr: 103.2.57.5
         #   enable_http3: false
         # - addr: "tcp://208.67.220.220:5353" # CISCO OpenDNS
+        # - addr: "udp://208.67.220.220:443"
+        # - addr: "tcp://208.67.220.222:5353"
+        # - addr: "udp://208.67.220.222:443"
         #   enable_pipeline: true
 
   - tag: remote_sequence

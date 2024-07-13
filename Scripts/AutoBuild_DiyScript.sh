@@ -178,8 +178,6 @@ EOF
 			AddPackage passwall xiaorouji openwrt-passwall-packages main
 			AddPackage passwall xiaorouji openwrt-passwall main
 			# AddPackage passwall xiaorouji openwrt-passwall2 main
-			rm -r ${WORK}/package/passwall/openwrt-passwall-packages/xray-core
-			rm -r ${WORK}/package/passwall/openwrt-passwall-packages/xray-plugin
 			rm -r ${WORK}/package/other/helloworld/xray-core
 			rm -r ${WORK}/package/other/helloworld/xray-plugin
 			# rm -rf packages/lean/autocore
@@ -230,6 +228,16 @@ EOF
    			rm -r ${WORK}/package/other/luci-app-mosdns/mosdns
 			rm -r ${FEEDS_LUCI}/luci-app-passwall
 			patch < ${CustomFiles}/mt7981/0001-Add-iptables-socket.patch -p1 -d ${WORK}
+			rm -r ${WORK}/package/network/services/dnsmasq
+			Copy ${CustomFiles}/dnsmasq ${WORK}/package/network/services
+
+			mosdns_version="5.3.1"
+			wget --quiet --no-check-certificate -P /tmp \
+				https://github.com/IrineSistiana/mosdns/releases/download/v${mosdns_version}/mosdns-linux-arm64.zip
+			unzip /tmp/mosdns-linux-arm64.zip -d /tmp
+			Copy /tmp/mosdns ${BASE_FILES}/usr/bin
+			chmod +x ${BASE_FILES}/usr/bin
+			sed -i "s?+mosdns ??g" ${WORK}/package/other/luci-app-mosdns/luci-app-mosdns/Makefile
 		;;
 		esac
 	;;
@@ -239,13 +247,12 @@ EOF
 		Copy ${CustomFiles}/Depends/cpuset ${BASE_FILES}/bin
 		ReleaseDL https://api.github.com/repos/nxtrace/NTrace-core/releases/latest nexttrace_linux_amd64 ${BASE_FILES}/bin nexttrace
 
-		xray_version="1.8.11"
-		singbox_version="1.8.13"
-		hysteria_version="2.4.3"
-		wstunnel_version="9.4.1"
-		cloudflared_version="2024.4.1"
-		wget --quiet --no-check-certificate -P /tmp \
-			https://github.com/XTLS/Xray-core/releases/download/v${xray_version}/Xray-linux-64.zip
+		singbox_version="1.10.0-alpha.18"
+		hysteria_version="2.4.5"
+		wstunnel_version="9.7.2"
+		cloudflared_version="2024.6.0"
+		taierspeed_version="1.7.1"
+		
 		wget --quiet --no-check-certificate -P /tmp \
 			https://github.com/SagerNet/sing-box/releases/download/v${singbox_version}/sing-box-${singbox_version}-linux-amd64.tar.gz
 		wget --quiet --no-check-certificate -P /tmp \
@@ -254,15 +261,17 @@ EOF
 			https://github.com/erebe/wstunnel/releases/download/v${wstunnel_version}/wstunnel_${wstunnel_version}_linux_amd64.tar.gz
 		wget --quiet --no-check-certificate -P /tmp \
 			https://github.com/cloudflare/cloudflared/releases/download/${cloudflared_version}/cloudflared-linux-amd64
-		unzip /tmp/Xray-linux-64.zip -d /tmp
+		wget --quiet --no-check-certificate -P /tmp \
+			https://github.com/ztelliot/taierspeed-cli/releases/download/v${taierspeed_version}/taierspeed-cli_${taierspeed_version}_linux_amd64
+
 		tar -xvzf /tmp/sing-box-${singbox_version}-linux-amd64.tar.gz -C /tmp
 		tar -xvzf /tmp/wstunnel_${wstunnel_version}_linux_amd64.tar.gz -C /tmp
-		Copy /tmp/xray ${BASE_FILES}/usr/bin
 		Copy /tmp/sing-box-${singbox_version}-linux-amd64/sing-box ${BASE_FILES}/usr/bin
 		Copy /tmp/wstunnel ${BASE_FILES}/usr/bin
 		Copy /tmp/hysteria-linux-amd64 ${BASE_FILES}/usr/bin hysteria
 		Copy /tmp/cloudflared-linux-amd64 ${BASE_FILES}/usr/bin cloudflared
-		chmod 777 ${BASE_FILES}/usr/bin/xray ${BASE_FILES}/usr/bin/sing-box ${BASE_FILES}/usr/bin/hysteria ${BASE_FILES}/usr/bin/wstunnel ${BASE_FILES}/usr/bin/cloudflared
+		Copy /tmp/taierspeed-cli_${taierspeed_version}_linux_amd64 ${BASE_FILES}/usr/bin taierspeed
+		chmod +x ${BASE_FILES}/usr/bin/sing-box ${BASE_FILES}/usr/bin/hysteria ${BASE_FILES}/usr/bin/wstunnel ${BASE_FILES}/usr/bin/cloudflared ${BASE_FILES}/usr/bin/taierspeed
 
 		# ReleaseDL https://api.github.com/repos/Loyalsoldier/v2ray-rules-dat/releases/latest geosite.dat ${BASE_FILES}/usr/v2ray
 		# ReleaseDL https://api.github.com/repos/Loyalsoldier/v2ray-rules-dat/releases/latest geoip.dat ${BASE_FILES}/usr/v2ray

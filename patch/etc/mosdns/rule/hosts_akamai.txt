@@ -1,0 +1,11 @@
+appassets.mahjongsoul.com 23.46.229.200 202.142.229.42
+cdn.akamai.steamstatic.com 23.46.229.200 202.142.229.42
+checkout.akamai.steamstatic.com 23.46.229.200 202.142.229.42
+clan.akamai.steamstatic.com 23.46.229.200 202.142.229.42
+community.akamai.steamstatic.com 23.46.229.200 202.142.229.42
+store.akamai.steamstatic.com 23.46.229.200 202.142.229.42
+cdn.steamstatic.com 23.46.229.200 202.142.229.42
+checkout.steamstatic.com 23.46.229.200 202.142.229.42
+clan.steamstatic.com 23.46.229.200 202.142.229.42
+community.steamstatic.com 23.46.229.200 202.142.229.42
+store.steamstatic.com 23.46.229.200 202.142.229.42

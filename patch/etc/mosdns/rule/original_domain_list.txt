@@ -1,0 +1,3 @@
+letsencrypt.org
+mahjongsoul.com
+msftconnecttest.com

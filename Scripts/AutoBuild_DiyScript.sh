@@ -101,26 +101,57 @@ EOF
 		AddPackage other vernesong OpenClash dev
 		AddPackage other jerrykuku luci-app-argon-config master
 		AddPackage other fw876 helloworld main
-		AddPackage other sbwml luci-app-mosdns v5
+		AddPackage other sbwml luci-app-mosdns v5-lua
 		AddPackage themes jerrykuku luci-theme-argon 18.06
 		AddPackage themes thinktip luci-theme-neobird main
 		AddPackage msd_lite ximiTech luci-app-msd_lite main
 		AddPackage msd_lite ximiTech msd_lite main
 		AddPackage iptvhelper riverscn openwrt-iptvhelper master
+                AddPackage passwall xiaorouji openwrt-passwall-packages main
+		AddPackage passwall xiaorouji openwrt-passwall main
+                rm -r ${WORK}/package/passwall/openwrt-passwall-packages/xray-core
 		rm -r ${WORK}/package/other/helloworld/mosdns
 		rm -r ${FEEDS_PKG}/mosdns
 		rm -r ${FEEDS_LUCI}/luci-app-mosdns
 		rm -r ${FEEDS_PKG}/curl
 		rm -r ${FEEDS_PKG}/msd_lite
 		Copy ${CustomFiles}/curl ${FEEDS_PKG}
-                curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/lede/zzz-default-settings -o package/lean/default-settings/files/zzz-default-settings
-                curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/mosdns -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/config/mosdns
-	        curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/config_custom.yaml -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/config_custom.yaml
-	        curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/forward.yaml -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/forward.yaml
-	        curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/load_rules_openwrt.yaml -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/load_rules_openwrt.yaml
-	        curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/update.sh -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/update.sh
-	        curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/flush_cache.sh -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/flush_cache.sh
                 curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/base.po -o feeds/luci/modules/luci-base/po/zh-cn/base.po
+		curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/etc/config/shadowsocksr -o package/other/helloworld/luci-app-ssr-plus/root/etc/config/shadowsocksr
+                curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/lede/zzz-default-settings -o package/lean/default-settings/files/zzz-default-settings
+		# mosdns
+                curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/etc/config/mosdns -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/config/mosdns
+	        curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/etc/mosdns/config_custom.yaml -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/config_custom.yaml
+	        curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/etc/mosdns/forward.yaml -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/forward.yaml
+	        curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/etc/mosdns/load_rules_openwrt.yaml -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/load_rules_openwrt.yaml
+	        curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/etc/mosdns/update.sh -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/update.sh
+	        # curl -sfL https://github.com/leesuncom/R619AC/raw/master/patch/etc/mosdns/flush_cache.sh -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/flush_cache.sh                
+		curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/Journalist-HK/Rules/main/akamai_domain_list.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/akamai_domain_list.txt
+                curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/Journalist-HK/Rules/main/block_list.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/block_list.txt
+                curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/Journalist-HK/Rules/main/china_domain_list_mini.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/china_domain_list_mini.txt
+                curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/Journalist-HK/Rules/main/cloudfront.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/cloudfront.txt
+                curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/Journalist-HK/Rules/main/cloudfront_ipv6.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/cloudfront_ipv6.txt
+                curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/Journalist-HK/Rules/main/custom_list.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/custom_list.txt
+                curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/Journalist-HK/Rules/main/gfw_ip_list.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/gfw_ip_list.txt
+                curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/Journalist-HK/Rules/main/grey_list.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/grey_list.txt
+                curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/Journalist-HK/Rules/main/hosts_akamai.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/hosts_akamai.txt
+                curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/Journalist-HK/Rules/main/hosts_fastly.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/hosts_fastly.txt
+                curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/Journalist-HK/Rules/main/original_domain_list.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/original_domain_list.txt
+                curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/Journalist-HK/Rules/main/ipv6_domain_list.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/ipv6_domain_list.txt
+                curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/Journalist-HK/Rules/main/private.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/private.txt
+                curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/Journalist-HK/Rules/main/white_list.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/white_list.txt
+                curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/Loyalsoldier/geoip/release/text/facebook.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/facebook.txt
+                curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/Loyalsoldier/geoip/release/text/fastly.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/fastly.txt
+                curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/Loyalsoldier/geoip/release/text/telegram.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/telegram.txt
+                curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/Loyalsoldier/geoip/release/text/twitter.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/twitter.txt
+                curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/gfw.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/gfw.txt
+                curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/greatfire.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/greatfire.txt
+                curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/pmkol/easymosdns/rules/ad_domain_list.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/ad_domain_list.txt
+                curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/pmkol/easymosdns/rules/cdn_domain_list.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/cdn_domain_list.txt
+                curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/pmkol/easymosdns/rules/china_domain_list.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/china_domain_list.txt
+                curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/pmkol/easymosdns/rules/china_ip_list.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/china_ip_list.txt
+                curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/XIU2/CloudflareSpeedTest/master/ip.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/ip.txt
+                curl -sfL https://ghproxy.cc/https://raw.githubusercontent.com/XIU2/CloudflareSpeedTest/master/ipv6.txt -o package/other/luci-app-mosdns/luci-app-mosdns/root/etc/mosdns/rule/ipv6.txt
 
 		case "${TARGET_BOARD}" in
 		ramips)
@@ -140,17 +171,19 @@ EOF
 			Copy ${CustomFiles}/${TARGET_PROFILE}_system ${BASE_FILES}/etc/config system
 		;;
 		x86_64)
-			sed -i "s?6.1?6.6?g" ${WORK}/target/linux/x86/Makefile
+			# sed -i "s?6.1?6.6?g" ${WORK}/target/linux/x86/Makefile
 			ClashDL amd64 dev
 			ClashDL amd64 tun
 			ClashDL amd64 meta
 			AddPackage passwall xiaorouji openwrt-passwall-packages main
 			AddPackage passwall xiaorouji openwrt-passwall main
-			AddPackage passwall xiaorouji openwrt-passwall2 main
-			rm -r ${WORK}/package/passwall/openwrt-passwall-packages/xray-core
-			rm -r ${WORK}/package/passwall/openwrt-passwall-packages/xray-plugin
+			# AddPackage passwall xiaorouji openwrt-passwall2 main
+			rm -r ${WORK}/package/other/helloworld/xray-core
+			rm -r ${WORK}/package/other/helloworld/xray-plugin
 			# rm -rf packages/lean/autocore
 			# AddPackage lean Hyy2001X autocore-modify master
+			Copy ${CustomFiles}/speedtest ${BASE_FILES}/usr/bin
+			chmod +x ${BASE_FILES}/usr/bin/speedtest
 		;;
 		xiaomi_redmi-router-ax6s)
 			AddPackage passwall-depends xiaorouji openwrt-passwall-packages main
@@ -163,19 +196,9 @@ EOF
 		x86_64)
 			sed -i -- 's:/bin/ash:'/bin/bash':g' ${BASE_FILES}/etc/passwd
 			case "${CONFIG_FILE}" in
-			x86_64-Next)
-				# sed -i "s?/bin/login?/usr/libexec/login.sh?g" ${FEEDS_PKG}/ttyd/files/ttyd.config
-				AddPackage passwall xiaorouji openwrt-passwall2 main
-				rm -r ${FEEDS_PKG}/mosdns
-				rm -r ${FEEDS_PKG}/xray-core
-				rm -r ${FEEDS_PKG}/xray-plugin
-				AddPackage other sbwml luci-app-mosdns v5
-				rm -r ${FEEDS_PKG}/curl
-				Copy ${CustomFiles}/curl ${FEEDS_PKG}
-			;;
 			x86_64-NextV21)
 				# sed -i "s?/bin/login?/usr/libexec/login.sh?g" ${FEEDS_PKG}/ttyd/files/ttyd.config
-				AddPackage passwall xiaorouji openwrt-passwall2 main
+				# AddPackage passwall xiaorouji openwrt-passwall2 main
 				AddPackage passwall xiaorouji openwrt-passwall main
 				rm -r ${FEEDS_LUCI}/luci-app-passwall
 				rm -r ${FEEDS_PKG}/xray-core
@@ -183,6 +206,8 @@ EOF
 				AddPackage other sbwml luci-app-mosdns v5
 				rm -r ${WORK}/package/other/luci-app-mosdns/mosdns
 				patch < ${CustomFiles}/mt7981/0001-Add-iptables-socket.patch -p1 -d ${WORK}
+				Copy ${CustomFiles}/speedtest ${BASE_FILES}/usr/bin
+				chmod +x ${BASE_FILES}/usr/bin/speedtest
 			;;
 			esac
 		;;
@@ -203,31 +228,50 @@ EOF
    			rm -r ${WORK}/package/other/luci-app-mosdns/mosdns
 			rm -r ${FEEDS_LUCI}/luci-app-passwall
 			patch < ${CustomFiles}/mt7981/0001-Add-iptables-socket.patch -p1 -d ${WORK}
+			rm -r ${WORK}/package/network/services/dnsmasq
+			Copy ${CustomFiles}/dnsmasq ${WORK}/package/network/services
+
+			mosdns_version="5.3.1"
+			wget --quiet --no-check-certificate -P /tmp \
+				https://github.com/IrineSistiana/mosdns/releases/download/v${mosdns_version}/mosdns-linux-arm64.zip
+			unzip /tmp/mosdns-linux-arm64.zip -d /tmp
+			Copy /tmp/mosdns ${BASE_FILES}/usr/bin
+			chmod +x ${BASE_FILES}/usr/bin
+			sed -i "s?+mosdns ??g" ${WORK}/package/other/luci-app-mosdns/luci-app-mosdns/Makefile
 		;;
 		esac
 	;;
 	esac
 	case "${TARGET_PROFILE}" in
 	x86_64)
-		ReleaseDL https://api.github.com/repos/nxtrace/NTrace-core/releases/latest nexttrace_linux_amd64 ${BASE_FILES}/bin nexttrace
 		Copy ${CustomFiles}/Depends/cpuset ${BASE_FILES}/bin
+		ReleaseDL https://api.github.com/repos/nxtrace/NTrace-core/releases/latest nexttrace_linux_amd64 ${BASE_FILES}/bin nexttrace
+
+		singbox_version="1.10.0-alpha.18"
+		hysteria_version="2.4.5"
+		wstunnel_version="9.7.2"
+		cloudflared_version="2024.6.0"
+		taierspeed_version="1.7.1"
 		
-		singbox_version="1.8.11"
-		hysteria_version="2.4.1"
-		wstunnel_version="9.3.0"
 		wget --quiet --no-check-certificate -P /tmp \
 			https://github.com/SagerNet/sing-box/releases/download/v${singbox_version}/sing-box-${singbox_version}-linux-amd64.tar.gz
 		wget --quiet --no-check-certificate -P /tmp \
 			https://github.com/apernet/hysteria/releases/download/app%2Fv${hysteria_version}/hysteria-linux-amd64
 		wget --quiet --no-check-certificate -P /tmp \
 			https://github.com/erebe/wstunnel/releases/download/v${wstunnel_version}/wstunnel_${wstunnel_version}_linux_amd64.tar.gz
+		wget --quiet --no-check-certificate -P /tmp \
+			https://github.com/cloudflare/cloudflared/releases/download/${cloudflared_version}/cloudflared-linux-amd64
+		wget --quiet --no-check-certificate -P /tmp \
+			https://github.com/ztelliot/taierspeed-cli/releases/download/v${taierspeed_version}/taierspeed-cli_${taierspeed_version}_linux_amd64
+
 		tar -xvzf /tmp/sing-box-${singbox_version}-linux-amd64.tar.gz -C /tmp
 		tar -xvzf /tmp/wstunnel_${wstunnel_version}_linux_amd64.tar.gz -C /tmp
 		Copy /tmp/sing-box-${singbox_version}-linux-amd64/sing-box ${BASE_FILES}/usr/bin
 		Copy /tmp/wstunnel ${BASE_FILES}/usr/bin
 		Copy /tmp/hysteria-linux-amd64 ${BASE_FILES}/usr/bin hysteria
-
-		chmod 777 ${BASE_FILES}/usr/bin/sing-box ${BASE_FILES}/usr/bin/hysteria ${BASE_FILES}/usr/bin/wstunnel
+		Copy /tmp/cloudflared-linux-amd64 ${BASE_FILES}/usr/bin cloudflared
+		Copy /tmp/taierspeed-cli_${taierspeed_version}_linux_amd64 ${BASE_FILES}/usr/bin taierspeed
+		chmod +x ${BASE_FILES}/usr/bin/sing-box ${BASE_FILES}/usr/bin/hysteria ${BASE_FILES}/usr/bin/wstunnel ${BASE_FILES}/usr/bin/cloudflared ${BASE_FILES}/usr/bin/taierspeed
 
 		# ReleaseDL https://api.github.com/repos/Loyalsoldier/v2ray-rules-dat/releases/latest geosite.dat ${BASE_FILES}/usr/v2ray
 		# ReleaseDL https://api.github.com/repos/Loyalsoldier/v2ray-rules-dat/releases/latest geoip.dat ${BASE_FILES}/usr/v2ray

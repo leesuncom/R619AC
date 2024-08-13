@@ -52,7 +52,7 @@ sed -i '/option disabled/d' /etc/config/wireless
 sed -i '/set wireless.radio${devidx}.disabled/d' /lib/wifi/mac80211.sh
 
 sed -i '/DISTRIB_REVISION/d' /etc/openwrt_release
-echo "DISTRIB_REVISION='R24.4.4'" >> /etc/openwrt_release
+echo "DISTRIB_REVISION='R24.5.1''" >> /etc/openwrt_release
 sed -i '/DISTRIB_DESCRIPTION/d' /etc/openwrt_release
 echo "DISTRIB_DESCRIPTION='NeoBird '" >> /etc/openwrt_release
 
@@ -122,7 +122,14 @@ sed -i 's/"Turbo ACC Center"/"网络加速"/g' /usr/lib/lua/luci/controller/turb
 sed -i 's/"TTYD Terminal"/"终端命令"/g' /usr/lib/lua/luci/controller/terminal.lua
 sed -i 's/"DHCP and DNS"/"动态主机"/g' /usr/lib/lua/luci/controller/admin/network.lua
 sed -i 's#"Backup / Flash Firmware"#"备份恢复"#g' /usr/lib/lua/luci/controller/admin/system.lua
+sed -i 's/"ShadowSocksR Plus+"/"世界之门"/g' /usr/lib/lua/luci/controller/shadowsocksr.lua
+# sed -i 's/"Pass Wall"/"世界之墙"/g' /usr/lib/lua/luci/controller/passwall.lua
 
 chmod +x /etc/mosdns/*.sh
+source /etc/mosdns/update.sh
+# source /etc/mosdns/flush_cache.sh
+# sed -i '/update.sh/d' /etc/crontabs/root 2>/dev/null
+# echo "0 3 * * * /etc/mosdns/update.sh" >> /etc/crontabs/root
+# crontab /etc/crontabs/root
 
 exit 0

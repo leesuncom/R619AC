@@ -109,7 +109,7 @@ uci set wireless.@wifi-iface[1].encryption='psk-mixed'
 uci commit wireless
 
 sed -i 's#"IP/MAC Binding"#"地址绑定"#g' /usr/lib/lua/luci/controller/arpbind.lua
-sed -i 's/"MosDNS"/"域名转发"/g' /usr/lib/lua/luci/controller/mosdns.lua
+# sed -i 's/"MosDNS"/"域名转发"/g' /usr/lib/lua/luci/controller/mosdns.lua
 sed -i 's/"MosDNS"/"域名转发"/g' /usr/share/luci/menu.d/luci-app-mosdns.json
 sed -i 's/"OpenClash"/"世界之窗"/g' /usr/lib/lua/luci/controller/openclash.lua
 sed -i 's/"KMS Server"/"免费激活"/g' /usr/lib/lua/luci/controller/vlmcsd.lua

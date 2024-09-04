@@ -100,11 +100,14 @@ jobs:
         #sed '4 iset\ system.@system[0].hostname=NeoBird' -i package/emortal/default-settings/files/99-default-settings-chinese
         sed -i 's/192.168.1.1/192.168.1.2/g' package/base-files/files/bin/config_generate
         sed -i 's/[b|B]ootstrap/argon/g' ./feeds/luci/collections/luci/Makefile
+        
     - name: Update feeds
       run: cd openwrt && ./scripts/feeds update -a && ./scripts/feeds install -a
 
     - name: File Patch After
       run: |
+          rm -rf feeds/packages/lang/golang
+          git clone https://github.com/sbwml/packages_lang_golang -b 23.x feeds/packages/lang/golang
         # cd openwrt
         # rm -rf feeds/kiddin9/{luci-app-strongswan-swanctl,luci-app-tencentcloud-cos,luci-app-dnscrypt-proxy2,base-files,dnsmasq,firewall*,fullconenat,libnftnl,nftables,ppp,opkg,ucl,upx,vsftpd-alt,miniupnpd-iptables,wireless-regdb,luci-app-sms-tool,luci-app-bypass,luci-app-passwall2,luci-app-bmtedge}        
 

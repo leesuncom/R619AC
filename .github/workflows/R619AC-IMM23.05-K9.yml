@@ -83,8 +83,8 @@ jobs:
       run: |
         ls
         cd openwrt
-        rm -rf feeds/kiddin9/{luci-app-mosdns,v2ray-plugin,luci-app-strongswan-swanctl,luci-app-tencentcloud-cos,luci-app-dnscrypt-proxy2,base-files,dnsmasq,firewall*,fullconenat,libnftnl,nftables,ppp,opkg,ucl,upx,vsftpd-alt,miniupnpd-iptables,wireless-regdb,luci-app-sms-tool,luci-app-bypass,luci-app-passwall2,luci-app-bmtedge}        
-        #rm -rf feeds/kiddin9/v2ray-plugin
+        rm -rf feeds/kiddin9/{luci-app-mosdns,mosdns,luci-app-strongswan-swanctl,luci-app-tencentcloud-cos,luci-app-dnscrypt-proxy2,base-files,dnsmasq,firewall*,fullconenat,libnftnl,nftables,ppp,opkg,ucl,upx,vsftpd-alt,miniupnpd-iptables,wireless-regdb,luci-app-sms-tool,luci-app-bypass,luci-app-passwall2,luci-app-bmtedge}        
+        rm -rf feeds/packages/net/v2ray-geodata
         git clone https://github.com/sbwml/luci-app-mosdns -b v5 package/mosdns
         git clone https://github.com/sbwml/v2ray-geodata package/v2ray-geodata
 

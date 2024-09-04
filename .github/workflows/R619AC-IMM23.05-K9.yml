@@ -83,11 +83,10 @@ jobs:
       run: |
         ls
         cd openwrt
-        rm -rf feeds/kiddin9/{luci-app-strongswan-swanctl,luci-app-tencentcloud-cos,luci-app-dnscrypt-proxy2,base-files,dnsmasq,firewall*,fullconenat,libnftnl,nftables,ppp,opkg,ucl,upx,vsftpd-alt,miniupnpd-iptables,wireless-regdb,luci-app-sms-tool,luci-app-bypass,luci-app-passwall2,luci-app-bmtedge}        
-        #find ./ | grep Makefile | grep v2ray-geodata | xargs rm -f
-        #find ./ | grep Makefile | grep mosdns | xargs rm -f
-        #git clone https://github.com/sbwml/luci-app-mosdns -b v5 package/mosdns
-        #git clone https://github.com/sbwml/v2ray-geodata package/v2ray-geodata
+        rm -rf feeds/kiddin9/{luci-app-mosdns,v2ray-plugin,luci-app-strongswan-swanctl,luci-app-tencentcloud-cos,luci-app-dnscrypt-proxy2,base-files,dnsmasq,firewall*,fullconenat,libnftnl,nftables,ppp,opkg,ucl,upx,vsftpd-alt,miniupnpd-iptables,wireless-regdb,luci-app-sms-tool,luci-app-bypass,luci-app-passwall2,luci-app-bmtedge}        
+        #rm -rf feeds/kiddin9/v2ray-plugin
+        git clone https://github.com/sbwml/luci-app-mosdns -b v5 package/mosdns
+        git clone https://github.com/sbwml/v2ray-geodata package/v2ray-geodata
 
     - name: File Patch Before
       run: |

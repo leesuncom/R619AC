@@ -1,297 +1,123 @@
-###########################################################
-#   Description: Compile OpenWrt by GitHub Actions        #
-#   Based on: https://github.com/P3TERX/Actions-OpenWrt   #
-#   Author: Hyy2001X                                      #
-###########################################################
+#=================================================
+# https://github.com/P3TERX/Actions-OpenWrt
+# Description: Build OpenWrt using GitHub Actions
+# Lisence: MIT
+# Author: P3TERX
+# Blog: https://p3terx.com
+#=================================================
 
-name: x86_64
+name: R7000-Build OpenWrt
 
 on:
-  repository_dispatch:
-  ## Git Push 时触发编译(不要删除此行注释)
-  #push:
-  #  branches: 
-  #    - master
-  
-  ## 定时触发编译(不要删除此行注释)
-  #schedule:
-  #  - cron: 0 8 * * 5
-  
-  ## 重新点亮 Star 时触发编译(不要删除此行注释)
-  #watch:
-  #  types: [started]
-  
-  ### 界面控制部分 ( 以下内容请保持不变, 如有需要仅修改 options 选项 )
-  workflow_dispatch:
-    inputs:
-      Tempoary_CONFIG:
-        description: '配置文件'
-        default: 'x86_64'
-        type: choice
-        options:
-          - 'x86_64'
-      Tempoary_FLAG:
-        description: '固件标签'
-        default: 'AUTO'
-        type: choice
-        options:
-          - 'AUTO'
-          - 'Full'
-      Tempoary_IP:
-        description: '固件 IP 地址 [可选]'
-        default: ''
-      UPLOAD_RELEASES:
-        description: '上传固件到 Releases'
-        default: 'true'
-        type: boolean
-      UPLOAD_ARTIFACTS:
-        description: '上传固件到 Artifacts'
-        default: 'false'
-        type: boolean
-      UPLOAD_BIN_ARTIFACTS:
-        description: '上传 bin 文件夹到 Artifacts'
-        default: 'false'
-        type: boolean
-      ### 界面控制部分结束 ( 以上内容请保持不变 )
+  release:
+    types: [published]
+  push:
+    branches:
+      - master
+    paths:
+      - '.config'
+#  schedule:
+#    - cron: 0 8 * * 5
+#  watch:
+#    types: [started]
 
-### 请按需求修改以下内容
-### 环境变量设置
 env:
-# 编译时调用的 [.config] 文件名称
-  CONFIG_FILE: x86_64
-# 源码仓库:分支
-  DEFAULT_SOURCE: coolsnowwolf/lede:master
-# 删除无用文件以增加编译空间
-  DELETE_USELESS_FILES: true
-# 删除早期的 workflow 任务
-  DELETE_OLD_WORKFLOW: false
-# Cache 加速编译
-  CACHE_ACCELERATE: false
-### 结束
-### 请按需求修改以上内容
+  REPO_URL: https://github.com/coolsnowwolf/lede
+  REPO_BRANCH: master
+  CONFIG_FILE: R7000.config
+  DIY_SH: R7000.sh
+  FREE_UP_DISK: false
+  SSH_ACTIONS: false
+  UPLOAD_BIN_DIR: false
+  UPLOAD_FIRMWARE: true
+  TZ: Asia/Shanghai
 
 jobs:
-  Compile:
-    runs-on: ubuntu-20.04
-    permissions:
-      issues: write
-      pull-requests: write
-      contents: write
+  build:
+    runs-on: ubuntu-latest
 
     steps:
-
-    - name: "Optimize disk space"
-      if: env.DELETE_USELESS_FILES == 'true' && !cancelled()
-      uses: "hugoalh/disk-space-optimizer-ghaction@v0.8.0"
-      with:
-        operate_sudo: "True"
-        general_include: ".+"
-        general_exclude: |-
-          ^GCC$
-          ^G\+\+$
-          Clang
-          LLVM
-        docker_include: ".+"
-        docker_prune: "True"
-        docker_clean: "True"
-        apt_prune: "True"
-        apt_clean: "True"
-        homebrew_prune: "True"
-        homebrew_clean: "True"
-        npm_prune: "True"
-        npm_clean: "True"
-        os_swap: "True"
-
-    - name: Free up disk space
-      if: env.DELETE_USELESS_FILES == 'true' && !cancelled()
-      uses: easimon/maximize-build-space@master
-      with: 
-        root-reserve-mb: 2048
-        swap-size-mb: 1
-        remove-dotnet: 'true'
-        remove-android: 'true'
-        remove-haskell: 'true'
-        remove-codeql: 'true'
-        remove-docker-images: 'true'
-
     - name: Checkout
-      uses: actions/checkout@main
-      with:
-        fetch-depth: 0
+      uses: actions/checkout@master
 
-    - name: Load Custom Variables
-      run: |
-        if [ -n "${{ github.event.inputs.Tempoary_CONFIG }}" ]
-        then
-            if [ -f "$GITHUB_WORKSPACE/Configs/${{ github.event.inputs.Tempoary_CONFIG }}" ]
-            then
-                CONFIG_FILE=${{ github.event.inputs.Tempoary_CONFIG }}
-            else
-                CONFIG_FILE=${{ env.CONFIG_FILE }}
-            fi
-        else
-            CONFIG_FILE=${{ env.CONFIG_FILE }}
-        fi
-        if [ ! -f "$GITHUB_WORKSPACE/Configs/$CONFIG_FILE" ]
-        then
-            echo "CONFIG_FILE: [/Config/$CONFIG_FILE] is not detected ..."
-            exit 1
-        else
-            echo "CONFIG_FILE: [/Config/$CONFIG_FILE]"
-            echo "CONFIG_FILE=$CONFIG_FILE" >> $GITHUB_ENV
-        fi
-        if [ -n "${{ github.event.inputs.Tempoary_IP }}" ]
-        then
-            echo "IP: [${{ github.event.inputs.Tempoary_IP }}]"
-            echo "Tempoary_IP=${{ github.event.inputs.Tempoary_IP }}" >> $GITHUB_ENV
-        fi
-        if [ -n "${{ github.event.inputs.Tempoary_FLAG }}" ]
-        then
-            echo "FLAG: [${{ github.event.inputs.Tempoary_FLAG }}]"
-            echo "Tempoary_FLAG=${{ github.event.inputs.Tempoary_FLAG }}" >> $GITHUB_ENV
-        fi
-        REPO_URL="https://github.com/$(cut -d \: -f 1 <<< ${{ env.DEFAULT_SOURCE }})"
-        REPO_BRANCH=$(cut -d \: -f 2 <<< ${{ env.DEFAULT_SOURCE }})
-        echo "REPO_URL=$REPO_URL" >> $GITHUB_ENV
-        echo "REPO_BRANCH=$REPO_BRANCH" >> $GITHUB_ENV
-        echo "Compile_Date=$(date +%Y%m%d%H%M)" >> $GITHUB_ENV
-        echo "Display_Date=$(date +%Y/%m/%d)" >> $GITHUB_ENV
-        if [[ -z "${{ github.event.inputs.Tempoary_CONFIG }}" ]]; then
-            echo "TIMED_TRIGGER=true" >> $GITHUB_ENV
-        else
-            echo "UPLOAD_RELEASES=${{ github.event.inputs.UPLOAD_RELEASES }}" >> $GITHUB_ENV
-            echo "UPLOAD_ARTIFACTS=${{ github.event.inputs.UPLOAD_ARTIFACTS }}" >> $GITHUB_ENV
-            echo "UPLOAD_BIN_ARTIFACTS=${{ github.event.inputs.UPLOAD_BIN_ARTIFACTS }}" >> $GITHUB_ENV
-        fi
-
-    - name: TIMED_TRIGGER
-      if: env.TIMED_TRIGGER == 'true'
-      env:
-        UPLOAD_RELEASES: true
-        UPLOAD_ARTIFACTS: false
-        UPLOAD_BIN_ARTIFACTS: false
-      run: |
-        echo "UPLOAD_RELEASES=${UPLOAD_RELEASES}" >> $GITHUB_ENV
-        echo "UPLOAD_ARTIFACTS=${UPLOAD_ARTIFACTS}" >> $GITHUB_ENV
-        echo "UPLOAD_BIN_ARTIFACTS=${UPLOAD_BIN_ARTIFACTS}" >> $GITHUB_ENV
-
-    - name: Initialize Environment
+    - name: Initialization environment
       env:
         DEBIAN_FRONTEND: noninteractive
       run: |
-        sudo mkdir -p /workdir
-        sudo chown $USER:$GROUPS /workdir
-        sudo -E apt update
-        sudo -E apt -y full-upgrade
-        sudo -E apt-get -y install busybox build-essential cmake asciidoc binutils bzip2 gawk gettext git libncurses5-dev libz-dev patch unzip zlib1g-dev lib32gcc1 libc6-dev-i386 subversion flex uglifyjs git-core gcc-multilib g++-multilib p7zip p7zip-full msmtp libssl-dev texinfo libreadline-dev libglib2.0-dev xmlto qemu-utils upx libelf-dev autoconf automake libtool autopoint ccache curl wget vim nano python2.7 python3 python3-pip python3-ply haveged lrzsz device-tree-compiler scons antlr3 gperf intltool mkisofs rsync
-        sudo -E apt -y autoremove --purge
-        sudo -E apt clean
-        sudo timedatectl set-timezone "Asia/Shanghai"
+        sudo swapoff /swapfile
+        sudo rm -rf /swapfile /etc/apt/sources.list.d/*
+        sudo -E apt-get -qq update
+        sudo -E apt-get -qq install build-essential asciidoc binutils bzip2 gawk gettext git libncurses5-dev libz-dev patch unzip zlib1g-dev lib32gcc1 libc6-dev-i386 subversion flex uglifyjs git-core gcc-multilib p7zip p7zip-full msmtp libssl-dev texinfo libglib2.0-dev xmlto qemu-utils upx libelf-dev autoconf automake libtool autopoint device-tree-compiler
+        curl -fsSL https://raw.githubusercontent.com/P3TERX/dotfiles/master/.bashrc >> ~/.bashrc
 
-    - name: Clone Openwrt Source Code
+    - name: Free up disk space
+      if: env.FREE_UP_DISK == 'true'
+      env:
+        DEBIAN_FRONTEND: noninteractive
       run: |
-        git clone -b $REPO_BRANCH $REPO_URL openwrt
-        ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
-        cd openwrt
-        ./scripts/feeds update -a
-        ./scripts/feeds install -a
+        sudo rm -rf /usr/share/dotnet
+        docker rmi `docker images -q`
+        sudo -E apt-get -q purge azure-cli ghc* zulu* hhvm llvm* firefox google* dotnet* powershell openjdk* mysql* php*
+        sudo -E apt-get -qq autoremove --purge
+        sudo -E apt-get -qq clean
 
-    - name: Accelerate
-      if: env.CACHE_ACCELERATE == 'true'
-      uses: klever1988/cachewrtbuild@main
-      with:
-        ccache: false
-        toolchain: true
-        skip: true
-        clean: true
-        prefix: ${{ github.workspace }}/openwrt
+    - name: Clone source code
+      run: git clone --depth 1 $REPO_URL -b $REPO_BRANCH openwrt
 
-    - name: Run Diy Scripts
+    - name: Update feeds
+      run: cd openwrt && ./scripts/feeds update -a
+
+    - name: Install feeds
+      run: cd openwrt && ./scripts/feeds install -a
+
+    - name: Load custom configuration
       run: |
-        echo "Free space:"
-        df -h
-        chmod +x Scripts/AutoBuild_*.sh
+        [ -e files ] && mv files openwrt/files
+        [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
+        chmod +x $DIY_SH
         cd openwrt
-        if [ "${{ env.CACHE_ACCELERATE }}" == true ]
-        then
-            echo -e "\nCONFIG_DEVEL=y\nCONFIG_CCACHE=y\n" >> $GITHUB_WORKSPACE/Configs/$CONFIG_FILE
-        fi
-        cp $GITHUB_WORKSPACE/Configs/$CONFIG_FILE .config
-        source $GITHUB_WORKSPACE/Scripts/AutoBuild_DiyScript.sh
-        source $GITHUB_WORKSPACE/Scripts/AutoBuild_Function.sh
+        ../$DIY_SH
         make defconfig
-        Firmware_Diy_Start
-        rm -f .config && cp $GITHUB_WORKSPACE/Configs/$CONFIG_FILE .config
-        Firmware_Diy_Main
-        Firmware_Diy
-        Firmware_Diy_Other
 
-    - name: Pre-download Libraries
+    - name: SSH connection to Actions
+      uses: P3TERX/debugger-action@master
+      if: env.SSH_ACTIONS == 'true'
+
+    - name: Download package
+      id: package
       run: |
         cd openwrt
-        ./scripts/feeds install -a
-        make defconfig
         make download -j8
+        find dl -size -1024c -exec ls -l {} \;
+        find dl -size -1024c -exec rm -f {} \;
 
-    - name: Build OpenWrt
+    - name: Compile the firmware
       id: compile
       run: |
         cd openwrt
-        make -j4 || make -j1 V=s
-        [ "$?" == 0 ] && echo "Compile_Result=true" >> $GITHUB_ENV || echo "Compile_Result=false" >> $GITHUB_ENV
+        echo -e "$(nproc) thread compile"
+        make -j$(nproc) || make -j6 V=s
+        echo "::set-output name=status::success"
 
-    - name: Checkout Firmware
-      if: steps.compile.outcome == 'success' && !cancelled()
-      run: |
-        cd openwrt
-        source $GITHUB_WORKSPACE/Scripts/AutoBuild_Function.sh
-        Firmware_Diy_End
-
-    - name: Upload Firmware to Artifacts
-      uses: actions/upload-artifact@main
-      if: env.UPLOAD_ARTIFACTS == 'true' && steps.compile.outcome == 'success' && !cancelled()
+    - name: Upload bin directory
+      uses: actions/upload-artifact@master
+      if: steps.compile.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true'
       with:
-        name: ${{ env.CONFIG_FILE }}_firmware_${{ env.Compile_Date }}
-        path: openwrt/bin/Firmware
-
-    - name: Upload bin to Artifacts
-      uses: actions/upload-artifact@main
-      if: env.UPLOAD_BIN_ARTIFACTS == 'true' && steps.compile.outcome == 'success' && !cancelled()
-      with:
-        name: ${{ env.CONFIG_FILE }}_bin_${{ env.Compile_Date }}
+        name: OpenWrt_directory
         path: openwrt/bin
 
-    - name: Upload Firmware to Release
-      uses: svenstaro/upload-release-action@v2
-      if: env.UPLOAD_RELEASES == 'true' && steps.compile.outcome == 'success' && !cancelled()
-      with:
-        repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: openwrt/bin/Firmware/*
-        file_glob: true
-        tag: AutoUpdate
-        overwrite: true
-        
-    - name: Refresh API (1/2)
-      if: env.UPLOAD_RELEASES == 'true' && steps.compile.outcome == 'success' && !cancelled()
+    - name: Organize files
+      id: organize
+      if: env.UPLOAD_FIRMWARE == 'true' && !cancelled()
       run: |
-        wget https://api.github.com/repos/${{github.repository}}/releases/tags/AutoUpdate -O API
-        
-    - name: Refresh API (2/2)
-      if: env.UPLOAD_RELEASES == 'true' && steps.compile.outcome == 'success' && !cancelled()
-      uses: svenstaro/upload-release-action@v2
-      with:
-        repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: ./API
-        file_glob: true
-        tag: AutoUpdate
-        overwrite: true
+        cd openwrt/bin/targets/*/*
+        rm -rf packages
+        echo "::set-env name=FIRMWARE::$(pwd)"
+        echo "::set-output name=status::success"
 
-    - name: Delete old Workflow Runs
-      continue-on-error: true
-      if: env.DELETE_OLD_WORKFLOW == 'true' && !cancelled()
-      uses: Mattraks/delete-workflow-runs@v2
+    - name: Upload firmware directory
+      uses: actions/upload-artifact@master
+      if: steps.organize.outputs.status == 'success' && !cancelled()
       with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          repository: ${{ github.repository }}
-          retain_days: 3
-          keep_minimum_runs: 0
+        name: OpenWrt_firmware
+        path: ${{ env.FIRMWARE }}

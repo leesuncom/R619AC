@@ -15,7 +15,8 @@ env:
   REPO_URL: https://github.com/coolsnowwolf/lede
   REPO_BRANCH: master
   CONFIG_FILE: R7000.config
-  DIY_SH: R7000.sh
+  DIY_P1_SH: R70001.sh
+  DIY_P2_SH: R70002.sh
   FREE_UP_DISK: false
   SSH_ACTIONS: false
   UPLOAD_BIN_DIR: false

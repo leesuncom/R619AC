@@ -9,7 +9,8 @@
 # This is free software, licensed under the MIT License.
 # See /LICENSE for more information.
 #
-
+# Modify default IP
+sed -i 's/192.168.1.1/192.168.1.2/g' openwrt/package/base-files/files/bin/config_generate
 # Uncomment a feed source
 #cd openwrt
 #sed -i '$a src-git smpackage https://github.com/kenzok8/small-package' >>feeds.conf.default

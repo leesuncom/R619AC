@@ -16,7 +16,7 @@ env:
   REPO_BRANCH: master
   FEEDS_CONF: feeds.conf.default
   CONFIG_FILE: R7000.config
-  # DIY_P1_SH: R70001.sh
+  DIY_P1_SH: R70001.sh
   DIY_P2_SH: R70002.sh
   FREE_UP_DISK: false
   SSH_ACTIONS: false

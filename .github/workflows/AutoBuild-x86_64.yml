@@ -14,6 +14,7 @@ on:
 env:
   REPO_URL: https://github.com/coolsnowwolf/lede
   REPO_BRANCH: master
+  FEEDS_CONF: feeds.conf.default
   CONFIG_FILE: R7000.config
   DIY_P1_SH: R70001.sh
   DIY_P2_SH: R70002.sh

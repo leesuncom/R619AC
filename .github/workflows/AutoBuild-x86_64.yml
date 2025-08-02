@@ -7,19 +7,16 @@
 #=================================================
 
 name: R7000-Build OpenWrt
-
 on:
-  release:
-    types: [published]
-  push:
-    branches:
-      - master
-    paths:
-      - '.config'
-#  schedule:
-#    - cron: 0 8 * * 5
-#  watch:
-#    types: [started]
+  repository_dispatch:
+  workflow_dispatch:
+    inputs:
+      ssh:
+        description: 'Debugging with tmate'
+        required: false
+        default: 'false'
+  watch:
+    types: [started]
 
 env:
   REPO_URL: https://github.com/coolsnowwolf/lede

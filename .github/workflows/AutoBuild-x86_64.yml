@@ -16,7 +16,7 @@ env:
   REPO_BRANCH: master
   FEEDS_CONF: feeds.conf.default
   CONFIG_FILE: R7000.config
-  DIY_P1_SH: R70001.sh
+  # DIY_P1_SH: R70001.sh
   DIY_P2_SH: R70002.sh
   FREE_UP_DISK: false
   SSH_ACTIONS: false
@@ -116,7 +116,16 @@ jobs:
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
         chmod +x $DIY_P2_SH
         cd openwrt
-        $GITHUB_WORKSPACE/$DIY_P2_SH
+        rm -rf feeds/packages/lang/golang
+        git clone https://github.com/kenzok8/golang feeds/packages/lang/golang
+        rm -rf feeds/luci/applications/luci-app-openclash
+        cp -f feeds/smpackage/.github/diy/default-settings package/lean/default-settings/files/zzz-default-settings
+        cp -f feeds/smpackage/.github/diy/banner package/base-files/files/etc/banner
+        #cp -f feeds/smpackage/.github/diy/index_x86.htm package/lean/autocore/files/x86/index.htm
+        sed -i "s/%D %V, %C/openwrt $(date +'%m.%d') by kenzo/g" package/base-files/files/etc/banner
+        sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci/Makefile
+        # cd openwrt
+        # $GITHUB_WORKSPACE/$DIY_P2_SH
 
     - name: Download package
       id: package

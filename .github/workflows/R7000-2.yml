@@ -8,7 +8,7 @@
 # Description: Build OpenWrt using GitHub Actions
 #
 
-name: Build R619AC-IMM23.05-IM
+name: Build 7000
 on:
   repository_dispatch:
   workflow_dispatch:

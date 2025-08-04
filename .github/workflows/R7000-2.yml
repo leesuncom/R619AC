@@ -1,205 +1,184 @@
-#=================================================
-# 优化版Netgear R7000 OpenWrt自动构建工作流
-# 改进点：缓存策略、编译稳定性、资源管理、错误处理
-#=================================================
+#
+# Copyright (c) 2019-2020 P3TERX <https://p3terx.com>
+#
+# This is free software, licensed under the MIT License.
+# See /LICENSE for more information.
+#
+# https://github.com/P3TERX/Actions-OpenWrt
+# Description: Build OpenWrt using GitHub Actions
+#
 
-name: R7000-2-Build OpenWrt
+name: Build R619AC-IMM23.05-IM
 on:
   repository_dispatch:
   workflow_dispatch:
     inputs:
-      skip_cache:
-        description: '跳过缓存 (true/false)'
+      ssh:
+        description: 'Debugging with tmate'
         required: false
         default: 'false'
-
+  watch:
+    types: [started]
 env:
-  # 基础配置
   REPO_URL: https://github.com/coolsnowwolf/lede
   REPO_BRANCH: master
   FEEDS_CONF: feeds.conf.default
   CONFIG_FILE: R7000.config
   DIY_P1_SH: R70001.sh
   DIY_P2_SH: R70002.sh
-  
-  # 构建参数
-  FREE_UP_DISK: true
-  SSH_ACTIONS: false
   UPLOAD_BIN_DIR: false
   UPLOAD_FIRMWARE: true
-  UPLOAD_RELEASE: false
-  TZ: Asia/Shanghai
-  CCACHE_MAXSIZE: 5G  # 新增ccache大小限制
+  UPLOAD_COWTRANSFER: false
+  UPLOAD_WETRANSFER: true
+  UPLOAD_RELEASE: true
+  TZ: Asia/Ho_Chi_Minh
+  GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
-    strategy:
-      matrix:
-        target: [r7000]  # 支持多设备扩展
+    runs-on: ubuntu-20.04
+
     steps:
-      # ========== 初始化阶段 ==========
-      - name: 优化磁盘空间
-        if: env.FREE_UP_DISK == 'true'
-        uses: easimon/maximize-build-space@master
-        with:
-          root-reserve-mb: 2048
-          swap-size-mb: ${{ (runner.memory < 8192) && '8192' || '4096' }}  # 低内存设备增加swap
-          remove-dotnet: 'true'
-          remove-android: 'true'
-          remove-haskell: 'true'
+      - name: Checkout
+        uses: actions/checkout@main
 
-      - name: 显示磁盘空间
-        run: df -hT
-
-      - name: 检出工作流配置
-        uses: actions/checkout@v4
-        with:
-          path: scripts
-
-      # ========== 环境配置阶段 ==========
-      - name: 安装编译依赖
+      - name: Initialization environment
         env:
           DEBIAN_FRONTEND: noninteractive
         run: |
+          sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
+          sudo -E apt-get -qq update
+          sudo -E apt-get -qq install $(curl -fsSL git.io/depends-ubuntu-2004)
+          sudo -E apt-get -y install build-essential asciidoc binutils bzip2 gawk gettext git libncurses5-dev libz-dev patch unzip zlib1g-dev lib32gcc1 libc6-dev-i386 subversion flex uglifyjs git-core gcc-multilib p7zip p7zip-full msmtp libssl-dev texinfo libglib2.0-dev xmlto qemu-utils upx libelf-dev autoconf automake libtool autopoint device-tree-compiler
+          sudo -E apt-get -qq install -y build-essential cmake asciidoc binutils bzip2 gawk gettext git libncurses5-dev libz-dev patch unzip zlib1g-dev lib32gcc1 libc6-dev-i386 subversion flex uglifyjs git-core gcc-multilib g++-multilib p7zip p7zip-full msmtp libssl-dev texinfo libreadline-dev libglib2.0-dev xmlto qemu-utils upx libelf-dev autoconf automake libtool autopoint ccache curl wget vim nano python2.7 python3 python3-pip python3-ply haveged lrzsz device-tree-compiler scons antlr3 gperf intltool mkisofs rsync ecj fastjar file g++ java-propose-classpath libncursesw5-dev python python3-distutils python3-setuptools swig time xsltproc
+        
+          sudo -E apt-get -qq autoremove --purge
+          sudo -E apt-get -qq clean
           sudo timedatectl set-timezone "$TZ"
-          sudo apt-get -qq update
-          sudo apt-get -qq install build-essential clang flex bison g++ gawk \
-            gcc-multilib gettext git libncurses5-dev libssl-dev python3-distutils \
-            rsync unzip zlib1g-dev file wget ccache jq
-          sudo apt-get -qq autoremove --purge
-          sudo apt-get clean
+          sudo mkdir -p /workdir
+          sudo chown $USER:$GROUPS /workdir
 
-      # ========== 缓存配置 ==========
-      - name: 配置编译缓存
-        id: cache
-        if: ${{ !inputs.skip_cache || inputs.skip_cache == 'false' }}
-        uses: actions/cache@v3
-        with:
-          path: |
-            openwrt/dl
-            ~/.ccache
-          key: ${{ runner.os }}-openwrt-${{ matrix.target }}-${{ hashFiles('scripts/' + env.FEEDS_CONF, 'scripts/' + env.CONFIG_FILE, 'scripts/' + env.DIY_P1_SH, 'scripts/' + env.DIY_P2_SH) }}
-          restore-keys: |
-            ${{ runner.os }}-openwrt-${{ matrix.target }}-
-
-      # ========== 源码处理阶段 ==========
-      - name: 克隆源码
+      - name: Clone source code
+        working-directory: /workdir
         run: |
-          git clone --depth 1 --single-branch $REPO_URL -b $REPO_BRANCH openwrt
-          echo "源码版本: $(git -C openwrt rev-parse --short HEAD)" >> $GITHUB_STEP_SUMMARY
+          df -hT $PWD
+          git clone $REPO_URL -b $REPO_BRANCH openwrt
+          ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
 
-      - name: 配置Feeds和预处理
+      - name: Load custom feeds
         run: |
-          [ -e "scripts/$FEEDS_CONF" ] && cp "scripts/$FEEDS_CONF" openwrt/feeds.conf.default
-          chmod +x "scripts/$DIY_P1_SH"
+          [ -e $FEEDS_CONF ] && mv $FEEDS_CONF openwrt/feeds.conf.default
+          chmod +x $DIY_P1_SH && sed -i -e 's/\r$//' $GITHUB_WORKSPACE/$DIY_P1_SH
+          # mkdir -p openwrt/files/etc/uci-defaults
+          # mv $custom_99 openwrt/files/etc/uci-defaults/99-custom
           cd openwrt
-          ../scripts/$DIY_P1_SH
-          ./scripts/feeds update -a
-          ./scripts/feeds install -a
+          $GITHUB_WORKSPACE/$DIY_P1_SH
+          #git fetch origin --tags
+          #git describe --tags $(git rev-list --tags --max-count=1) > immortalwrt_version
+          #git checkout -f $(git describe --tags $(git rev-list --tags --max-count=1))
 
-      # ========== 编译配置阶段 ==========
-      - name: 应用编译配置
+      - name: Update feeds
+        run: cd openwrt && ./scripts/feeds update -a
+
+      - name: Install feeds
+        run: cd openwrt && ./scripts/feeds install -a
+
+      - name: Load custom configuration
         run: |
-          [ -d "scripts/files" ] && cp -rf scripts/files openwrt/
-          [ -f "scripts/$CONFIG_FILE" ] && cp "scripts/$CONFIG_FILE" openwrt/.config
-          
+          [ -e files ] && mv files openwrt/files
+          [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
+          #sed -i 's/CONFIG_VERSION_NUMBER\s*=.*/CONFIG_VERSION_NUMBER=$immortalwrt_version/g' openwrt/.config
+          chmod +x $DIY_P2_SH && sed -i -e 's/\r$//' $GITHUB_WORKSPACE/$DIY_P2_SH
           cd openwrt
-          chmod +x "../scripts/$DIY_P2_SH"
-          "../scripts/$DIY_P2_SH"
-          
-          # 配置ccache
-          echo "CONFIG_CCACHE=y" >> .config
-          echo "CONFIG_CCACHE_DIR=\"$HOME/.ccache\"" >> .config
-          echo "CONFIG_CCACHE_SIZE=\"$CCACHE_MAXSIZE\"" >> .config
-          
+          $GITHUB_WORKSPACE/$DIY_P2_SH
+
+      - name: SSH connection to Actions
+        uses: P3TERX/ssh2actions@v1.0.0
+        if: (github.event.inputs.ssh == 'true' && github.event.inputs.ssh  != 'false') || contains(github.event.action, 'ssh')
+        env:
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+
+      - name: Download package
+        id: package
+        run: |
+          cd openwrt
           make defconfig
+          make download -j $(($(nproc)+1))
+          find dl -size -1024c -exec ls -l {} \;
+          find dl -size -1024c -exec rm -f {} \;
 
-      # ========== 下载阶段 ==========
-      - name: 下载依赖包
-        run: |
-          cd openwrt
-          make -j$(($(nproc)+1)) download || make -j1 V=s download
-          # 检查下载完整性
-          find dl -size 0 -delete
-          ./scripts/check_download.sh
-
-      # ========== 编译阶段 ==========
-      - name: 编译固件
+      - name: Compile the firmware
         id: compile
         run: |
           cd openwrt
-          # 动态计算并行任务数 (内存>16GB用全核)
-          if [ $(free -m | awk '/Mem:/ {print $2}') -gt 16000 ]; then
-            JOBS=$(nproc)
-          else
-            JOBS=$(($(nproc)/2))
-          fi
-          
-          echo "使用 ${JOBS} 线程编译"
-          make -j${JOBS} || make -j1 V=s
-          
-          # 提取设备信息
-          DEVICE_NAME=$(grep '^CONFIG_TARGET.*DEVICE.*=y' .config | sed -r 's/.*DEVICE_(.*)=y/\1/' | tr -cd '[:alnum:]')
-          echo "DEVICE_NAME=${DEVICE_NAME:-r7000}" >> $GITHUB_ENV
-          echo "FILE_DATE=$(date +"%Y%m%d%H%M")" >> $GITHUB_ENV
-          echo "status=success" >> $GITHUB_OUTPUT
+          echo -e "$(nproc) thread compile"
+          make -j $(($(nproc)+1)) || make -j4 || make -j4 V=s
+          echo "::set-output name=status::success"
+          grep '^CONFIG_TARGET.*DEVICE.*=y' .config | sed -r 's/.*DEVICE_(.*)=y/\1/' > DEVICE_NAME
+          [ -s DEVICE_NAME ] && echo "DEVICE_NAME=_$(cat DEVICE_NAME)" >> $GITHUB_ENV
+          echo "FILE_DATE=_$(date +"%Y%m%d%H%M")" >> $GITHUB_ENV
 
-      # ========== 输出处理阶段 ==========
-      - name: 整理固件文件
-        if: success() && env.UPLOAD_FIRMWARE == 'true'
+      - name: If Error
+        if: steps.compile.outcome == 'failure'
+        run: |
+          curl "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}&text=Firmware ${{ env.FILE_NAME }} failed to compile."
+          cat openwrt/.config
+          echo '================================================================'
+          cd openwrt && make -j $(($(nproc)+1)) V=s
+
+      - name: Check space usage
+        if: (!cancelled())
+        run: df -hT
+
+      - name: Upload bin directory
+        uses: actions/upload-artifact@main
+        if: steps.compile.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true'
+        with:
+          name: OpenWrt_bin${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
+          path: openwrt/bin
+
+      - name: Organize files
+        id: organize
+        if: env.UPLOAD_FIRMWARE == 'true' && !cancelled()
         run: |
           cd openwrt/bin/targets/*/*
-          FIRMWARE_PATH="$PWD"
-          echo "FIRMWARE_PATH=${FIRMWARE_PATH}" >> $GITHUB_ENV
-          
-          # 生成SHA256校验
-          sha256sum *.{bin,img,trx} > sha256sum.txt
-          echo "固件列表:" >> $GITHUB_STEP_SUMMARY
-          ls -lh *.{bin,img,trx} | awk '{print "- " $9 " (" $5 ")"}' >> $GITHUB_STEP_SUMMARY
+          rm -rf packages
+          echo "FIRMWARE=$PWD" >> $GITHUB_ENV
+          echo "::set-output name=status::success"
 
-      - name: 上传固件
-        if: success() && env.UPLOAD_FIRMWARE == 'true'
-        uses: actions/upload-artifact@v3
+      - name: Upload firmware directory
+        uses: actions/upload-artifact@main
+        if: steps.organize.outputs.status == 'success' && !cancelled()
         with:
-          name: OpenWrt_${DEVICE_NAME}_${FILE_DATE}
-          path: ${{ env.FIRMWARE_PATH }}/*
+          name: IMM23.05-${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
+          path: ${{ env.FIRMWARE }}
 
-      # ========== 发布阶段 ==========
-      - name: 发布到Release
-        if: success() && env.UPLOAD_RELEASE == 'true'
+      - name: Generate release tag
+        id: tag
+        if: env.UPLOAD_RELEASE == 'true' && !cancelled()
+        run: |
+          touch release.txt
+          echo "R619AC-IMM23.05-1" >> release.txt
+          echo "::set-output name=release_tag::$(date +"%Y.%m.%d")"
+          echo "::set-output name=status::success"
+
+      - name: Upload firmware to release
         uses: softprops/action-gh-release@v1
+        if: steps.tag.outputs.status == 'success' && !cancelled()
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: build-${{ env.FILE_DATE }}
-          files: ${{ env.FIRMWARE_PATH }}/*
+          tag_name: ${{ steps.tag.outputs.release_tag }}
+          body_path: release.txt
+          files: ${{ env.FIRMWARE }}/*
 
-      # ========== 清理阶段 ==========
-      - name: 清理旧工作流
-        if: always()
-        uses: Mattraks/delete-workflow-runs@main
-        with:
-          retain_days: 3
-          keep_minimum_runs: 2
-          continue_on_error: true  # 防止失败阻塞
-
-      - name: 清理旧Release
-        if: success() && env.UPLOAD_RELEASE == 'true'
-        uses: dev-drprasad/delete-older-releases@v0.2.0
+      - name: Remove old Releases
+        uses: dev-drprasad/delete-older-releases@v0.1.0
+        if: env.UPLOAD_RELEASE == 'true' && !cancelled()
         with:
           keep_latest: 3
           delete_tags: true
-          continue_on_error: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # ========== 状态报告 ==========
-      - name: 构建状态报告
-        if: always()
-        run: |
-          echo "### 构建状态报告" >> $GITHUB_STEP_SUMMARY
-          echo "- **开始时间:** $(date -d@${{ job.started_at }} '+%Y-%m-%d %H:%M:%S')" >> $GITHUB_STEP_SUMMARY
-          echo "- **持续时间:** ${{ job.duration }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **最终状态:** ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
-          [ "${{ job.status }}" = "success" ] && echo "✅ 构建成功!" >> $GITHUB_STEP_SUMMARY

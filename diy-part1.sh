@@ -19,7 +19,7 @@ rm -rf feeds/luci/applications/luci-app-mosdns
 rm -rf feeds/packages/utils/v2dat
 
 # replace smartdns to lastest update
-rm -rf feeds/packages/net/{alist,adguardhome,mosdns,xray*,v2ray*,sing*,smartdns}
+rm -rf feeds/packages/net/{alist,adguardhome,mosdns,xray*,v2ray*,sing*}
 # rm -rf feeds/luci/applications/luci-app-smartdns
 # git clone https://github.com/pymumu/openwrt-smartdns feeds/packages/net/smartdns
 # sed -i 's/1.2024.45/1.2024.46.0.13/g' feeds/packages/net/smartdns/Makefile

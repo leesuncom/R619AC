@@ -10,13 +10,13 @@
 # See /LICENSE for more information.
 #
 
-name: OpenWrt Master Ubuntu24.04 R7000 Builder
+name: OpenWrt 24.10 Ubuntu24.04 R7000 Builder
 
 on:
   repository_dispatch:
   workflow_dispatch:
   schedule:
-    - cron: 50 23 * * SUN
+    - cron: 50 00 * * MON
 #    inputs:
 #      ssh:
 #        description: 'SSH connection to Actions'
@@ -211,7 +211,7 @@ jobs:
       id: tag
       if: env.UPLOAD_RELEASE == 'true' && !cancelled()
       run: |
-        echo "release_tag=${{ env.FIRMWARE_TAG }}-openwrt-${{ env.REPO_BRANCH }}-$(date +"%Y.%m.%d-%H%M")" >> $GITHUB_OUTPUT
+        echo "release_tag=${{ env.FIRMWARE_TAG }}-${{ env.REPO_BRANCH }}-$(date +"%Y.%m.%d-%H%M")" >> $GITHUB_OUTPUT
         touch release.txt
         [ ${UPLOAD_GOFILE} = true && ${{ steps.gofile.outputs.url }} ] && echo "🔗 [GoFile](${{ steps.gofile.outputs.url }})" >> release.txt
         echo "status=success" >> $GITHUB_OUTPUT

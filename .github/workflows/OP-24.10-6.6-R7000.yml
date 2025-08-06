@@ -10,7 +10,7 @@
 # See /LICENSE for more information.
 #
 
-name: OpenWrt 24.10 R7000 Builder
+name: OP-24.10.2-6.6-R7000
 
 on:
   repository_dispatch:

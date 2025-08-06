@@ -10,7 +10,7 @@
 # See /LICENSE for more information.
 #
 
-name: OpenWrt 24.10 Ubuntu24.04 R7000 Builder
+name: OpenWrt 24.10 R7000 Builder
 
 on:
   repository_dispatch:

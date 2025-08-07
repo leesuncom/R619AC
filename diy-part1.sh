@@ -10,7 +10,7 @@
 # See /LICENSE for more information.
 #
 
-echo "src-git helloworld https://github.com/fw876/helloworld.git" >> "feeds.conf.default"
+# echo "src-git helloworld https://github.com/fw876/helloworld.git" >> "feeds.conf.default"
 # replace luci-theme-argon to lastest update
 rm -rf feeds/kenzo/luci-theme-argon feeds/kenzo/luci-app-argon-config
 git clone https://github.com/jerrykuku/luci-theme-argon.git feeds/kenzo/luci-theme-argon

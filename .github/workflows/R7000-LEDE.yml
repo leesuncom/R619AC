@@ -171,14 +171,34 @@ jobs:
       id: compile
       run: |
         cd openwrt
-        echo -e "$(nproc) thread compile"
-        #make -j$(nproc) || make -j1 || make -j1 V=s
-        #make -j $(($(nproc)+1)) V=sc world
-        make -j $(($(nproc)+1)) world
+        # 显示可用线程数
+        echo -e "Using $(nproc) + 1 threads for compilation"
+        # 多线程编译，失败时自动切换到单线程详细日志模式
+        if ! make -j $(($(nproc)+1)) world; then
+        echo "Multi-thread compilation failed, retrying with single-thread verbose mode..."
+        # 单线程+详细日志，输出所有编译细节（关键用于排查错误）
+        make -j1 V=s world || {
+        echo "Compilation failed! Check the logs above for details."
+        exit 1  # 确认失败状态
+        }
+        fi
+
+        # 标记编译成功
         echo "status=success" >> $GITHUB_OUTPUT
-        grep '^CONFIG_TARGET.*DEVICE.*=y' .config | sed -r 's/.*DEVICE_(.*)=y/\1/' > DEVICE_NAME
-        [ -s DEVICE_NAME ] && echo "DEVICE_NAME=_$(cat DEVICE_NAME)" >> $GITHUB_ENV
+        # 精确提取目标设备名（针对bcm53xx等平台的DEVICE配置）
+        # 匹配形如CONFIG_TARGET_bcm53xx_generic_DEVICE_netgear_r7000=y的配置
+        DEVICE=$(grep '^CONFIG_TARGET_[a-z0-9_]*_DEVICE_[a-z0-9_-]*=y' .config | sed -r 's/^CONFIG_TARGET_[a-z0-9_]*_DEVICE_(.*)=y/\1/')
+        if [ -n "$DEVICE" ]; then
+        echo "DEVICE_NAME=_$DEVICE" >> $GITHUB_ENV
+        echo "Extracted device name: $DEVICE"
+        else
+        echo "Warning: No target device found in .config"
+        fi
+    
+        # 设置文件日期（统一格式）
         echo "FILE_DATE=_$(date +"%Y%m%d%H%M")" >> $GITHUB_ENV
+        # 确保编译失败时工作流能捕获错误
+        continue-on-error: false
 
     - name: Check space usage
       if: (!cancelled())

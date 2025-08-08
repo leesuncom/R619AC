@@ -1,15 +1,3 @@
-#
-# https://github.com/P3TERX/Actions-OpenWrt
-#
-# File: .github/workflows/openwrt-bulder.yml
-# Description: Build OpenWrt using GitHub Actions
-#
-# Copyright (c) 2019-2024 P3TERX <https://p3terx.com>
-#
-# This is free software, licensed under the MIT License.
-# See /LICENSE for more information.
-#
-
 name: OP-24.10.2-6.6-R7000
 
 on:
@@ -17,11 +5,7 @@ on:
   workflow_dispatch:
   schedule:
     - cron: 50 00 * * MON
-#    inputs:
-#      ssh:
-#        description: 'SSH connection to Actions'
-#        required: false
-#        default: 'false'
+
 env:
   REPO_URL: https://github.com/openwrt/openwrt
   REPO_BRANCH: openwrt-24.10
@@ -40,71 +24,69 @@ env:
 jobs:
   build:
     runs-on: ubuntu-24.04
+    timeout-minutes: 180
 
     steps:
     - name: Check Server Performance
       run: |
-        echo "警告⚠"
-        echo "分配的服务器性能有限，若选择的插件过多，务必注意CPU性能！"
-        echo -e "已知CPU型号(降序): 7763，8370C，8272CL，8171M，E5-2673\n"
-        echo "--------------------------CPU信息--------------------------"
-        echo "CPU物理数量: $(cat /proc/cpuinfo | grep "physical id" | sort | uniq | wc -l)"
-        echo "CPU核心数量: $(nproc)"
-        echo -e "CPU型号信息:$(cat /proc/cpuinfo | grep -m1 name | awk -F: '{print $2}')\n"
-        echo "--------------------------内存信息--------------------------"
-        echo "已安装内存详细信息:"
-        echo -e "$(sudo lshw -short -C memory | grep GiB)\n"
-        echo "--------------------------硬盘信息--------------------------"
-        echo "硬盘数量: $(ls /dev/sd* | grep -v [1-9] | wc -l)" && df -hT
+        echo "### 🚨 性能警告" > $GITHUB_STEP_SUMMARY
+        echo "分配的服务器性能有限，编译过多插件可能导致失败" >> $GITHUB_STEP_SUMMARY
+        echo -e "\n**CPU信息**" >> $GITHUB_STEP_SUMMARY
+        echo "- 型号: $(lscpu | grep 'Model name' | cut -d':' -f2 | xargs)" >> $GITHUB_STEP_SUMMARY
+        echo "- 核心数: $(nproc)" >> $GITHUB_STEP_SUMMARY
+        echo -e "\n**内存信息**" >> $GITHUB_STEP_SUMMARY
+        echo "- 总量: $(free -h | awk '/Mem/{print $2}')" >> $GITHUB_STEP_SUMMARY
+        echo -e "\n**磁盘空间**" >> $GITHUB_STEP_SUMMARY
+        df -h | sed 's/^/    /' >> $GITHUB_STEP_SUMMARY
+
     - name: Initialization environment
       env:
         DEBIAN_FRONTEND: noninteractive
       run: |
-        #sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
         sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
         sudo docker image prune --all --force
-        #sudo docker rmi $(docker images -q)
-        #sudo rm -rf /usr/share/dotnet /etc/apt/sources.list.d /usr/local/lib/android $AGENT_TOOLSDIRECTORY
         sudo apt -y purge azure-cli ghc* zulu* llvm* firefox google* dotnet* powershell openjdk* mongodb* moby* || true
         sudo apt autoremove --purge
         sudo apt update
-        #sudo apt upgrade -y
-        sudo apt install build-essential clang flex bison g++ gawk gcc-multilib g++-multilib gettext git libncurses5-dev libssl-dev python3-setuptools rsync swig unzip zlib1g-dev file wget
+        sudo apt install -y build-essential clang flex bison g++ gawk gcc-multilib g++-multilib \
+          gettext git libncurses5-dev libssl-dev python3-setuptools rsync swig unzip zlib1g-dev \
+          file wget ccache
         sudo apt clean
         sudo timedatectl set-timezone "$TZ"
         sudo rm -fr /workdir
-        #sudo chown $USER:$GROUPS /workdir
+        echo "CCACHE_DIR=$GITHUB_WORKSPACE/ccache" >> $GITHUB_ENV
+        echo "CCACHE_MAXSIZE=2G" >> $GITHUB_ENV
+
     - name: Combine Disks
       uses: easimon/maximize-build-space@master
       with:
-        swap-size-mb: 1024
-        temp-reserve-mb: 100
-        root-reserve-mb: 1024
+        swap-size-mb: 2048
+        temp-reserve-mb: 500
+        root-reserve-mb: 2048
         
     - name: Checkout
-      uses: actions/checkout@main
+      uses: actions/checkout@v4
 
     - name: Clone source code
-      #working-directory: /workdir
       run: |
         df -hT $GITHUB_WORKSPACE
-        git clone $REPO_URL -b $REPO_BRANCH openwrt
+        git clone --depth 1 $REPO_URL -b $REPO_BRANCH openwrt
         cd openwrt
         echo "OPENWRT_PATH=$PWD" >> $GITHUB_ENV
-        COMMIT_AUTHOR=$(git show -s --date=short --format="Commit Author: %an")
-        echo "COMMIT_AUTHOR=$COMMIT_AUTHOR" >> $GITHUB_ENV
-        COMMIT_DATE=$(git show -s --date=short --format="Commit Timestap: %ci")
-        echo "COMMIT_DATE=$COMMIT_DATE" >> $GITHUB_ENV
-        COMMIT_MESSAGE=$(git show -s --date=short --format="Commit Message: %s")
-        echo "COMMIT_MESSAGE=$COMMIT_MESSAGE" >> $GITHUB_ENV
-        COMMIT_HASH=$(git show -s --date=short --format="Hash: %H")
-        echo "COMMIT_HASH=$COMMIT_HASH" >> $GITHUB_ENV
+        echo "COMMIT_INFO=$(git log -1 --pretty='%h by %an on %cd')" >> $GITHUB_ENV
+        echo "SOURCE_REPO=$(basename $REPO_URL)" >> $GITHUB_ENV
+
     - name: Generate Variables
       run: |
         cp $CONFIG_FILE $OPENWRT_PATH/.config
         cd $OPENWRT_PATH
-        SOURCE_REPO="$(echo $REPO_URL | awk -F '/' '{print $(NF)}')"
-        echo "SOURCE_REPO=$SOURCE_REPO" >> $GITHUB_ENV
+        
+        # 解决递归依赖问题
+        echo "禁用问题包防止循环依赖..."
+        for pkg in luci-app-fchomo luci-app-torbp luci-app-alist nikki; do
+          sed -i "s/CONFIG_PACKAGE_${pkg}=y/CONFIG_PACKAGE_${pkg}=n/" .config
+        done
+        
         DEVICE_TARGET=$(cat .config | grep CONFIG_TARGET_BOARD | awk -F '"' '{print $2}')
         echo "DEVICE_TARGET=$DEVICE_TARGET" >> $GITHUB_ENV
         DEVICE_SUBTARGET=$(cat .config | grep CONFIG_TARGET_SUBTARGET | awk -F '"' '{print $2}')
@@ -114,11 +96,16 @@ jobs:
         
     - name: Cache Toolchain
       if: env.CACHE_TOOLCHAIN == 'true'
-      uses: HiGarfield/cachewrtbuild@main
+      uses: actions/cache@v4
       with:
-        ccache: true
-        mixkey: R7000-${{ env.REPO_BRANCH }}-${{ env.DEVICE_TARGET }}-${{ env.DEVICE_SUBTARGET }}
-        prefix: ${{ env.OPENWRT_PATH }}
+        path: |
+          ${{ env.OPENWRT_PATH }}/dl
+          ${{ env.OPENWRT_PATH }}/staging_dir
+          ${{ env.OPENWRT_PATH }}/build_dir
+          ${{ env.CCACHE_DIR }}
+        key: ${{ runner.os }}-R7000-${{ env.REPO_BRANCH }}-${{ env.SOURCE_REPO }}-${{ hashFiles(env.CONFIG_FILE) }}-${{ hashFiles(env.FEEDS_CONF) }}
+        restore-keys: |
+          ${{ runner.os }}-R7000-${{ env.REPO_BRANCH }}
 
     - name: Load custom feeds & run diy shell 0 before update feeds
       run: |
@@ -126,6 +113,7 @@ jobs:
         chmod +x $DIY_P0_SH
         cd openwrt
         $GITHUB_WORKSPACE/$DIY_P0_SH
+        
     - name: Update feeds
       run: cd openwrt && ./scripts/feeds update -a
 
@@ -146,39 +134,55 @@ jobs:
         cd openwrt
         $GITHUB_WORKSPACE/$DIY_P2_SH
         
-    #- name: SSH链接管理
-    #  uses: P3TERX/ssh2actions@v1.0.0
-    #  if: (github.event.inputs.ssh == 'true' && github.event.inputs.ssh  != 'false') || contains(github.event.action, 'ssh')
-   #   env:
-   #     TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-  #      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+    - name: Resolve Dependency Issues
+      run: |
+        cd openwrt
+        
+        # 解决libcrypt-compat缺失问题
+        echo "修复常见依赖问题..."
+        for pkg in nginx ocserv openssh perl python3 samba4 squid sudo; do
+          if [ -f "package/feeds/packages/$pkg/Makefile" ]; then
+            sed -i '/DEPENDS:=.*libcrypt-compat/ s/libcrypt-compat/libcrypt/' package/feeds/packages/$pkg/Makefile
+          fi
+        done
+        
+        # 修复其他特定依赖
+        sed -i 's/shadowsocks-libev-ss-local/shadowsocks-libev-ssr-local/' package/feeds/kenzo/luci-app-ssr-plus/Makefile
+        sed -i 's/shadowsocks-libev-ss-redir/shadowsocks-libev-ssr-redir/' package/feeds/kenzo/luci-app-ssr-plus/Makefile
         
     - name: Download package
       id: package
       run: |
         cd openwrt
         make defconfig
-        make download -j8
-        find dl -size -1024c -exec ls -l {} \;
+        make download -j$(($(nproc) > 8 ? 8 : $(nproc)))
         find dl -size -1024c -exec rm -f {} \;
+        
     - name: Compile the firmware
       id: compile
       run: |
         cd openwrt
-        echo -e "$(nproc) thread compile"
-        #make -j$(nproc) || make -j1 || make -j1 V=s
-        #make -j $(($(nproc)+1)) V=sc world
-        make -j $(($(nproc)+1)) world
+        CPU_CORES=$(nproc)
+        BUILD_PARALLEL=$((CPU_CORES + 1))
+        [ $BUILD_PARALLEL -lt 1 ] && BUILD_PARALLEL=1
+        
+        echo "使用 $BUILD_PARALLEL 个并行任务进行编译"
+        if [ $BUILD_PARALLEL -gt 1 ]; then
+          make -j$BUILD_PARALLEL || make -j1 V=s
+        else
+          make -j1 V=s
+        fi
+        
         echo "status=success" >> $GITHUB_OUTPUT
         grep '^CONFIG_TARGET.*DEVICE.*=y' .config | sed -r 's/.*DEVICE_(.*)=y/\1/' > DEVICE_NAME
         [ -s DEVICE_NAME ] && echo "DEVICE_NAME=_$(cat DEVICE_NAME)" >> $GITHUB_ENV
         echo "FILE_DATE=_$(date +"%Y%m%d%H%M")" >> $GITHUB_ENV
+        
     - name: Check space usage
-      if: (!cancelled())
       run: df -hT
 
     - name: Upload bin directory
-      uses: actions/upload-artifact@main
+      uses: actions/upload-artifact@v4
       if: steps.compile.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true'
       with:
         name: OpenWrt_bin${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
@@ -186,14 +190,15 @@ jobs:
 
     - name: Organize files
       id: organize
-      if: env.UPLOAD_FIRMWARE == 'true' && !cancelled()
+      if: env.UPLOAD_FIRMWARE == 'true' && success() && !cancelled()
       run: |
         cd openwrt/bin/targets/*/*
         rm -rf packages
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "status=success" >> $GITHUB_OUTPUT
+        
     - name: Upload firmware directory
-      uses: actions/upload-artifact@main
+      uses: actions/upload-artifact@v4
       if: steps.organize.outputs.status == 'success' && !cancelled()
       with:
         name: OpenWrt_firmware${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
@@ -201,74 +206,49 @@ jobs:
 
     - name: Generate release tag
       id: tag
-      if: env.UPLOAD_RELEASE == 'true' && !cancelled()
+      if: env.UPLOAD_RELEASE == 'true' && success() && !cancelled()
       run: |
         echo "release_tag=${{ env.FIRMWARE_TAG }}-${{ env.REPO_BRANCH }}-$(date +"%Y.%m.%d-%H%M")" >> $GITHUB_OUTPUT
-        touch release.txt
-        [ ${UPLOAD_GOFILE} = true && ${{ steps.gofile.outputs.url }} ] && echo "🔗 [GoFile](${{ steps.gofile.outputs.url }})" >> release.txt
         echo "status=success" >> $GITHUB_OUTPUT
+        
     - name: Upload firmware to release
-      uses: softprops/action-gh-release@master
-      #uses: ncipollo/release-action@v1
+      uses: softprops/action-gh-release@v2
       if: steps.tag.outputs.status == 'success' && !cancelled()
       env:
         GITHUB_TOKEN: ${{ secrets.R7000_ACT }}
       with:
         tag_name: ${{ steps.tag.outputs.release_tag }}
-        #body_path: release.txt
         files: ${{ env.FIRMWARE }}/*
         body: |
           **This is OpenWrt Firmware for ${{ env.FIRMWARE_TAG }}**
-          ### 📒 Firmware Info.
-          - 💻 Platform Arch: ${{ env.DEVICE_TARGET }}-${{ env.DEVICE_SUBTARGET }}-${{ env.DEVICE_ARCH }}
-          - ⚽ Firmware Code: ${{ env.REPO_URL }}
-          - 💝 Branch: ${{ env.REPO_BRANCH }}
-          - 🚀 Kernel: 6.6
-          - 🌐 Default Address: 192.168.1.1
-          - 🔑 Default Password: root/password
-          ### 🚀 Included Mods
-          - nano,su,sulogin,wget  
-          - mount-utils,block-mount,dig
-          - kmod-nft-tproxy  
-          - kmod-nf-tproxy  
-          - kmod-fs-vfat
-          - kmod-fs-exfat  
-          - kmod-usb-storage  
-          - kmod-usb-uhci  
-          - kmod-usb-ohci
-          - kmod-tcp-bbr
-          - brcmfmac-firmware-4366b1-pcie  
-          - firmware broadcom-4360-sprom  
-          - firmware bmc4360  
-          - firmware libnatpmp
-          - miniupnpd-nftables  
-          - libminiupnpc
-          - luci->Collections->luci  
-          - luci->Modules->Translations zh_Hans
-          - luci-app-upnp  
-          - luci-app-smartdns  
-          - luci-proto-ppp  
-          - luci-app-argon-config  
-          - luci-app-commands  
-          - luci-app-firewall  
-          - luci-app-opkg  
-          ### 🧊 Firmware Version
-          - The last update record before firmware compilation
-          - Repo URL: [${{ env.REPO_URL }}/tree/${{ env.REPO_BRANCH }}](${{ env.REPO_URL }}/tree/${{ env.REPO_BRANCH }})
-          - ${{ env.COMMIT_AUTHOR }}
-          - ${{ env.COMMIT_DATE }}
-          - ${{ env.COMMIT_MESSAGE }}
-          - ${{ env.COMMIT_HASH }}
+          ### 📒 Firmware Info
+          - **Platform**: ${{ env.DEVICE_TARGET }}-${{ env.DEVICE_SUBTARGET }}
+          - **Architecture**: ${{ env.DEVICE_ARCH }}
+          - **Kernel**: 6.6
+          - **Default IP**: 192.168.1.1
+          - **Password**: root/password
+          
+          ### ⚙️ Build Details
+          - **Source**: [${{ env.SOURCE_REPO }}@${{ env.REPO_BRANCH }}](${{ env.REPO_URL }}/tree/${{ env.REPO_BRANCH }})
+          - **Commit**: ${{ env.COMMIT_INFO }}
+          - **Build Date**: $(date +"%Y-%m-%d %H:%M:%S")
+          
+          ### 📦 Included Packages
+          ```
+          nano wget block-mount kmod-usb-storage kmod-fs-exfat
+          luci luci-app-upnp luci-app-smartdns luci-theme-argon
+          shadowsocks-libev-ssr-local shadowsocks-libev-ssr-redir
+          ```
+          
     - name: Delete workflow runs
-      uses: Mattraks/delete-workflow-runs@main
+      uses: Mattraks/delete-workflow-runs@v2
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}
         retain_days: 0
         keep_minimum_runs: 2
 
     - name: Remove old Releases
-      uses: dev-drprasad/delete-older-releases@master
-      if: env.UPLOAD_RELEASE == 'true' && !cancelled()
+      uses: dev-drprasad/delete-older-releases@v0.2.1
+      if: env.UPLOAD_RELEASE == 'true' && success() && !cancelled()
       with:
         keep_latest: 4
         delete_tags: true

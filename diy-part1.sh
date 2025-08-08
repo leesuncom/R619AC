@@ -11,7 +11,7 @@
 #
 
 # replace luci-theme-argon to lastest update
-rm -rf feeds/kenzo/luci-theme-argon feeds/kenzo/luci-app-argon-config
+rm -rf feeds/smpackage/luci-theme-argon feeds/kenzo/luci-app-argon-config
 git clone https://github.com/jerrykuku/luci-theme-argon.git feeds/kenzo/luci-theme-argon
 git clone https://github.com/jerrykuku/luci-app-argon-config.git feeds/kenzo/luci-app-argon-config
 
@@ -32,9 +32,9 @@ git clone https://github.com/jerrykuku/luci-app-argon-config.git feeds/kenzo/luc
 
 # replace smartdns to lastest update
 rm -rf feeds/packages/net/{alist,adguardhome,smartdns}
-rm -rf feeds/kenzo/{alist,adguardhome,smartdns}
+rm -rf feeds/smpackage/{alist,adguardhome,smartdns}
 rm -rf feeds/luci/applications/luci-app-smartdns
-rm -rf feeds/kenzo/luci-app-smartdns
+rm -rf feeds/smpackage/luci-app-smartdns
 git clone https://github.com/pymumu/openwrt-smartdns feeds/packages/net/smartdns
 sed -i 's/1.2024.45/1.2024.46.0.13/g' feeds/packages/net/smartdns/Makefile
 git clone https://github.com/pymumu/luci-app-smartdns feeds/luci/applications/luci-app-smartdns

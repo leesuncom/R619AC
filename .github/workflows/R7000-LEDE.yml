@@ -8,7 +8,7 @@
 # Description: Build OpenWrt using GitHub Actions
 #
 
-name: Build 7000
+name: R7000 LEDE
 on:
   repository_dispatch:
   workflow_dispatch:
@@ -23,9 +23,9 @@ env:
   REPO_URL: https://github.com/coolsnowwolf/lede
   REPO_BRANCH: master
   FEEDS_CONF: feeds.conf.default
-  CONFIG_FILE: R7000.config
-  DIY_P1_SH: R70001.sh
-  DIY_P2_SH: R70002.sh
+  CONFIG_FILE: lede.config
+  DIY_P1_SH: lediy-part1.sh
+  DIY_P2_SH: lediy-part2.sh
   UPLOAD_BIN_DIR: false
   UPLOAD_FIRMWARE: true
   UPLOAD_COWTRANSFER: false

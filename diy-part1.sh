@@ -32,7 +32,7 @@ git clone https://github.com/jerrykuku/luci-app-argon-config.git feeds/kenzo/luc
 
 # replace smartdns to lastest update
 rm -rf feeds/packages/net/{alist,adguardhome,mosdns,xray*,v2ray*,sing*,smartdns}
-rm -rf feeds/kenzo/{alist,adguardhome,mosdns,xray*,v2ray*,sing*,smartdns}
+rm -rf feeds/kenzo/{alist,adguardhome,smartdns}
 rm -rf feeds/luci/applications/luci-app-smartdns
 rm -rf feeds/kenzo/luci-app-smartdns
 git clone https://github.com/pymumu/openwrt-smartdns feeds/packages/net/smartdns

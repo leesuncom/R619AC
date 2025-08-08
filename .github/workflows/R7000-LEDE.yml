@@ -25,7 +25,7 @@ on:
 env:
   REPO_URL: https://github.com/coolsnowwolf/lede
   REPO_BRANCH: master
-  # FEEDS_CONF: feeds.conf.default-6.6
+  FEEDS_CONF: feeds.conf.default
   CONFIG_FILE: lede.config
   DIY_P0_SH: lediy-part0.sh
   DIY_P1_SH: lediy-part1.sh

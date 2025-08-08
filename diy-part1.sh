@@ -31,7 +31,7 @@ git clone https://github.com/jerrykuku/luci-app-argon-config.git feeds/kenzo/luc
 # git clone https://github.com/sbwml/v2ray-geodata package/v2ray-geodata
 
 # replace smartdns to lastest update
-rm -rf feeds/packages/net/{alist,adguardhome,mosdns,xray*,v2ray*,sing*,smartdns}
+rm -rf feeds/packages/net/{alist,adguardhome,smartdns}
 rm -rf feeds/kenzo/{alist,adguardhome,smartdns}
 rm -rf feeds/luci/applications/luci-app-smartdns
 rm -rf feeds/kenzo/luci-app-smartdns

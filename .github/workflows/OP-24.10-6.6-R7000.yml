@@ -1,564 +1,291 @@
 #
-2
 # https://github.com/P3TERX/Actions-OpenWrt
-3
 #
-4
 # File: .github/workflows/openwrt-bulder.yml
-5
 # Description: Build OpenWrt using GitHub Actions
-6
 #
-7
 # Copyright (c) 2019-2024 P3TERX <https://p3terx.com>
-8
 #
-9
 # This is free software, licensed under the MIT License.
-10
 # See /LICENSE for more information.
-11
 #
-12
-13
+
 name: OP-24.10.2-6.6-R7000
-14
-15
+
 on:
-16  
-repository_dispatch:
-17  
-workflow_dispatch:
-18  
-schedule:
-19
+  repository_dispatch:
+  workflow_dispatch:
+  schedule:
     - cron: 50 00 * * MON
-20
 #    inputs:
-21
 #      ssh:
-22
 #        description: 'SSH connection to Actions'
-23
 #        required: false
-24
 #        default: 'false'
-25
 env:
-26  
-REPO_URL: https://github.com/openwrt/openwrt
-27  
-REPO_BRANCH: openwrt-24.10
-28  
-FEEDS_CONF: feeds.conf.default-6.6
-29  
-CONFIG_FILE: R7000-config-6.6
-30  
-DIY_P0_SH: diy-part0.sh
-31  
-DIY_P1_SH: diy-part1.sh
-32  
-DIY_P2_SH: diy-part2.sh
-33  
-CACHE_TOOLCHAIN: true
-34  
-UPLOAD_BIN_DIR: true
-35  
-UPLOAD_FIRMWARE: true
-36  
-UPLOAD_RELEASE: true
-37  
-FIRMWARE_TAG: Netgear-R7000
-38  
-TZ: Asia/Shanghai
-39
-40
+  REPO_URL: https://github.com/openwrt/openwrt
+  REPO_BRANCH: openwrt-24.10
+  FEEDS_CONF: feeds.conf.default-6.6
+  CONFIG_FILE: R7000-config-6.6
+  DIY_P0_SH: diy-part0.sh
+  DIY_P1_SH: diy-part1.sh
+  DIY_P2_SH: diy-part2.sh
+  CACHE_TOOLCHAIN: true
+  UPLOAD_BIN_DIR: true
+  UPLOAD_FIRMWARE: true
+  UPLOAD_RELEASE: true
+  FIRMWARE_TAG: Netgear-R7000
+  TZ: Asia/Shanghai
+
 jobs:
-41  
-build:
-42    
-runs-on: ubuntu-24.04
-43
-44    
-steps:
-45
+  build:
+    runs-on: ubuntu-24.04
+
+    steps:
     - name: Check Server Performance
-46      
-run: |
-47
+      run: |
         echo "警告⚠"
-48
         echo "分配的服务器性能有限，若选择的插件过多，务必注意CPU性能！"
-49
         echo -e "已知CPU型号(降序): 7763，8370C，8272CL，8171M，E5-2673\n"
-50
         echo "--------------------------CPU信息--------------------------"
-51
         echo "CPU物理数量: $(cat /proc/cpuinfo | grep "physical id" | sort | uniq | wc -l)"
-52
         echo "CPU核心数量: $(nproc)"
-53
         echo -e "CPU型号信息:$(cat /proc/cpuinfo | grep -m1 name | awk -F: '{print $2}')\n"
-54
         echo "--------------------------内存信息--------------------------"
-55
         echo "已安装内存详细信息:"
-56
         echo -e "$(sudo lshw -short -C memory | grep GiB)\n"
-57
         echo "--------------------------硬盘信息--------------------------"
-58
         echo "硬盘数量: $(ls /dev/sd* | grep -v [1-9] | wc -l)" && df -hT
-59
-￼
-60
+
     - name: Initialization environment
-61      
-env:
-62        
-DEBIAN_FRONTEND: noninteractive
-63      
-run: |
-64
+      env:
+        DEBIAN_FRONTEND: noninteractive
+      run: |
         #sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
-65
         sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
-66
         sudo docker image prune --all --force
-67
         #sudo docker rmi $(docker images -q)
-68
         #sudo rm -rf /usr/share/dotnet /etc/apt/sources.list.d /usr/local/lib/android $AGENT_TOOLSDIRECTORY
-69
-￼
-70
+
         sudo apt -y purge azure-cli ghc* zulu* llvm* firefox google* dotnet* powershell openjdk* mongodb* moby* || true
-71
         sudo apt autoremove --purge
-72
         sudo apt update
-73
         #sudo apt upgrade -y
-74
         sudo apt install build-essential clang flex bison g++ gawk gcc-multilib g++-multilib gettext git libncurses5-dev libssl-dev python3-setuptools rsync swig unzip zlib1g-dev file wget
-75
         sudo apt clean
-76
         sudo timedatectl set-timezone "$TZ"
-77
         sudo rm -fr /workdir
-78
         #sudo chown $USER:$GROUPS /workdir
-79
-￼
-80
+
     - name: Combine Disks
-81      
-uses: easimon/maximize-build-space@master
-82      
-with:
-83        
-swap-size-mb: 1024
-84        
-temp-reserve-mb: 100
-85        
-root-reserve-mb: 1024
-86        
-87
+      uses: easimon/maximize-build-space@master
+      with:
+        swap-size-mb: 1024
+        temp-reserve-mb: 100
+        root-reserve-mb: 1024
+        
     - name: Checkout
-88      
-uses: actions/checkout@main
-89
-90
+      uses: actions/checkout@main
+
     - name: Clone source code
-91      
-#working-directory: /workdir
-92      
-run: |
-93
+      #working-directory: /workdir
+      run: |
         df -hT $GITHUB_WORKSPACE
-94
         git clone $REPO_URL -b $REPO_BRANCH openwrt
-95
         cd openwrt
-96
         echo "OPENWRT_PATH=$PWD" >> $GITHUB_ENV
-97
         COMMIT_AUTHOR=$(git show -s --date=short --format="Commit Author: %an")
-98
         echo "COMMIT_AUTHOR=$COMMIT_AUTHOR" >> $GITHUB_ENV
-99
         COMMIT_DATE=$(git show -s --date=short --format="Commit Timestap: %ci")
-100
         echo "COMMIT_DATE=$COMMIT_DATE" >> $GITHUB_ENV
-101
         COMMIT_MESSAGE=$(git show -s --date=short --format="Commit Message: %s")
-102
         echo "COMMIT_MESSAGE=$COMMIT_MESSAGE" >> $GITHUB_ENV
-103
         COMMIT_HASH=$(git show -s --date=short --format="Hash: %H")
-104
         echo "COMMIT_HASH=$COMMIT_HASH" >> $GITHUB_ENV
-105
-￼
-106
+
     - name: Generate Variables
-107      
-run: |
-108
+      run: |
         cp $CONFIG_FILE $OPENWRT_PATH/.config
-109
         cd $OPENWRT_PATH
-110
         SOURCE_REPO="$(echo $REPO_URL | awk -F '/' '{print $(NF)}')"
-111
         echo "SOURCE_REPO=$SOURCE_REPO" >> $GITHUB_ENV
-112
         DEVICE_TARGET=$(cat .config | grep CONFIG_TARGET_BOARD | awk -F '"' '{print $2}')
-113
         echo "DEVICE_TARGET=$DEVICE_TARGET" >> $GITHUB_ENV
-114
         DEVICE_SUBTARGET=$(cat .config | grep CONFIG_TARGET_SUBTARGET | awk -F '"' '{print $2}')
-115
         echo "DEVICE_SUBTARGET=$DEVICE_SUBTARGET" >> $GITHUB_ENV
-116
         DEVICE_ARCH=$(cat .config | grep CONFIG_TARGET_ARCH_PACKAGES | awk -F '"' '{print $2}')
-117
         echo "DEVICE_ARCH=$DEVICE_ARCH" >> $GITHUB_ENV
-118        
-119
+        
     - name: Cache Toolchain
-120      
-if: env.CACHE_TOOLCHAIN == 'true'
-121      
-uses: HiGarfield/cachewrtbuild@main
-122      
-with:
-123        
-ccache: true
-124        
-mixkey: R7000-${{ env.REPO_BRANCH }}-${{ env.DEVICE_TARGET }}-${{ env.DEVICE_SUBTARGET }}
-125        
-prefix: ${{ env.OPENWRT_PATH }}
-126
-127
+      if: env.CACHE_TOOLCHAIN == 'true'
+      uses: HiGarfield/cachewrtbuild@main
+      with:
+        ccache: true
+        mixkey: R7000-${{ env.REPO_BRANCH }}-${{ env.DEVICE_TARGET }}-${{ env.DEVICE_SUBTARGET }}
+        prefix: ${{ env.OPENWRT_PATH }}
+
     - name: Load custom feeds & run diy shell 0 before update feeds
-128      
-run: |
-129
+      run: |
         [ -e $FEEDS_CONF ] && cp $FEEDS_CONF openwrt/feeds.conf.default
-130
         chmod +x $DIY_P0_SH
-131
         cd openwrt
-132
         $GITHUB_WORKSPACE/$DIY_P0_SH
-133
-￼
-134
+
     - name: Update feeds
-135      
-run: cd openwrt && ./scripts/feeds update -a
-136
-137
+      run: cd openwrt && ./scripts/feeds update -a
+
     - name: Run diy shell 1 before install feeds
-138      
-run: |
-139
+      run: |
         chmod +x $DIY_P1_SH
-140
         cd openwrt
-141
         $GITHUB_WORKSPACE/$DIY_P1_SH
-142        
-143
+        
     - name: Install feeds
-144      
-run: cd openwrt && ./scripts/feeds install -a
-145
-146
+      run: cd openwrt && ./scripts/feeds install -a
+
     - name: Load custom configuration & run diy shell 2 after install feeds
-147      
-run: |
-148
+      run: |
         [ -e files ] && mv files openwrt/files
-149
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
-150
         chmod +x $DIY_P2_SH
-151
         cd openwrt
-152
         $GITHUB_WORKSPACE/$DIY_P2_SH
-153        
-154    
-#- name: SSH链接管理
-155    
-#  uses: P3TERX/ssh2actions@v1.0.0
-156    
-#  if: (github.event.inputs.ssh == 'true' && github.event.inputs.ssh  != 'false') || contains(github.event.action, 'ssh')
-157   
-#   env:
-158   
-#     TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-159  
-#      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-160        
-161
+        
+    #- name: SSH链接管理
+    #  uses: P3TERX/ssh2actions@v1.0.0
+    #  if: (github.event.inputs.ssh == 'true' && github.event.inputs.ssh  != 'false') || contains(github.event.action, 'ssh')
+   #   env:
+   #     TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+  #      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        
     - name: Download package
-162      
-id: package
-163      
-run: |
-164
+      id: package
+      run: |
         cd openwrt
-165
         make defconfig
-166
         make download -j8
-167
         find dl -size -1024c -exec ls -l {} \;
-168
         find dl -size -1024c -exec rm -f {} \;
-169
-￼
-170
+
     - name: Compile the firmware
-171      
-id: compile
-172      
-run: |
-173
+      id: compile
+      run: |
         cd openwrt
-174
         echo -e "$(nproc) thread compile"
-175
         #make -j$(nproc) || make -j1 || make -j1 V=s
-176
         #make -j $(($(nproc)+1)) V=sc world
-177
         make -j $(($(nproc)+1)) world
-178
         echo "status=success" >> $GITHUB_OUTPUT
-179
         grep '^CONFIG_TARGET.*DEVICE.*=y' .config | sed -r 's/.*DEVICE_(.*)=y/\1/' > DEVICE_NAME
-180
         [ -s DEVICE_NAME ] && echo "DEVICE_NAME=_$(cat DEVICE_NAME)" >> $GITHUB_ENV
-181
         echo "FILE_DATE=_$(date +"%Y%m%d%H%M")" >> $GITHUB_ENV
-182
-￼
-183
+
     - name: Check space usage
-184      
-if: (!cancelled())
-185      
-run: df -hT
-186
-187
+      if: (!cancelled())
+      run: df -hT
+
     - name: Upload bin directory
-188      
-uses: actions/upload-artifact@main
-189      
-if: steps.compile.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true'
-190      
-with:
-191        
-name: OpenWrt_bin${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
-192        
-path: openwrt/bin
-193
-194
+      uses: actions/upload-artifact@main
+      if: steps.compile.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true'
+      with:
+        name: OpenWrt_bin${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
+        path: openwrt/bin
+
     - name: Organize files
-195      
-id: organize
-196      
-if: env.UPLOAD_FIRMWARE == 'true' && !cancelled()
-197      
-run: |
-198
+      id: organize
+      if: env.UPLOAD_FIRMWARE == 'true' && !cancelled()
+      run: |
         cd openwrt/bin/targets/*/*
-199
         rm -rf packages
-200
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
-201
         echo "status=success" >> $GITHUB_OUTPUT
-202
-￼
-203
+
     - name: Upload firmware directory
-204      
-uses: actions/upload-artifact@main
-205      
-if: steps.organize.outputs.status == 'success' && !cancelled()
-206      
-with:
-207        
-name: OpenWrt_firmware${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
-208        
-path: ${{ env.FIRMWARE }}
-209
-210
+      uses: actions/upload-artifact@main
+      if: steps.organize.outputs.status == 'success' && !cancelled()
+      with:
+        name: OpenWrt_firmware${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
+        path: ${{ env.FIRMWARE }}
+
     - name: Generate release tag
-211      
-id: tag
-212      
-if: env.UPLOAD_RELEASE == 'true' && !cancelled()
-213      
-run: |
-214
+      id: tag
+      if: env.UPLOAD_RELEASE == 'true' && !cancelled()
+      run: |
         echo "release_tag=${{ env.FIRMWARE_TAG }}-${{ env.REPO_BRANCH }}-$(date +"%Y.%m.%d-%H%M")" >> $GITHUB_OUTPUT
-215
         touch release.txt
-216
         [ ${UPLOAD_GOFILE} = true && ${{ steps.gofile.outputs.url }} ] && echo "🔗 [GoFile](${{ steps.gofile.outputs.url }})" >> release.txt
-217
         echo "status=success" >> $GITHUB_OUTPUT
-218
-￼
-219
+
     - name: Upload firmware to release
-220      
-uses: softprops/action-gh-release@master
-221      
-#uses: ncipollo/release-action@v1
-222      
-if: steps.tag.outputs.status == 'success' && !cancelled()
-223      
-env:
-224        
-GITHUB_TOKEN: ${{ secrets.R7000_ACT }}
-225      
-with:
-226        
-tag_name: ${{ steps.tag.outputs.release_tag }}
-227        
-#body_path: release.txt
-228        
-files: ${{ env.FIRMWARE }}/*
-229        
-body: |
-230
+      uses: softprops/action-gh-release@master
+      #uses: ncipollo/release-action@v1
+      if: steps.tag.outputs.status == 'success' && !cancelled()
+      env:
+        GITHUB_TOKEN: ${{ secrets.R7000_ACT }}
+      with:
+        tag_name: ${{ steps.tag.outputs.release_tag }}
+        #body_path: release.txt
+        files: ${{ env.FIRMWARE }}/*
+        body: |
           **This is OpenWrt Firmware for ${{ env.FIRMWARE_TAG }}**
-231
           ### 📒 Firmware Info.
-232
           - 💻 Platform Arch: ${{ env.DEVICE_TARGET }}-${{ env.DEVICE_SUBTARGET }}-${{ env.DEVICE_ARCH }}
-233
           - ⚽ Firmware Code: ${{ env.REPO_URL }}
-234
           - 💝 Branch: ${{ env.REPO_BRANCH }}
-235
           - 🚀 Kernel: 6.6
-236
           - 🌐 Default Address: 192.168.1.1
-237
           - 🔑 Default Password: root/password
-238
           ### 🚀 Included Mods
-239
           - nano,su,sulogin,wget  
-240
           - mount-utils,block-mount,dig
-241
-￼
-242
+
           - kmod-nft-tproxy  
-243
           - kmod-nf-tproxy  
-244
           - kmod-fs-vfat
-245
           - kmod-fs-exfat  
-246
           - kmod-usb-storage  
-247
           - kmod-usb-uhci  
-248
           - kmod-usb-ohci
-249
           - kmod-tcp-bbr
-250
-￼
-251
+
           - brcmfmac-firmware-4366b1-pcie  
-252
           - firmware broadcom-4360-sprom  
-253
           - firmware bmc4360  
-254
           - firmware libnatpmp
-255
-￼
-256
+
           - miniupnpd-nftables  
-257
           - libminiupnpc
-258
-￼
-259
+
           - luci->Collections->luci  
-260
           - luci->Modules->Translations zh_Hans
-261
-￼
-262
+
           - luci-app-upnp  
-263
           - luci-app-smartdns  
-264
           - luci-proto-ppp  
-265
           - luci-app-argon-config  
-266
           - luci-app-commands  
-267
           - luci-app-firewall  
-268
           - luci-app-opkg  
-269
           ### 🧊 Firmware Version
-270
           - The last update record before firmware compilation
-271
           - Repo URL: [${{ env.REPO_URL }}/tree/${{ env.REPO_BRANCH }}](${{ env.REPO_URL }}/tree/${{ env.REPO_BRANCH }})
-272
           - ${{ env.COMMIT_AUTHOR }}
-273
           - ${{ env.COMMIT_DATE }}
-274
           - ${{ env.COMMIT_MESSAGE }}
-275
           - ${{ env.COMMIT_HASH }}
-276
-￼
-277
+
     - name: Delete workflow runs
-278      
-uses: Mattraks/delete-workflow-runs@main
-279      
-with:
-280        
-token: ${{ secrets.GITHUB_TOKEN }}
-281        
-retain_days: 0
-282        
-keep_minimum_runs: 2
-283
-284
+      uses: Mattraks/delete-workflow-runs@main
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        retain_days: 0
+        keep_minimum_runs: 2
+
     - name: Remove old Releases
-285      
-uses: dev-drprasad/delete-older-releases@master
-286      
-if: env.UPLOAD_RELEASE == 'true' && !cancelled()
-287      
-with:
-288        
-keep_latest: 4
-289        
-delete_tags: true
-290      
-env:
-291        
-GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: dev-drprasad/delete-older-releases@master
+      if: env.UPLOAD_RELEASE == 'true' && !cancelled()
+      with:
+        keep_latest: 4
+        delete_tags: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

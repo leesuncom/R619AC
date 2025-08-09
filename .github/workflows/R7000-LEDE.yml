@@ -10,149 +10,74 @@
 # See /LICENSE for more information.
 #
 
-name: LE-23.05.2-R7000
+name: Lede Builder-R7000
 
 on:
   repository_dispatch:
   workflow_dispatch:
-  schedule:
-    - cron: 50 00 * * MON
-#    inputs:
-#      ssh:
-#        description: 'SSH connection to Actions'
-#        required: false
-#        default: 'false'
+
 env:
   REPO_URL: https://github.com/coolsnowwolf/lede
   REPO_BRANCH: master
   FEEDS_CONF: feeds.conf.default
-  CONFIG_FILE: lede.config
-  DIY_P0_SH: lediy-part0.sh
-  DIY_P1_SH: lediy-part1.sh
-  DIY_P2_SH: lediy-part2.sh
-  CACHE_TOOLCHAIN: true
-  UPLOAD_BIN_DIR: true
+  CONFIG_FILE: .config
+  DIY_P1_SH: diy-part1.sh
+  DIY_P2_SH: diy-part2.sh
+  UPLOAD_BIN_DIR: false
   UPLOAD_FIRMWARE: true
   UPLOAD_RELEASE: true
-  FIRMWARE_TAG: Netgear-R7000
   TZ: Asia/Shanghai
 
 jobs:
   build:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-22.04
 
     steps:
-    - name: Check Server Performance
-      run: |
-        echo "警告⚠"
-        echo "分配的服务器性能有限，若选择的插件过多，务必注意CPU性能！"
-        echo -e "已知CPU型号(降序): 7763，8370C，8272CL，8171M，E5-2673\n"
-        echo "--------------------------CPU信息--------------------------"
-        echo "CPU物理数量: $(cat /proc/cpuinfo | grep "physical id" | sort | uniq | wc -l)"
-        echo "CPU核心数量: $(nproc)"
-        echo -e "CPU型号信息:$(cat /proc/cpuinfo | grep -m1 name | awk -F: '{print $2}')\n"
-        echo "--------------------------内存信息--------------------------"
-        echo "已安装内存详细信息:"
-        echo -e "$(sudo lshw -short -C memory | grep GiB)\n"
-        echo "--------------------------硬盘信息--------------------------"
-        echo "硬盘数量: $(ls /dev/sd* | grep -v [1-9] | wc -l)" && df -hT
+    - name: Checkout
+      uses: actions/checkout@main
+
     - name: Initialization environment
       env:
         DEBIAN_FRONTEND: noninteractive
       run: |
-        #sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
-        sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+        sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
         sudo docker image prune --all --force
-        #sudo docker rmi $(docker images -q)
-        #sudo rm -rf /usr/share/dotnet /etc/apt/sources.list.d /usr/local/lib/android $AGENT_TOOLSDIRECTORY
-        sudo apt -y purge azure-cli ghc* zulu* llvm* firefox google* dotnet* powershell openjdk* mongodb* moby* || true
-        sudo apt autoremove --purge
-        sudo apt update
-        #sudo apt upgrade -y
-        sudo apt install build-essential clang flex bison g++ gawk gcc-multilib g++-multilib gettext git libncurses5-dev libssl-dev python3-setuptools rsync swig unzip zlib1g-dev file wget
-        sudo apt clean
+        sudo -E apt-get -qq update
+        sudo -E apt-get -qq install ack antlr3 asciidoc autoconf automake autopoint binutils bison build-essential bzip2 ccache cmake cpio curl device-tree-compiler fastjar flex gawk gettext gcc-multilib g++-multilib git gperf haveged help2man intltool libc6-dev-i386 libelf-dev libfuse-dev libglib2.0-dev libgmp3-dev libltdl-dev libmpc-dev libmpfr-dev libncurses5-dev libncursesw5-dev libpython3-dev libreadline-dev libssl-dev libtool lrzsz mkisofs msmtp ninja-build p7zip p7zip-full patch pkgconf python2.7 python3 python3-pyelftools python3-setuptools qemu-utils rsync scons squashfs-tools subversion swig texinfo uglifyjs upx-ucl unzip vim wget xmlto xxd zlib1g-dev
+        sudo -E apt-get -qq autoremove --purge
+        sudo -E apt-get -qq clean
         sudo timedatectl set-timezone "$TZ"
-        sudo rm -fr /workdir
-        #sudo chown $USER:$GROUPS /workdir
-    - name: Combine Disks
-      uses: easimon/maximize-build-space@master
-      with:
-        swap-size-mb: 1024
-        temp-reserve-mb: 100
-        root-reserve-mb: 1024
-        
-    - name: Checkout
-      uses: actions/checkout@main
+        sudo mkdir -p /workdir
+        sudo chown $USER:$GROUPS /workdir
 
     - name: Clone source code
-      #working-directory: /workdir
+      working-directory: /workdir
       run: |
-        df -hT $GITHUB_WORKSPACE
+        df -hT $PWD
         git clone $REPO_URL -b $REPO_BRANCH openwrt
-        cd openwrt
-        echo "OPENWRT_PATH=$PWD" >> $GITHUB_ENV
-        COMMIT_AUTHOR=$(git show -s --date=short --format="Commit Author: %an")
-        echo "COMMIT_AUTHOR=$COMMIT_AUTHOR" >> $GITHUB_ENV
-        COMMIT_DATE=$(git show -s --date=short --format="Commit Timestap: %ci")
-        echo "COMMIT_DATE=$COMMIT_DATE" >> $GITHUB_ENV
-        COMMIT_MESSAGE=$(git show -s --date=short --format="Commit Message: %s")
-        echo "COMMIT_MESSAGE=$COMMIT_MESSAGE" >> $GITHUB_ENV
-        COMMIT_HASH=$(git show -s --date=short --format="Hash: %H")
-        echo "COMMIT_HASH=$COMMIT_HASH" >> $GITHUB_ENV
-    - name: Generate Variables
-      run: |
-        cp $CONFIG_FILE $OPENWRT_PATH/.config
-        cd $OPENWRT_PATH
-        SOURCE_REPO="$(echo $REPO_URL | awk -F '/' '{print $(NF)}')"
-        echo "SOURCE_REPO=$SOURCE_REPO" >> $GITHUB_ENV
-        DEVICE_TARGET=$(cat .config | grep CONFIG_TARGET_BOARD | awk -F '"' '{print $2}')
-        echo "DEVICE_TARGET=$DEVICE_TARGET" >> $GITHUB_ENV
-        DEVICE_SUBTARGET=$(cat .config | grep CONFIG_TARGET_SUBTARGET | awk -F '"' '{print $2}')
-        echo "DEVICE_SUBTARGET=$DEVICE_SUBTARGET" >> $GITHUB_ENV
-        DEVICE_ARCH=$(cat .config | grep CONFIG_TARGET_ARCH_PACKAGES | awk -F '"' '{print $2}')
-        echo "DEVICE_ARCH=$DEVICE_ARCH" >> $GITHUB_ENV
-        
-    - name: Cache Toolchain
-      if: env.CACHE_TOOLCHAIN == 'true'
-      uses: HiGarfield/cachewrtbuild@main
-      with:
-        ccache: true
-        mixkey: R7000-${{ env.REPO_BRANCH }}-${{ env.DEVICE_TARGET }}-${{ env.DEVICE_SUBTARGET }}
-        prefix: ${{ env.OPENWRT_PATH }}
+        ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
 
-    - name: Load custom feeds & run diy shell 0 before update feeds
+    - name: Load custom feeds
       run: |
-        [ -e $FEEDS_CONF ] && cp $FEEDS_CONF openwrt/feeds.conf.default
-        chmod +x $DIY_P0_SH
-        cd openwrt
-        $GITHUB_WORKSPACE/$DIY_P0_SH
-    - name: Update feeds
-      run: cd openwrt && ./scripts/feeds update -a
-
-    - name: Run diy shell 1 before install feeds
-      run: |
+        [ -e $FEEDS_CONF ] && mv $FEEDS_CONF openwrt/feeds.conf.default
         chmod +x $DIY_P1_SH
         cd openwrt
         $GITHUB_WORKSPACE/$DIY_P1_SH
-        
+
+    - name: Update feeds
+      run: cd openwrt && ./scripts/feeds update -a
+
     - name: Install feeds
       run: cd openwrt && ./scripts/feeds install -a
 
-    - name: Load custom configuration & run diy shell 2 after install feeds
+    - name: Load custom configuration
       run: |
         [ -e files ] && mv files openwrt/files
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
         chmod +x $DIY_P2_SH
         cd openwrt
         $GITHUB_WORKSPACE/$DIY_P2_SH
-        
-    #- name: SSH链接管理
-    #  uses: P3TERX/ssh2actions@v1.0.0
-    #  if: (github.event.inputs.ssh == 'true' && github.event.inputs.ssh  != 'false') || contains(github.event.action, 'ssh')
-   #   env:
-   #     TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-  #      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-        
+
     - name: Download package
       id: package
       run: |
@@ -161,18 +86,18 @@ jobs:
         make download -j8
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
+
     - name: Compile the firmware
       id: compile
       run: |
         cd openwrt
         echo -e "$(nproc) thread compile"
-        #make -j$(nproc) || make -j1 || make -j1 V=s
-        #make -j $(($(nproc)+1)) V=sc world
-        make -j $(($(nproc)+1)) world
+        make -j$(nproc) || make -j1 || make -j1 V=s
         echo "status=success" >> $GITHUB_OUTPUT
         grep '^CONFIG_TARGET.*DEVICE.*=y' .config | sed -r 's/.*DEVICE_(.*)=y/\1/' > DEVICE_NAME
         [ -s DEVICE_NAME ] && echo "DEVICE_NAME=_$(cat DEVICE_NAME)" >> $GITHUB_ENV
         echo "FILE_DATE=_$(date +"%Y%m%d%H%M")" >> $GITHUB_ENV
+
     - name: Check space usage
       if: (!cancelled())
       run: df -hT
@@ -192,6 +117,7 @@ jobs:
         rm -rf packages
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "status=success" >> $GITHUB_OUTPUT
+
     - name: Upload firmware directory
       uses: actions/upload-artifact@main
       if: steps.organize.outputs.status == 'success' && !cancelled()
@@ -203,66 +129,24 @@ jobs:
       id: tag
       if: env.UPLOAD_RELEASE == 'true' && !cancelled()
       run: |
-        echo "release_tag=${{ env.FIRMWARE_TAG }}-${{ env.REPO_BRANCH }}-$(date +"%Y.%m.%d-%H%M")" >> $GITHUB_OUTPUT
+        echo "release_tag=$(date +"%Y.%m.%d-%H%M")" >> $GITHUB_OUTPUT
         touch release.txt
         [ ${UPLOAD_GOFILE} = true && ${{ steps.gofile.outputs.url }} ] && echo "🔗 [GoFile](${{ steps.gofile.outputs.url }})" >> release.txt
         echo "status=success" >> $GITHUB_OUTPUT
+
     - name: Upload firmware to release
       uses: softprops/action-gh-release@master
-      #uses: ncipollo/release-action@v1
       if: steps.tag.outputs.status == 'success' && !cancelled()
       env:
-        GITHUB_TOKEN: ${{ secrets.R7000_ACT }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: ${{ steps.tag.outputs.release_tag }}
-        #body_path: release.txt
+        body_path: release.txt
         files: ${{ env.FIRMWARE }}/*
-        body: |
-          **This is OpenWrt Firmware for ${{ env.FIRMWARE_TAG }}**
-          ### 📒 Firmware Info.
-          - 💻 Platform Arch: ${{ env.DEVICE_TARGET }}-${{ env.DEVICE_SUBTARGET }}-${{ env.DEVICE_ARCH }}
-          - ⚽ Firmware Code: ${{ env.REPO_URL }}
-          - 💝 Branch: ${{ env.REPO_BRANCH }}
-          - 🚀 Kernel: 6.6
-          - 🌐 Default Address: 192.168.1.1
-          - 🔑 Default Password: root/password
-          ### 🚀 Included Mods
-          - nano,su,sulogin,wget  
-          - mount-utils,block-mount,dig
-          - kmod-nft-tproxy  
-          - kmod-nf-tproxy  
-          - kmod-fs-vfat
-          - kmod-fs-exfat  
-          - kmod-usb-storage  
-          - kmod-usb-uhci  
-          - kmod-usb-ohci
-          - kmod-tcp-bbr
-          - brcmfmac-firmware-4366b1-pcie  
-          - firmware broadcom-4360-sprom  
-          - firmware bmc4360  
-          - firmware libnatpmp
-          - miniupnpd-nftables  
-          - libminiupnpc
-          - luci->Collections->luci  
-          - luci->Modules->Translations zh_Hans
-          - luci-app-upnp  
-          - luci-app-smartdns  
-          - luci-proto-ppp  
-          - luci-app-argon-config  
-          - luci-app-commands  
-          - luci-app-firewall  
-          - luci-app-opkg  
-          ### 🧊 Firmware Version
-          - The last update record before firmware compilation
-          - Repo URL: [${{ env.REPO_URL }}/tree/${{ env.REPO_BRANCH }}](${{ env.REPO_URL }}/tree/${{ env.REPO_BRANCH }})
-          - ${{ env.COMMIT_AUTHOR }}
-          - ${{ env.COMMIT_DATE }}
-          - ${{ env.COMMIT_MESSAGE }}
-          - ${{ env.COMMIT_HASH }}
+
     - name: Delete workflow runs
       uses: Mattraks/delete-workflow-runs@main
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}
         retain_days: 0
         keep_minimum_runs: 2
 
@@ -270,7 +154,7 @@ jobs:
       uses: dev-drprasad/delete-older-releases@master
       if: env.UPLOAD_RELEASE == 'true' && !cancelled()
       with:
-        keep_latest: 4
+        keep_latest: 3
         delete_tags: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

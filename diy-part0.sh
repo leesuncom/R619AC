@@ -9,8 +9,6 @@
 # This is free software, licensed under the MIT License.
 # See /LICENSE for more information.
 #
-./scripts/feeds update helloworld
-./scripts/feeds install -a -f -p helloworld
 
 # Uncomment a feed source
 #sed -i 's/^#\(.*helloworld\)/\1/' feeds.conf.default

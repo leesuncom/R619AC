@@ -13,8 +13,8 @@
 # echo "src-git helloworld https://github.com/fw876/helloworld.git" >> "feeds.conf.default"
 # replace luci-theme-argon to lastest update
 rm -rf feeds/kenzo/luci-theme-argon feeds/kenzo/luci-app-argon-config
-git clone https://github.com/jerrykuku/luci-theme-argon.git feeds/kenzo/luci-theme-argon
-git clone https://github.com/jerrykuku/luci-app-argon-config.git feeds/kenzo/luci-app-argon-config
+git clone https://github.com/jerrykuku/luci-theme-argon.git feeds/luci/applications/luci-theme-argon
+git clone https://github.com/jerrykuku/luci-app-argon-config.git feeds/luci/applications/luci-app-argon-config
 
 # replace MOSdns to lastest update
 rm -rf feeds/luci/applications/luci-app-mosdns

@@ -10,18 +10,17 @@
 # See /LICENSE for more information.
 #
 
-# echo "src-git helloworld https://github.com/fw876/helloworld.git" >> "feeds.conf.default"
 # replace luci-theme-argon to lastest update
 rm -rf feeds/kenzo/luci-theme-argon feeds/kenzo/luci-app-argon-config
-git clone https://github.com/jerrykuku/luci-theme-argon.git feeds/luci/applications/luci-theme-argon
-git clone https://github.com/jerrykuku/luci-app-argon-config.git feeds/luci/applications/luci-app-argon-config
+git clone https://github.com/jerrykuku/luci-theme-argon.git feeds/kenzo/luci-theme-argon
+git clone https://github.com/jerrykuku/luci-app-argon-config.git feeds/kenzo/luci-app-argon-config
 
 # replace MOSdns to lastest update
-rm -rf feeds/luci/applications/luci-app-mosdns
-rm -rf feeds/packages/utils/v2dat
-# rm -rf feeds/packages/net/v2ray-geodata
-# git clone https://github.com/sbwml/luci-app-mosdns -b v5 package/mosdns
-# git clone https://github.com/sbwml/v2ray-geodata package/v2ray-geodata
+# rm -rf feeds/luci/applications/luci-app-mosdns
+# rm -rf feeds/packages/utils/v2dat
+rm -rf feeds/packages/net/v2ray-geodata
+git clone https://github.com/sbwml/luci-app-mosdns -b v5 package/mosdns
+git clone https://github.com/sbwml/v2ray-geodata package/v2ray-geodata
 
 # replace smartdns to lastest update
 rm -rf feeds/packages/net/{alist,adguardhome,mosdns,xray*,v2ray*,sing*,smartdns}
@@ -33,9 +32,9 @@ sed -i 's/1.2024.45/1.2024.46/g' feeds/luci/applications/luci-app-smartdns/Makef
 
 # goland 2.1 to golang 2.2
 rm -rf feeds/packages/lang/golang
-git clone https://github.com/kenzok8/golang feeds/packages/lang/golang
-./scripts/feeds install -a 
-make menuconfig
+# git clone https://github.com/kenzok8/golang feeds/packages/lang/golang
+git clone https://github.com/sbwml/packages_lang_golang -b 24.x feeds/packages/lang/golang
+
 # miniupnpd 2.3.7 to 2.1.20200510
 #rm -fr feeds/packages/net/miniupnpd
 #git clone --filter=blob:none --no-checkout https://github.com/openwrt/packages miniupnpd-tmp

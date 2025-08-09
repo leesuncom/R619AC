@@ -15,15 +15,26 @@ rm -rf feeds/kenzo/luci-theme-argon feeds/kenzo/luci-app-argon-config
 git clone https://github.com/jerrykuku/luci-theme-argon.git feeds/kenzo/luci-theme-argon
 git clone https://github.com/jerrykuku/luci-app-argon-config.git feeds/kenzo/luci-app-argon-config
 
-rm -rf feeds/luci/applications/luci-app-mosdns
-rm -rf feeds/packages/utils/v2dat
-rm -rf feeds/packages/net/v2ray-geodata
-git clone https://github.com/sbwml/luci-app-mosdns -b v5 package/mosdns
-git clone https://github.com/sbwml/v2ray-geodata package/v2ray-geodata
+# 移除 openwrt feeds 自带的核心库
+# rm -rf feeds/packages/net/{xray-core,v2ray-geodata,sing-box,chinadns-ng,dns2socks,hysteria,ipt2socks,microsocks,naiveproxy,shadowsocks-libev,shadowsocks-rust,shadowsocksr-libev,simple-obfs,tcping,trojan-plus,tuic-client,v2ray-plugin,xray-plugin,geoview,shadow-tls}
+# git clone https://github.com/xiaorouji/openwrt-passwall-packages package/passwall-packages
+
+# 移除 openwrt feeds 过时的luci版本
+# rm -rf feeds/luci/applications/luci-app-passwall
+# git clone https://github.com/xiaorouji/openwrt-passwall package/passwall-luci
+
+# replace MOSdns to lastest update
+#rm -rf feeds/luci/applications/luci-app-mosdns
+# rm -rf feeds/packages/utils/v2dat
+# rm -rf feeds/packages/net/v2ray-geodata
+# git clone https://github.com/sbwml/luci-app-mosdns -b v5 package/mosdns
+# git clone https://github.com/sbwml/v2ray-geodata package/v2ray-geodata
 
 # replace smartdns to lastest update
-rm -rf feeds/packages/net/{alist,adguardhome,mosdns,xray*,v2ray*,sing*,smartdns}
+rm -rf feeds/packages/net/{alist,adguardhome,smartdns}
+rm -rf feeds/kenzo/{alist,adguardhome,smartdns}
 rm -rf feeds/luci/applications/luci-app-smartdns
+rm -rf feeds/kenzo/luci-app-smartdns
 git clone https://github.com/pymumu/openwrt-smartdns feeds/packages/net/smartdns
 sed -i 's/1.2024.45/1.2024.46.0.13/g' feeds/packages/net/smartdns/Makefile
 git clone https://github.com/pymumu/luci-app-smartdns feeds/luci/applications/luci-app-smartdns

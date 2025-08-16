@@ -8,7 +8,7 @@
 # Description: Build OpenWrt using GitHub Actions
 #
 
-name: Build R619AC-IMM23.05-IM
+name: Build R619AC-IMM24.10.2-IM
 on:
   repository_dispatch:
   workflow_dispatch:
@@ -21,11 +21,11 @@ on:
     types: [started]
 env:
   REPO_URL: https://github.com/immortalwrt/immortalwrt
-  REPO_BRANCH: master
+  REPO_BRANCH: openwrt-24.10
   FEEDS_CONF: feeds.conf.default
   CONFIG_FILE: a.config
-  DIY_P1_SH: 23.05diy-1.sh
-  DIY_P2_SH: 23.05diy-2.sh
+  DIY_P1_SH: 24.10.2diy-1.sh
+  DIY_P2_SH: 24.10.2diy-2.sh
   UPLOAD_BIN_DIR: false
   UPLOAD_FIRMWARE: true
   UPLOAD_COWTRANSFER: false

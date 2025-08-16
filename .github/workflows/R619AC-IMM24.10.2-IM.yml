@@ -23,7 +23,7 @@ env:
   REPO_URL: https://github.com/immortalwrt/immortalwrt
   REPO_BRANCH: openwrt-24.10
   FEEDS_CONF: feeds.conf.default
-  CONFIG_FILE: a.config
+  CONFIG_FILE: 619IM.config
   DIY_P1_SH: 24.10.2diy-1.sh
   DIY_P2_SH: 24.10.2diy-2.sh
   UPLOAD_BIN_DIR: false
